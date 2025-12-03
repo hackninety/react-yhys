@@ -1,0 +1,7 @@
+dist
+.git
+.gitignore
+*.md
+.cursor
+.env*.local
+

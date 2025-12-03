@@ -1,0 +1,18 @@
+services:
+  yhys-calendar:
+    build:
+      context: ..
+      dockerfile: .docker/Dockerfile
+    container_name: yhys-calendar-dev
+    ports:
+      - "5173:5173"
+    volumes:
+      # 挂载源代码实现热更新
+      - ..:/app
+      # 挂载 node_modules 到宿主机，编辑器可以读取类型定义
+      - ../node_modules:/app/node_modules
+    environment:
+      - NODE_ENV=development
+    stdin_open: true
+    tty: true
+

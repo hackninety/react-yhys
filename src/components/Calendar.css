@@ -1,0 +1,762 @@
+.calendar {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* 头部 */
+.calendar-header {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  padding: 2rem;
+  background: linear-gradient(180deg, rgba(201, 162, 39, 0.1) 0%, transparent 100%);
+  border-radius: 1rem;
+  border: 1px solid var(--color-border);
+}
+
+.calendar-title {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  font-weight: 400;
+  color: var(--color-primary);
+  letter-spacing: 0.5rem;
+  margin-bottom: 1rem;
+  text-shadow: 0 0 40px rgba(201, 162, 39, 0.3);
+}
+
+.calendar-position {
+  font-size: 1.25rem;
+  color: var(--color-text);
+  margin-bottom: 0.5rem;
+}
+
+.calendar-cycle {
+  font-size: 0.9rem;
+  color: var(--color-text-dim);
+}
+
+/* 缩放级别选择器 */
+.zoom-selector {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  padding: 0.75rem;
+  background: var(--color-bg-card);
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+}
+
+.zoom-btn {
+  font-family: var(--font-serif);
+  font-size: 0.9rem;
+  padding: 0.5rem 1.25rem;
+  background: transparent;
+  color: var(--color-text-dim);
+  border: 1px solid transparent;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.zoom-btn:hover {
+  color: var(--color-text);
+  background: var(--color-bg-hover);
+}
+
+.zoom-btn.active {
+  color: var(--color-primary);
+  background: rgba(201, 162, 39, 0.15);
+  border-color: var(--color-primary);
+}
+
+/* 导航 */
+.calendar-nav {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.nav-btn {
+  font-family: var(--font-serif);
+  font-size: 0.95rem;
+  padding: 0.65rem 1.25rem;
+  background: var(--color-bg-card);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.nav-btn:hover {
+  background: var(--color-bg-hover);
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+}
+
+.zoom-out-btn {
+  background: rgba(201, 162, 39, 0.1);
+  border-color: var(--color-primary-dim);
+}
+
+.jump-form {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.jump-input {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  width: 140px;
+  background: var(--color-bg-card);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  border-radius: 0.5rem;
+  outline: none;
+}
+
+.jump-input:focus {
+  border-color: var(--color-primary);
+}
+
+.jump-input::placeholder {
+  color: var(--color-text-dim);
+}
+
+.jump-btn {
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  padding: 0.75rem 1rem;
+  background: var(--color-primary-dim);
+  color: var(--color-bg);
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.jump-btn:hover {
+  background: var(--color-primary);
+}
+
+/* 缩放视图网格 */
+.zoom-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.zoom-grid-yuan,
+.zoom-grid-yun {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.zoom-grid-hui,
+.zoom-grid-shi {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.zoom-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.zoom-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 24px rgba(201, 162, 39, 0.15);
+  transform: translateY(-2px);
+}
+
+.zoom-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.zoom-card-title {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-secondary);
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.zoom-card-pinyin {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  font-weight: 400;
+}
+
+.zoom-card-index {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+  background: var(--color-bg);
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.zoom-card-info {
+  margin-bottom: 0.75rem;
+}
+
+.zoom-card-years {
+  font-size: 0.9rem;
+  color: var(--color-text);
+  margin-bottom: 0.25rem;
+}
+
+.zoom-card-event {
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  margin-top: 0.25rem;
+  font-weight: 500;
+}
+
+.zoom-card-range {
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+}
+
+.zoom-card-branch {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(201, 162, 39, 0.1);
+  border-radius: 50%;
+}
+
+.branch-symbol {
+  font-size: 1rem;
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.zoom-card-terms {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.term-tag {
+  font-size: 0.65rem;
+  color: var(--color-accent);
+  background: rgba(139, 0, 0, 0.15);
+  padding: 0.15rem 0.4rem;
+  border-radius: 0.2rem;
+}
+
+.zoom-card-hint {
+  font-size: 0.7rem;
+  color: var(--color-text-dim);
+  text-align: right;
+  margin-top: 0.5rem;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.zoom-card:hover .zoom-card-hint {
+  opacity: 1;
+}
+
+/* 会级视图节气显示 */
+.zoom-card-term {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.zoom-term-name {
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.zoom-term-start {
+  font-size: 0.6rem;
+  color: var(--color-text-dim);
+  background: var(--color-bg-hover);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.2rem;
+}
+
+.zoom-term-special {
+  font-size: 0.65rem;
+  color: #fff;
+  background: linear-gradient(135deg, #32cd32, #228b22);
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.2rem;
+}
+
+/* 特殊运卡片样式 */
+.zoom-card.special-yun {
+  border-width: 2px;
+}
+
+.special-yun-badge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.2rem;
+  margin-left: 0.5rem;
+}
+
+/* 月份网格 */
+.months-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.month-card {
+  background: var(--color-bg-card);
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+}
+
+.month-card:hover {
+  border-color: var(--color-primary-dim);
+  box-shadow: 0 4px 20px rgba(201, 162, 39, 0.1);
+}
+
+/* 开物闭物样式 */
+.month-card.kaiwu {
+  border-color: #2d8b4e;
+  background: linear-gradient(180deg, rgba(45, 139, 78, 0.1) 0%, transparent 100%);
+}
+
+.month-card.kaiwu:hover {
+  border-color: #3da863;
+  box-shadow: 0 4px 20px rgba(45, 139, 78, 0.2);
+}
+
+.month-card.biwu {
+  border-color: #8b4513;
+  background: linear-gradient(180deg, rgba(139, 69, 19, 0.1) 0%, transparent 100%);
+}
+
+.month-card.biwu:hover {
+  border-color: #a0522d;
+  box-shadow: 0 4px 20px rgba(139, 69, 19, 0.2);
+}
+
+.kaiwu-badge {
+  font-size: 0.65rem;
+  color: #3da863;
+  background: rgba(45, 139, 78, 0.2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.2rem;
+  margin-left: 0.25rem;
+}
+
+.biwu-badge {
+  font-size: 0.65rem;
+  color: #a0522d;
+  background: rgba(139, 69, 19, 0.2);
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.2rem;
+  margin-left: 0.25rem;
+}
+
+.month-title {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--color-border);
+  font-weight: 600;
+  color: var(--color-secondary);
+  flex-wrap: wrap;
+}
+
+.month-pinyin {
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+  font-weight: 400;
+}
+
+.month-number {
+  margin-left: auto;
+  font-size: 0.8rem;
+  color: var(--color-text-dim);
+  font-weight: 400;
+}
+
+/* 日期网格 6x5 */
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 0.25rem;
+}
+
+.day-cell {
+  aspect-ratio: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: var(--color-bg);
+  border-radius: 0.25rem;
+  cursor: default;
+  transition: all 0.15s ease;
+  position: relative;
+}
+
+.day-cell:hover {
+  background: var(--color-bg-hover);
+}
+
+.day-number {
+  font-size: 0.9rem;
+  color: var(--color-text);
+}
+
+/* 有节气时隐藏数字 */
+.day-cell.has-term .day-number {
+  display: none;
+}
+
+.term-badge {
+  font-size: 0.6rem;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+/* 24节气颜色 - 按季节和节气特点配色 */
+/* 冬季节气（子月、丑月）- 冷色调 */
+.term-xiaohan { color: #87ceeb; } /* 小寒 - 浅蓝 */
+.term-dahan { color: #4682b4; } /* 大寒 - 钢青 */
+
+/* 春季节气（寅月、卯月、辰月）- 绿色调 */
+.term-lichun { color: #98fb98; } /* 立春 - 浅绿 */
+.term-yushui { color: #00ced1; } /* 雨水 - 青绿 */
+.term-jingzhe { color: #32cd32; } /* 惊蛰 - 草绿 */
+.term-chunfen { color: #3cb371; } /* 春分 - 中绿 */
+.term-qingming { color: #228b22; } /* 清明 - 森林绿 */
+.term-guyu { color: #6b8e23; } /* 谷雨 - 橄榄绿 */
+
+/* 夏季节气（巳月、午月、未月）- 暖色调 */
+.term-lixia { color: #ffd700; } /* 立夏 - 金色 */
+.term-xiaoman { color: #ffa500; } /* 小满 - 橙色 */
+.term-mangzhong { color: #ff8c00; } /* 芒种 - 深橙 */
+.term-xiazhi { color: #ff4500; } /* 夏至 - 橙红 */
+.term-xiaoshu { color: #ff6347; } /* 小暑 - 番茄红 */
+.term-dashu { color: #dc143c; } /* 大暑 - 深红 */
+
+/* 秋季节气（申月、酉月、戌月）- 黄褐色调 */
+.term-liqiu { color: #daa520; } /* 立秋 - 金麒麟 */
+.term-chushu { color: #cd853f; } /* 处暑 - 秘鲁色 */
+.term-bailu { color: #f5f5dc; } /* 白露 - 米色 */
+.term-qiufen { color: #d2691e; } /* 秋分 - 巧克力 */
+.term-hanlu { color: #a0522d; } /* 寒露 - 赭色 */
+.term-shuangjiang { color: #8b4513; } /* 霜降 - 鞍褐 */
+
+/* 冬季节气（亥月、子月）- 冷灰色调 */
+.term-lidong { color: #708090; } /* 立冬 - 石板灰 */
+.term-xiaoxue { color: #b0c4de; } /* 小雪 - 浅钢蓝 */
+.term-daxue { color: #e6e6fa; } /* 大雪 - 淡紫 */
+.term-dongzhi { color: #f0f8ff; } /* 冬至 - 爱丽丝蓝 */
+
+/* 元级视图（会卡片）样式 */
+.hui-card {
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.hui-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 24px rgba(201, 162, 39, 0.15);
+  transform: translateY(-2px);
+}
+
+.yuns-grid {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.yun-cell {
+  cursor: pointer;
+}
+
+/* 特殊日期标记样式 */
+.day-cell.special-date {
+  border: 1px solid;
+  position: relative;
+}
+
+.day-cell.special-date:hover {
+  filter: brightness(1.2);
+}
+
+.special-date-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  font-size: 0.5rem;
+  padding: 1px 3px;
+  border-radius: 2px;
+  line-height: 1;
+}
+
+/* 特殊世卡片样式 */
+.shi-card.special-shi {
+  border-width: 2px;
+}
+
+.special-shi-badge {
+  font-size: 0.65rem;
+  padding: 0.1rem 0.4rem;
+  border-radius: 0.2rem;
+  margin-left: 0.25rem;
+}
+
+.hui-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--color-border);
+  font-size: 0.75rem;
+  color: var(--color-text-dim);
+}
+
+.hui-years {
+  color: var(--color-text);
+}
+
+.hui-terms {
+  color: var(--color-accent);
+}
+
+/* 卦象样式 */
+.hui-hexagram {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.hexagram-name {
+  color: var(--color-secondary);
+  font-weight: 500;
+}
+
+.hexagram-symbol {
+  font-size: 1rem;
+  color: var(--color-primary);
+  line-height: 1;
+}
+
+/* 运级视图（世卡片）样式 */
+.shi-card {
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.shi-card:hover {
+  border-color: var(--color-primary);
+  box-shadow: 0 4px 24px rgba(201, 162, 39, 0.15);
+  transform: translateY(-2px);
+}
+
+.nians-grid {
+  grid-template-columns: repeat(6, 1fr);
+}
+
+.nian-cell {
+  cursor: pointer;
+}
+
+/* 页脚 */
+.calendar-footer {
+  margin-top: 2rem;
+  text-align: center;
+  padding: 1.5rem;
+  background: var(--color-bg-card);
+  border-radius: 0.75rem;
+  border: 1px solid var(--color-border);
+}
+
+.legend-title {
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+  margin-bottom: 0.5rem;
+}
+
+.kaiwu-biwu-legend {
+  margin-bottom: 1rem;
+}
+
+.kaiwu-biwu-info {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+}
+
+.kaiwu-legend {
+  font-size: 0.85rem;
+  color: #3da863;
+  background: rgba(45, 139, 78, 0.15);
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.35rem;
+  border: 1px solid rgba(45, 139, 78, 0.3);
+}
+
+.biwu-legend {
+  font-size: 0.85rem;
+  color: #a0522d;
+  background: rgba(139, 69, 19, 0.15);
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.35rem;
+  border: 1px solid rgba(139, 69, 19, 0.3);
+}
+
+.terms-legend,
+.branches-legend {
+  margin-bottom: 1rem;
+}
+
+.terms-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.term-legend-item {
+  font-size: 0.75rem;
+  color: var(--color-accent);
+  background: rgba(139, 0, 0, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 0.25rem;
+}
+
+.term-legend-item.kaiwu-term {
+  color: #3da863;
+  background: rgba(45, 139, 78, 0.2);
+  border: 1px solid rgba(45, 139, 78, 0.4);
+}
+
+.term-legend-item.biwu-term {
+  color: #a0522d;
+  background: rgba(139, 69, 19, 0.2);
+  border: 1px solid rgba(139, 69, 19, 0.4);
+}
+
+.branches-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.branch-legend-item {
+  font-size: 0.8rem;
+  color: var(--color-primary);
+  background: rgba(201, 162, 39, 0.1);
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.25rem;
+  font-weight: 500;
+}
+
+.branch-legend-item.kaiwu-branch {
+  color: #3da863;
+  background: rgba(45, 139, 78, 0.2);
+  border: 1px solid rgba(45, 139, 78, 0.4);
+}
+
+.branch-legend-item.biwu-branch {
+  color: #a0522d;
+  background: rgba(139, 69, 19, 0.2);
+  border: 1px solid rgba(139, 69, 19, 0.4);
+}
+
+.footer-note {
+  font-size: 0.85rem;
+  color: var(--color-text-dim);
+  margin-top: 1rem;
+}
+
+/* 响应式 */
+@media (max-width: 1024px) {
+  .zoom-grid-yuan,
+  .zoom-grid-yun {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .zoom-grid-hui,
+  .zoom-grid-shi {
+    grid-template-columns: repeat(5, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .calendar-title {
+    font-size: 2rem;
+    letter-spacing: 0.25rem;
+  }
+  
+  .calendar-position {
+    font-size: 1rem;
+  }
+  
+  .zoom-selector {
+    flex-wrap: wrap;
+  }
+  
+  .zoom-btn {
+    font-size: 0.8rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .calendar-nav {
+    gap: 0.5rem;
+  }
+  
+  .nav-btn {
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+  }
+  
+  .zoom-grid-yuan,
+  .zoom-grid-yun {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .zoom-grid-hui,
+  .zoom-grid-shi {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  
+  .months-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .zoom-grid-yuan,
+  .zoom-grid-yun,
+  .zoom-grid-hui,
+  .zoom-grid-shi {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}

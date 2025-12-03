@@ -1,0 +1,95 @@
+{
+  "specialDates": [
+    {
+      "id": "kaiwu",
+      "name": "开物",
+      "description": "开物于星之七十六，犹岁之惊蛰也",
+      "color": "#32cd32",
+      "colorEnd": "#228b22",
+      "textColor": "#ffffff",
+      "yun": 76,
+      "badge": "开",
+      "term": "惊蛰"
+    },
+    {
+      "id": "biwu",
+      "name": "闭物",
+      "description": "闭物于三百一十五，犹岁之立冬也",
+      "color": "#a0522d",
+      "colorEnd": "#8b4513",
+      "textColor": "#ffffff",
+      "yun": 315,
+      "badge": "闭",
+      "term": "立冬"
+    },
+    {
+      "id": "yu-yao-dengji",
+      "name": "唐尧虞朝",
+      "description": "唐尧的虞朝起于此，癸星，2157辰",
+      "color": "#8a2be2",
+      "colorEnd": "#4b0082",
+      "textColor": "#ffffff",
+      "yun": 180,
+      "shi": 2157,
+      "badge": "尧"
+    },
+    {
+      "id": "yu-shun-si",
+      "name": "舜陟方乃死",
+      "description": "經日之甲、經月之午七、經星之甲一百八十一、經辰之子二千一百六十一、癸酉年。",
+      "color": "#8a2be2",
+      "colorEnd": "#4b0082",
+      "textColor": "#ffffff",
+      "yun": 181,
+      "shi": 2161,
+      "sui": 64810,
+      "badge": "舜"
+    },
+    {
+      "id": "xia-yu-si",
+      "name": "禹東巡至于會稽，崩",
+      "description": "經日之甲、經月之午七、經星之甲一百八十一、經辰之子二千一百六十一、癸未年。",
+      "color": "#8a2be2",
+      "colorEnd": "#4b0082",
+      "textColor": "#ffffff",
+      "yun": 181,
+      "shi": 2161,
+      "sui": 64820,
+      "badge": "舜"
+    },
+    {
+      "id": "xia-qi-dengji",
+      "name": "夏啟登基",
+      "description": "經日之甲、經月之午七、經星之甲一百八十一、經辰之子二千一百六十一、甲申年。",
+      "color": "#8a2be2",
+      "colorEnd": "#4b0082",
+      "textColor": "#ffffff",
+      "yun": 181,
+      "shi": 2161,
+      "sui": 64821,
+      "badge": "舜"
+    },
+    {
+      "id": "xia-taikang-dengji",
+      "name": "夏太康登基",
+      "description": "經日之甲、經月之午七、經星之甲一百八十一、經辰之子二千一百六十一、癸巳年。",
+      "color": "#8a2be2",
+      "colorEnd": "#4b0082",
+      "textColor": "#ffffff",
+      "yun": 181,
+      "shi": 2161,
+      "sui": 64830,
+      "badge": "舜"
+    }
+  ],
+  "comments": {
+    "yun": "运编号（1-360），用于月会页和日元页的运格标注",
+    "shi": "世编号（1-4320），用于星运页的辰格标注",
+    "sui": "岁编号（1-129600），用于辰世页的年格标注",
+    "color": "主色（用于渐变起始色和边框色）",
+    "colorEnd": "渐变结束色，可选",
+    "textColor": "徽章文字颜色",
+    "badge": "徽章文字",
+    "term": "对应节气，可选"
+  }
+}

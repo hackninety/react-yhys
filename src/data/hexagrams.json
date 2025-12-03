@@ -1,0 +1,109 @@
+{
+  "monthHexagrams": [
+    {
+      "month": 1,
+      "branch": "子",
+      "name": "复",
+      "symbol": "☷☳",
+      "unicode": "䷗",
+      "description": "地雷复，一阳来复"
+    },
+    {
+      "month": 2,
+      "branch": "丑",
+      "name": "临",
+      "symbol": "☷☱",
+      "unicode": "䷒",
+      "description": "地泽临，二阳临下"
+    },
+    {
+      "month": 3,
+      "branch": "寅",
+      "name": "泰",
+      "symbol": "☷☰",
+      "unicode": "䷊",
+      "description": "地天泰，三阳开泰"
+    },
+    {
+      "month": 4,
+      "branch": "卯",
+      "name": "大壮",
+      "symbol": "☳☰",
+      "unicode": "䷡",
+      "description": "雷天大壮，四阳壮盛"
+    },
+    {
+      "month": 5,
+      "branch": "辰",
+      "name": "夬",
+      "symbol": "☱☰",
+      "unicode": "䷪",
+      "description": "泽天夬，五阳决阴"
+    },
+    {
+      "month": 6,
+      "branch": "巳",
+      "name": "乾",
+      "symbol": "☰☰",
+      "unicode": "䷀",
+      "description": "乾为天，六阳纯阳"
+    },
+    {
+      "month": 7,
+      "branch": "午",
+      "name": "姤",
+      "symbol": "☰☴",
+      "unicode": "䷫",
+      "description": "天风姤，一阴初生"
+    },
+    {
+      "month": 8,
+      "branch": "未",
+      "name": "遁",
+      "symbol": "☰☶",
+      "unicode": "䷠",
+      "description": "天山遁，二阴渐长"
+    },
+    {
+      "month": 9,
+      "branch": "申",
+      "name": "否",
+      "symbol": "☰☷",
+      "unicode": "䷋",
+      "description": "天地否，三阴闭塞"
+    },
+    {
+      "month": 10,
+      "branch": "酉",
+      "name": "观",
+      "symbol": "☴☷",
+      "unicode": "䷓",
+      "description": "风地观，四阴观望"
+    },
+    {
+      "month": 11,
+      "branch": "戌",
+      "name": "剥",
+      "symbol": "☶☷",
+      "unicode": "䷖",
+      "description": "山地剥，五阴剥阳"
+    },
+    {
+      "month": 12,
+      "branch": "亥",
+      "name": "坤",
+      "symbol": "☷☷",
+      "unicode": "䷁",
+      "description": "坤为地，六阴纯阴"
+    }
+  ],
+  "comments": {
+    "month": "月份序号（1-12）",
+    "branch": "对应地支",
+    "name": "卦名",
+    "symbol": "卦象符号（上卦+下卦的八卦符号）",
+    "unicode": "卦象Unicode字符",
+    "description": "卦象描述"
+  }
+}
+
