@@ -19,60 +19,149 @@
 - 🗓️ **天干地支**：完整的干支纪年系统，遵循"冬至起于子"的规则
 - 🌸 **二十四节气**：运节气（元级）与天节气（年级）双重节气系统
 - 📍 **历史事件**：可配置的历史事件标注（如唐尧虞朝等）
-- ☯️ **卦象显示**：十二月对应十二卦象（复、临、泰、大壮、夬、乾等）
+- ☯️ **卦象显示**：十二月对应十二卦象
 - 🎨 **精美 UI**：古典美学风格的现代化界面设计
 
-## 🚀 快速开始
+---
 
-### 方式一：Docker 部署（推荐）
+## 🚀 生产环境部署（宝塔面板）
+
+### 1. 环境要求
+
+| 组件 | 版本要求 |
+|------|----------|
+| Node.js | 18+ (推荐 20 LTS) |
+| pnpm | 8+ |
+| Nginx | 1.18+ |
+
+### 2. 本地构建
 
 ```bash
 # 进入项目目录
-cd YHYS
+cd yhys.0x7c.cc
 
-# 启动 Docker 容器
-docker-compose -f .docker/docker-compose.yml up -d
+# 安装依赖
+pnpm install
 
-# 访问应用
-open http://localhost:5173
+# 构建生产版本
+pnpm build
+
+# 构建产物在 dist/ 目录
 ```
 
-### 方式二：本地开发
+### 3. 上传到服务器
 
 ```bash
-# 安装依赖（推荐使用 pnpm）
+# 方式一：rsync 同步（推荐）
+rsync -avz --delete dist/ root@your-server:/www/wwwroot/yhys.0x7c.cc/
+
+# 方式二：scp 上传
+scp -r dist/* root@your-server:/www/wwwroot/yhys.0x7c.cc/
+
+# 方式三：宝塔面板文件管理器手动上传
+```
+
+### 4. 宝塔面板配置
+
+#### 4.1 创建网站
+
+1. 登录宝塔面板
+2. 网站 → 添加站点
+3. 配置：
+   - 域名：`yhys.0x7c.cc`
+   - 根目录：`/www/wwwroot/yhys.0x7c.cc`
+   - PHP版本：纯静态
+   - 勾选：创建FTP、创建数据库 都不需要
+
+#### 4.2 配置 Nginx
+
+点击网站 → 设置 → 配置文件，添加以下配置：
+
+```nginx
+server {
+    listen 80;
+    server_name yhys.0x7c.cc;
+    
+    root /www/wwwroot/yhys.0x7c.cc;
+    index index.html;
+    
+    # Gzip 压缩
+    gzip on;
+    gzip_vary on;
+    gzip_comp_level 6;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
+    
+    # 安全头
+    add_header X-Frame-Options "SAMEORIGIN" always;
+    add_header X-Content-Type-Options "nosniff" always;
+    
+    # 静态资源缓存（Vite 构建带 hash，可长期缓存）
+    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
+        expires 1y;
+        add_header Cache-Control "public, immutable";
+        access_log off;
+    }
+    
+    # SPA 路由支持（所有路径都返回 index.html）
+    location / {
+        try_files $uri $uri/ /index.html;
+    }
+    
+    # 健康检查
+    location /health {
+        access_log off;
+        return 200 "OK\n";
+    }
+    
+    # 禁止访问隐藏文件
+    location ~ /\. {
+        deny all;
+    }
+    
+    access_log /www/wwwlogs/yhys.0x7c.cc.log;
+    error_log /www/wwwlogs/yhys.0x7c.cc.error.log;
+}
+```
+
+#### 4.3 配置 SSL（可选）
+
+1. 网站 → 设置 → SSL
+2. 选择 Let's Encrypt 或上传证书
+3. 开启强制 HTTPS
+
+### 5. 代码更新
+
+```bash
+# 本地构建
+cd yhys.0x7c.cc
+pnpm build
+
+# 上传到服务器
+rsync -avz --delete dist/ root@your-server:/www/wwwroot/yhys.0x7c.cc/
+```
+
+> 纯静态网站无需重启任何服务，上传完成即生效。
+
+---
+
+## 💻 本地开发
+
+```bash
+# 安装依赖
 pnpm install
-# 或
-npm install
 
 # 启动开发服务器
 pnpm dev
-# 或
-npm run dev
 
-# 访问应用
-open http://localhost:5173
+# 访问 http://localhost:5173
 ```
 
-### 构建生产版本
-
-```bash
-# Docker 环境
-docker exec -it yhys-app sh -c "npm run build"
-
-# 本地环境
-pnpm build
-```
+---
 
 ## 📁 项目结构
 
 ```
-YHYS/
-├── .cursor/rules/          # Cursor MDC 规则
-│   └── huangji-calendar.mdc
-├── .docker/                # Docker 配置
-│   ├── Dockerfile
-│   └── docker-compose.yml
+yhys.0x7c.cc/
 ├── src/
 │   ├── components/         # React 组件
 │   │   ├── Calendar.tsx    # 主日历组件
@@ -85,9 +174,12 @@ YHYS/
 │   │   └── calendar.ts     # 日历计算逻辑
 │   ├── App.tsx
 │   └── main.tsx
+├── dist/                   # 构建产物（上传此目录）
 ├── package.json
 └── README.md
 ```
+
+---
 
 ## 🎯 功能说明
 
@@ -113,6 +205,8 @@ YHYS/
 - **开物**：寅月第76运/天 = 惊蛰
 - **闭物**：戌月第315运/天 = 立冬
 
+---
+
 ## ⚙️ 配置
 
 ### 添加历史事件
@@ -126,42 +220,32 @@ YHYS/
   "description": "事件描述",
   "color": "#8a2be2",
   "textColor": "#ffffff",
-  "yun": 180,      // 运编号（1-360）
-  "shi": 2157,     // 世编号（1-4320）
-  "sui": 64810,    // 岁编号（1-129600）
+  "yun": 180,
+  "shi": 2157,
+  "sui": 64810,
   "badge": "标"
 }
 ```
-
-### 修改卦象
-
-编辑 `src/data/hexagrams.json` 可自定义十二月对应的卦象。
 
 ### 颜色参考
 
 #### 五行颜色
 
-| 五行 | 主色 | 渐变结束色 | 文字色 | 说明 |
-|------|------|-----------|--------|------|
-| 金 | `#D4AF37` | `#B8860B` | `#ffffff` | 金黄/暗金 |
-| 木 | `#228B22` | `#006400` | `#ffffff` | 森绿/暗绿 |
-| 水 | `#1E3A5F` | `#0D1B2A` | `#ffffff` | 深蓝/墨蓝 |
-| 火 | `#DC143C` | `#8B0000` | `#ffffff` | 猩红/暗红 |
-| 土 | `#CD853F` | `#8B4513` | `#ffffff` | 土黄/赭石 |
+| 五行 | 主色 | 文字色 |
+|------|------|--------|
+| 金 | `#D4AF37` | `#ffffff` |
+| 木 | `#228B22` | `#ffffff` |
+| 水 | `#1E3A5F` | `#ffffff` |
+| 火 | `#DC143C` | `#ffffff` |
+| 土 | `#CD853F` | `#ffffff` |
 
-#### 开物/闭物颜色
-
-| 名称 | 主色 | 渐变结束色 | 文字色 | 说明 |
-|------|------|-----------|--------|------|
-| 开物 | `#7B68EE` | `#483D8B` | `#ffffff` | 紫罗兰/暗紫（春雷惊蛰，万物复苏） |
-| 闭物 | `#C0C0C0` | `#A0A0A0` | `#1a1a2e` | 银白/霜银（万物归藏，静谧内敛） |
+---
 
 ## 🛠️ 技术栈
 
 - **React 18** - 用户界面
 - **TypeScript** - 类型安全
 - **Vite** - 构建工具
-- **Docker** - 容器化部署
 
 ## 📚 参考资料
 
@@ -171,4 +255,3 @@ YHYS/
 ## 📄 许可证
 
 MIT License
-
