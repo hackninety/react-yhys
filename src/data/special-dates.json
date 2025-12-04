@@ -455,16 +455,16 @@
       "badge": "小甲"
     },
     {
-      "id": "shang-xiaojia-li",
-      "name": "太平",
-      "description": "金德，經日之甲、經月之午七、經星之甲一百九十、經辰之子二千二百八十、辛酉年。",
-      "color": "#D4AF37",
+      "id": "china-2025",
+      "name": "2025年",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十二、經辰之子二千三百零二、乙巳年。",
+      "color": "#DC143C",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
-      "yun": 190,
-      "shi": 2280,
-      "sui": 68398,
-      "badge": "太平"
+      "yun": 192,
+      "shi": 2302,
+      "sui": 69042,
+      "badge": "今年"
     }
   ],
   "comments": {
