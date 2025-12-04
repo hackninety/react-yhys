@@ -12,6 +12,10 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    watch: {
+      // Docker 环境下需要启用轮询模式以检测文件变化
+      usePolling: true,
+    },
   },
 })
 

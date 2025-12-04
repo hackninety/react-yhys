@@ -9,7 +9,7 @@
   text-align: center;
   margin-bottom: 1.5rem;
   padding: 2rem;
-  background: linear-gradient(180deg, rgba(201, 162, 39, 0.1) 0%, transparent 100%);
+  background: linear-gradient(180deg, rgba(212, 175, 55, 0.1) 0%, transparent 100%);
   border-radius: 1rem;
   border: 1px solid var(--color-border);
 }
@@ -21,7 +21,7 @@
   color: var(--color-primary);
   letter-spacing: 0.5rem;
   margin-bottom: 1rem;
-  text-shadow: 0 0 40px rgba(201, 162, 39, 0.3);
+  text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
 }
 
 .calendar-position {
@@ -66,7 +66,7 @@
 
 .zoom-btn.active {
   color: var(--color-primary);
-  background: rgba(201, 162, 39, 0.15);
+  background: rgba(212, 175, 55, 0.15);
   border-color: var(--color-primary);
 }
 
@@ -99,7 +99,7 @@
 }
 
 .zoom-out-btn {
-  background: rgba(201, 162, 39, 0.1);
+  background: rgba(212, 175, 55, 0.1);
   border-color: var(--color-primary-dim);
 }
 
@@ -173,7 +173,7 @@
 
 .zoom-card:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 4px 24px rgba(201, 162, 39, 0.15);
+  box-shadow: 0 4px 24px rgba(212, 175, 55, 0.15);
   transform: translateY(-2px);
 }
 
@@ -191,6 +191,7 @@
   display: flex;
   align-items: baseline;
   gap: 0.5rem;
+  flex: 1;
 }
 
 .zoom-card-pinyin {
@@ -238,7 +239,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(201, 162, 39, 0.1);
+  background: rgba(212, 175, 55, 0.1);
   border-radius: 50%;
 }
 
@@ -257,8 +258,8 @@
 
 .term-tag {
   font-size: 0.65rem;
-  color: var(--color-accent);
-  background: rgba(139, 0, 0, 0.15);
+  color: var(--color-primary);
+  background: rgba(212, 175, 55, 0.15);
   padding: 0.15rem 0.4rem;
   border-radius: 0.2rem;
 }
@@ -301,7 +302,7 @@
 .zoom-term-special {
   font-size: 0.65rem;
   color: #fff;
-  background: linear-gradient(135deg, #32cd32, #228b22);
+  background: linear-gradient(135deg, #7B68EE, #483D8B);
   padding: 0.1rem 0.4rem;
   border-radius: 0.2rem;
 }
@@ -315,7 +316,7 @@
   font-size: 0.65rem;
   padding: 0.1rem 0.4rem;
   border-radius: 0.2rem;
-  margin-left: 0.5rem;
+  margin-left: auto;
 }
 
 /* 月份网格 */
@@ -335,34 +336,34 @@
 
 .month-card:hover {
   border-color: var(--color-primary-dim);
-  box-shadow: 0 4px 20px rgba(201, 162, 39, 0.1);
+  box-shadow: 0 4px 20px rgba(212, 175, 55, 0.1);
 }
 
 /* 开物闭物样式 */
 .month-card.kaiwu {
-  border-color: #2d8b4e;
-  background: linear-gradient(180deg, rgba(45, 139, 78, 0.1) 0%, transparent 100%);
+  border-color: #7B68EE;
+  background: linear-gradient(180deg, rgba(123, 104, 238, 0.15) 0%, transparent 100%);
 }
 
 .month-card.kaiwu:hover {
-  border-color: #3da863;
-  box-shadow: 0 4px 20px rgba(45, 139, 78, 0.2);
+  border-color: #9683F5;
+  box-shadow: 0 4px 20px rgba(123, 104, 238, 0.25);
 }
 
 .month-card.biwu {
-  border-color: #8b4513;
-  background: linear-gradient(180deg, rgba(139, 69, 19, 0.1) 0%, transparent 100%);
+  border-color: #C0C0C0;
+  background: linear-gradient(180deg, rgba(220, 220, 220, 0.2) 0%, transparent 100%);
 }
 
 .month-card.biwu:hover {
-  border-color: #a0522d;
-  box-shadow: 0 4px 20px rgba(139, 69, 19, 0.2);
+  border-color: #E8E8E8;
+  box-shadow: 0 4px 20px rgba(255, 255, 255, 0.3);
 }
 
 .kaiwu-badge {
   font-size: 0.65rem;
-  color: #3da863;
-  background: rgba(45, 139, 78, 0.2);
+  color: #9683F5;
+  background: rgba(123, 104, 238, 0.2);
   padding: 0.1rem 0.4rem;
   border-radius: 0.2rem;
   margin-left: 0.25rem;
@@ -370,8 +371,8 @@
 
 .biwu-badge {
   font-size: 0.65rem;
-  color: #a0522d;
-  background: rgba(139, 69, 19, 0.2);
+  color: #D0D0D0;
+  background: rgba(192, 192, 192, 0.25);
   padding: 0.1rem 0.4rem;
   border-radius: 0.2rem;
   margin-left: 0.25rem;
@@ -485,7 +486,7 @@
 
 .hui-card:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 4px 24px rgba(201, 162, 39, 0.15);
+  box-shadow: 0 4px 24px rgba(212, 175, 55, 0.15);
   transform: translateY(-2px);
 }
 
@@ -545,7 +546,7 @@
 }
 
 .hui-terms {
-  color: var(--color-accent);
+  color: var(--color-secondary);
 }
 
 /* 卦象样式 */
@@ -574,7 +575,7 @@
 
 .shi-card:hover {
   border-color: var(--color-primary);
-  box-shadow: 0 4px 24px rgba(201, 162, 39, 0.15);
+  box-shadow: 0 4px 24px rgba(212, 175, 55, 0.15);
   transform: translateY(-2px);
 }
 
@@ -614,20 +615,20 @@
 
 .kaiwu-legend {
   font-size: 0.85rem;
-  color: #3da863;
-  background: rgba(45, 139, 78, 0.15);
+  color: #9683F5;
+  background: rgba(123, 104, 238, 0.15);
   padding: 0.35rem 0.75rem;
   border-radius: 0.35rem;
-  border: 1px solid rgba(45, 139, 78, 0.3);
+  border: 1px solid rgba(123, 104, 238, 0.3);
 }
 
 .biwu-legend {
   font-size: 0.85rem;
-  color: #a0522d;
-  background: rgba(139, 69, 19, 0.15);
+  color: #C0C0C0;
+  background: rgba(192, 192, 192, 0.15);
   padding: 0.35rem 0.75rem;
   border-radius: 0.35rem;
-  border: 1px solid rgba(139, 69, 19, 0.3);
+  border: 1px solid rgba(192, 192, 192, 0.4);
 }
 
 .terms-legend,
@@ -644,22 +645,22 @@
 
 .term-legend-item {
   font-size: 0.75rem;
-  color: var(--color-accent);
-  background: rgba(139, 0, 0, 0.1);
+  color: var(--color-primary);
+  background: rgba(212, 175, 55, 0.1);
   padding: 0.25rem 0.5rem;
   border-radius: 0.25rem;
 }
 
 .term-legend-item.kaiwu-term {
-  color: #3da863;
-  background: rgba(45, 139, 78, 0.2);
-  border: 1px solid rgba(45, 139, 78, 0.4);
+  color: #9683F5;
+  background: rgba(123, 104, 238, 0.2);
+  border: 1px solid rgba(123, 104, 238, 0.4);
 }
 
 .term-legend-item.biwu-term {
-  color: #a0522d;
-  background: rgba(139, 69, 19, 0.2);
-  border: 1px solid rgba(139, 69, 19, 0.4);
+  color: #C0C0C0;
+  background: rgba(192, 192, 192, 0.2);
+  border: 1px solid rgba(192, 192, 192, 0.4);
 }
 
 .branches-grid {
@@ -672,22 +673,22 @@
 .branch-legend-item {
   font-size: 0.8rem;
   color: var(--color-primary);
-  background: rgba(201, 162, 39, 0.1);
+  background: rgba(212, 175, 55, 0.1);
   padding: 0.25rem 0.6rem;
   border-radius: 0.25rem;
   font-weight: 500;
 }
 
 .branch-legend-item.kaiwu-branch {
-  color: #3da863;
-  background: rgba(45, 139, 78, 0.2);
-  border: 1px solid rgba(45, 139, 78, 0.4);
+  color: #9683F5;
+  background: rgba(123, 104, 238, 0.2);
+  border: 1px solid rgba(123, 104, 238, 0.4);
 }
 
 .branch-legend-item.biwu-branch {
-  color: #a0522d;
-  background: rgba(139, 69, 19, 0.2);
-  border: 1px solid rgba(139, 69, 19, 0.4);
+  color: #C0C0C0;
+  background: rgba(192, 192, 192, 0.2);
+  border: 1px solid rgba(192, 192, 192, 0.4);
 }
 
 .footer-note {

@@ -1,17 +1,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap');
 
 :root {
-  /* 古典配色 */
-  --color-bg: #0d0d0d;
-  --color-bg-card: #1a1a1a;
-  --color-bg-hover: #262626;
-  --color-primary: #c9a227;
-  --color-primary-dim: #8b7019;
-  --color-secondary: #d4af37;
+  /* 古典配色 - 以金为主调，与五行协调 */
+  --color-bg: #0a0a12;
+  --color-bg-card: #14141f;
+  --color-bg-hover: #1e1e2d;
+  --color-primary: #D4AF37;
+  --color-primary-dim: #a68a2a;
+  --color-secondary: #E8C547;
   --color-text: #e8e4d9;
-  --color-text-dim: #8a8578;
-  --color-border: #3d3d3d;
-  --color-accent: #8b0000;
+  --color-text-dim: #7a7a8a;
+  --color-border: #2d2d3d;
+  --color-accent: #7B68EE;
+  
+  /* 五行色 */
+  --wuxing-jin: #D4AF37;
+  --wuxing-mu: #228B22;
+  --wuxing-shui: #1E3A5F;
+  --wuxing-huo: #DC143C;
+  --wuxing-tu: #CD853F;
+  
+  /* 开物闭物 */
+  --kaiwu-color: #7B68EE;
+  --biwu-color: #C0C0C0;
   
   /* 字体 */
   --font-serif: 'Noto Serif SC', 'Songti SC', serif;
@@ -35,8 +46,8 @@ body {
   min-height: 100vh;
   line-height: 1.6;
   background-image: 
-    radial-gradient(ellipse at top, rgba(201, 162, 39, 0.03) 0%, transparent 50%),
-    radial-gradient(ellipse at bottom, rgba(139, 0, 0, 0.02) 0%, transparent 50%);
+    radial-gradient(ellipse at top, rgba(212, 175, 55, 0.04) 0%, transparent 50%),
+    radial-gradient(ellipse at bottom, rgba(123, 104, 238, 0.03) 0%, transparent 50%);
 }
 
 #root {

@@ -471,11 +471,14 @@ export default function Calendar({
                         // 计算六十甲子：全局年编号
                         const globalYearNumber = (nian.yearIndex % TOTAL_YEARS) + 1
                         const jiazi = getYearJiazi(globalYearNumber)
+                        // 根据岁编号查找特殊日期
+                        const specialDateForNian = findSpecialDateBySui(globalYearNumber)
                         return (
                           <div
                             key={nian.index}
-                            className={`day-cell nian-cell ${hasTerm ? 'has-term' : ''}`}
-                            title={`岁${jiazi} · 第${globalYearNumber}年${specialDateForShi ? ` · 【${specialDateForShi.name}】` : ''}`}
+                            className={`day-cell nian-cell ${hasTerm ? 'has-term' : ''} ${specialDateForNian ? 'special-date' : ''}`}
+                            style={specialDateForNian ? getSpecialDateStyle(specialDateForNian) : undefined}
+                            title={`岁${jiazi} · 第${globalYearNumber}年${specialDateForNian ? ` · 【${specialDateForNian.name}】` : ''}`}
                             onClick={(e) => {
                               e.stopPropagation()
                               // 跳转到对应的年页面
@@ -494,6 +497,11 @@ export default function Calendar({
                             <span className="day-number">{jiazi}</span>
                             {termName && (
                               <span className={`term-badge ${termClass}`}>{termName}</span>
+                            )}
+                            {specialDateForNian && (
+                              <span className="special-date-badge" style={getSpecialDateBadgeStyle(specialDateForNian)}>
+                                {specialDateForNian.badge}
+                              </span>
                             )}
                           </div>
                         )
@@ -601,7 +609,6 @@ export default function Calendar({
                           </span>
                         )}
                       </h3>
-                      <span className="zoom-card-index">#{item.index + 1}</span>
                     </div>
                     
                     <div className="zoom-card-info">
