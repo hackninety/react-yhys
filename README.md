@@ -28,42 +28,33 @@
 
 ### 1. 环境要求
 
-| 组件 | 版本要求 |
-|------|----------|
-| Node.js | 18+ (推荐 20 LTS) |
-| pnpm | 8+ |
+| 组件 | 版本 |
+|------|------|
+| Node.js | 22.21.1 (LTS) |
+| pnpm | 10+ |
 | Nginx | 1.18+ |
 
-### 2. 本地构建
+### 2. 首次部署
 
 ```bash
-# 进入项目目录
-cd yhys.0x7c.cc
+# 1. 克隆代码到服务器
+cd /opt/git
+git clone https://github.com/your-repo/yhys.git
+cd yhys
 
-# 安装依赖
+# 2. 安装依赖
 pnpm install
 
-# 构建生产版本
+# 3. 构建生产版本
 pnpm build
 
-# 构建产物在 dist/ 目录
+# 4. 同步到网站目录
+rsync -avz --delete dist/ /www/wwwroot/yhys.0x7c.cc/
 ```
 
-### 3. 上传到服务器
+### 3. 宝塔面板配置
 
-```bash
-# 方式一：rsync 同步（推荐）
-rsync -avz --delete dist/ root@your-server:/www/wwwroot/yhys.0x7c.cc/
-
-# 方式二：scp 上传
-scp -r dist/* root@your-server:/www/wwwroot/yhys.0x7c.cc/
-
-# 方式三：宝塔面板文件管理器手动上传
-```
-
-### 4. 宝塔面板配置
-
-#### 4.1 创建网站
+#### 3.1 创建网站
 
 1. 登录宝塔面板
 2. 网站 → 添加站点
@@ -73,7 +64,7 @@ scp -r dist/* root@your-server:/www/wwwroot/yhys.0x7c.cc/
    - PHP版本：纯静态
    - 勾选：创建FTP、创建数据库 都不需要
 
-#### 4.2 配置 Nginx
+#### 3.2 配置 Nginx
 
 点击网站 → 设置 → 配置文件，添加以下配置：
 
@@ -123,24 +114,58 @@ server {
 }
 ```
 
-#### 4.3 配置 SSL（可选）
+#### 3.3 配置 SSL（可选）
 
 1. 网站 → 设置 → SSL
 2. 选择 Let's Encrypt 或上传证书
 3. 开启强制 HTTPS
 
-### 5. 代码更新
+### 4. 代码更新
 
 ```bash
-# 本地构建
-cd yhys.0x7c.cc
+# 进入代码目录
+cd /opt/git/yhys
+
+# 拉取最新代码
+git pull
+
+# 安装依赖（如有更新）
+pnpm install
+
+# 重新构建
 pnpm build
 
-# 上传到服务器
-rsync -avz --delete dist/ root@your-server:/www/wwwroot/yhys.0x7c.cc/
+# 同步到网站目录
+rsync -avz --delete dist/ /www/wwwroot/yhys.0x7c.cc/
 ```
 
-> 纯静态网站无需重启任何服务，上传完成即生效。
+> 💡 **提示**：纯静态网站无需重启任何服务，同步完成即生效。
+
+#### 一键更新脚本（可选）
+
+创建 `/opt/git/yhys/deploy.sh`：
+
+```bash
+#!/bin/bash
+set -e
+
+cd /opt/git/yhys
+echo "📥 拉取最新代码..."
+git pull
+
+echo "📦 安装依赖..."
+pnpm install
+
+echo "🔨 构建生产版本..."
+pnpm build
+
+echo "🚀 同步到网站目录..."
+rsync -avz --delete dist/ /www/wwwroot/yhys.0x7c.cc/
+
+echo "✅ 部署完成！"
+```
+
+使用：`bash /opt/git/yhys/deploy.sh`
 
 ---
 
