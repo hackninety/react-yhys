@@ -77,6 +77,49 @@ export function getYearJiazi(globalYearNumber: number): string {
   return getJiaziName(globalYearNumber - 1)
 }
 
+// ============================================
+// 公历年份计算
+// ============================================
+// 基于已知对应关系：sui 67018 = 公元元年（公元1年）
+// 公式：公历年份 = sui - 67017
+export const SUI_TO_GREGORIAN_OFFSET = 67017
+
+/**
+ * 根据岁编号（sui）计算公历年份
+ * @param sui 岁编号（1-129600）
+ * @returns 公历年份（正数为公元，负数需转换为公元前）
+ */
+export function suiToGregorianYear(sui: number): number {
+  return sui - SUI_TO_GREGORIAN_OFFSET
+}
+
+/**
+ * 格式化公历年份显示
+ * @param sui 岁编号（1-129600）
+ * @returns 格式化的公历年份字符串，如"公元2025年"或"公元前2070年"
+ */
+export function formatGregorianYear(sui: number): string {
+  const year = suiToGregorianYear(sui)
+  if (year > 0) {
+    return `公元${year}年`
+  } else {
+    // 没有公元0年，所以公元前1年对应 year = 0
+    // year = 0 -> 公元前1年
+    // year = -1 -> 公元前2年
+    return `公元前${1 - year}年`
+  }
+}
+
+/**
+ * 根据公历年份计算岁编号（sui）
+ * @param gregorianYear 公历年份（正数为公元，负数或0为公元前）
+ * @returns 岁编号（1-129600）
+ */
+export function gregorianYearToSui(gregorianYear: number): number {
+  return gregorianYear + SUI_TO_GREGORIAN_OFFSET
+}
+
+
 // 获取六十甲子的天干部分
 export function getYearStem(globalYearNumber: number): string {
   return HEAVENLY_STEMS[(globalYearNumber - 1) % 10]

@@ -28,6 +28,7 @@ import {
   getYearJiazi,
   getYunTermIndex,
   isYunTermStart,
+  formatGregorianYear,
   type ZoomLevel,
   type ZoomPosition,
 } from '../utils/calendar'
@@ -478,7 +479,7 @@ export default function Calendar({
                             key={nian.index}
                             className={`day-cell nian-cell ${hasTerm ? 'has-term' : ''} ${specialDateForNian ? 'special-date' : ''}`}
                             style={specialDateForNian ? getSpecialDateStyle(specialDateForNian) : undefined}
-                            title={`岁${jiazi} · 第${globalYearNumber}年${specialDateForNian ? ` · 【${specialDateForNian.name}】` : ''}`}
+                            title={`岁${jiazi} · 第${globalYearNumber}年 · ${formatGregorianYear(globalYearNumber)}${specialDateForNian ? ` · 【${specialDateForNian.name}】` : ''}`}
                             onClick={(e) => {
                               e.stopPropagation()
                               // 跳转到对应的年页面
