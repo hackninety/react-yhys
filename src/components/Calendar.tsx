@@ -939,9 +939,17 @@ export default function Calendar({
                         // 世级视图：显示全局年份编号和特殊事件名称
                         <>
                           <p className="zoom-card-years">第{globalYear}年</p>
-                          {isCurrentHuangjiYearInShi && (
-                            <p className="zoom-card-gregorian">{suiToGregorianYear(globalYear)}年</p>
-                          )}
+                          <p className="zoom-card-gregorian">
+                            {(() => {
+                              const gYear = suiToGregorianYear(globalYear)
+                              // 公元纪年没有0年，公元1年之前是公元前1年
+                              if (gYear > 0) {
+                                return `公元${gYear}年`
+                              } else {
+                                return `公元前${1 - gYear}年`
+                              }
+                            })()}
+                          </p>
                           {specialDateBySui && (
                             <p className="zoom-card-event" style={{ color: specialDateBySui.color }}>{specialDateBySui.name}</p>
                           )}
