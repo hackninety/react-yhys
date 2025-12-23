@@ -339,7 +339,7 @@ export default function Calendar({
       const hui = position.hui ?? 0
       const huiBranch = getBranch(hui)
       const huiHexagram = getHuiHexagram(hui)
-      return `第${position.yuan + 1}元 · 月${huiBranch}${hui + 1}（会）${huiHexagram.unicode}${huiHexagram.name}`
+      return `日${position.yuan + 1}（元）　·　月${huiBranch}${hui + 1} ${huiHexagram.unicode}${huiHexagram.name}（会）`
     }
     if (zoomLevel === 'yun' && yunData) {
       const hui = position.hui ?? 0
@@ -349,7 +349,7 @@ export default function Calendar({
       const yunStem = getStem(globalYun - 1)
       const huiHexagram = getHuiHexagram(hui)
       const yunHexagram = getYunHexagramByGlobal(globalYun)
-      return `月${huiBranch}${hui + 1}（会）${huiHexagram.unicode}${huiHexagram.name} · 星${yunStem}${globalYun}（运）${yunHexagram.unicode}${yunHexagram.name}`
+      return `月${huiBranch}${hui + 1} ${huiHexagram.unicode}${huiHexagram.name}　·　星${yunStem}${globalYun} ${yunHexagram.unicode}${yunHexagram.name}`
     }
     if (zoomLevel === 'shi' && viewData) {
       const hui = position.hui ?? 0
@@ -361,14 +361,15 @@ export default function Calendar({
       const shiBranch = getBranch(globalShi - 1)
       const yunHexagram = getYunHexagramByGlobal(globalYun)
       const shiHexagram = getShiHexagramByGlobal(globalShi)
-      return `星${yunStem}${globalYun}（运）${yunHexagram.unicode}${yunHexagram.name} · 辰${shiBranch}${globalShi}（世）${shiHexagram.unicode}${shiHexagram.name}`
+      return `星${yunStem}${globalYun} ${yunHexagram.unicode}${yunHexagram.name}　·　辰${shiBranch}${globalShi} ${shiHexagram.unicode}${shiHexagram.name}`
     }
     if (zoomLevel === 'nian' && yearData) {
       const { state } = yearData
       const jiazi = getYearJiazi(state.yearInCycle + 1)
+      const yunHexagram = getYunHexagramByGlobal(state.globalYun)
       const shiHexagram = getShiHexagramByGlobal(state.globalShi)
       const suiHexagram = getSuiHexagramByHuangjiYear(state.yearInCycle + 1)
-      return `星${state.yunStem}${state.globalYun} · 辰${state.shiBranch}${state.globalShi}${shiHexagram.unicode}${shiHexagram.name} · 岁${jiazi}${suiHexagram.unicode}${suiHexagram.name}（第${state.yearInCycle + 1}年）`
+      return `星${state.yunStem}${state.globalYun} ${yunHexagram.unicode}${yunHexagram.name}　·　辰${state.shiBranch}${state.globalShi} ${shiHexagram.unicode}${shiHexagram.name}　·　岁${jiazi} ${suiHexagram.unicode}${suiHexagram.name}`
     }
     return viewData?.title ?? ''
   }

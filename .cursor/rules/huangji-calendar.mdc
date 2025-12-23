@@ -10,22 +10,29 @@
 本项目运行在 Docker 容器中，所有调试和执行命令都应在容器内进行：
 
 ```bash
-# 进入容器执行命令
-docker exec -it yhys-app sh -c "命令"
+# 进入容器执行命令（非交互式）
+docker exec yhys-calendar-dev sh -c "命令"
 
-# 或者进入容器交互式shell
-docker exec -it yhys-app sh
+# 进入容器交互式 shell
+docker exec -it yhys-calendar-dev sh
 
 # 常用命令示例
-docker exec -it yhys-app sh -c "npm run dev"
-docker exec -it yhys-app sh -c "npm run build"
-docker exec -it yhys-app sh -c "npx tsx script.ts"
+docker exec yhys-calendar-dev sh -c "cd /app && npm run dev"
+docker exec yhys-calendar-dev sh -c "cd /app && npm run build"
+docker exec yhys-calendar-dev sh -c "cd /app && npx tsx script.ts"
+
+# 运行 TypeScript 调试/验证（推荐）
+docker exec yhys-calendar-dev sh -c "cd /app && npx tsx -e \"
+import { getYunHexagramByGlobal } from './src/data/hexagrams64.ts';
+console.log(getYunHexagramByGlobal(192));
+\""
 ```
 
-- 容器名称：`yhys-app`
-- 工作目录：`/app`
-- 端口映射：`5173:5173`（Vite 开发服务器）
-- 项目已挂载到容器的 `/app` 目录
+- **容器名称**：`yhys-calendar-dev`（由 docker-compose.yml 定义）
+- **工作目录**：`/app`
+- **端口映射**：`5173:5173`（Vite 开发服务器）
+- **项目挂载**：宿主机项目目录挂载到容器的 `/app`
+- **注意**：非交互式命令不要使用 `-it` 参数，否则会报 `the input device is not a TTY`
 
 ## 基本度量 (单位换算)
 - 1 元（日） = 12 会（月） = 360 运（星） = 4 320 世（辰） = 129 600 年（岁）。
