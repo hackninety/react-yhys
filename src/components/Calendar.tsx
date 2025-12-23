@@ -541,7 +541,7 @@ export default function Calendar({
                         {termName && (
                           <span className={`term-badge ${termClass}`}>{termName}</span>
                         )}
-                        {specialDate && (
+                        {specialDate?.badge && (
                           <span className="special-date-badge" style={getSpecialDateBadgeStyle(specialDate)}>
                             {specialDate.badge}
                           </span>
@@ -604,7 +604,7 @@ export default function Calendar({
                       <span className="month-number">第{globalShiNumber}世</span>
                       {shi.index === KAIWU_INDEX && <span className="kaiwu-badge">开物</span>}
                       {shi.index === BIWU_INDEX && <span className="biwu-badge">闭物</span>}
-                      {specialDateForShi && (
+                      {specialDateForShi?.badge && (
                         <span 
                           className="special-shi-badge" 
                           style={getSpecialDateBadgeStyle(specialDateForShi)}

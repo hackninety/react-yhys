@@ -15,7 +15,7 @@ export interface SpecialDate {
   yun?: number      // 运编号（1-360）
   shi?: number      // 世编号（1-4320）
   sui?: number      // 岁编号（1-129600），全局年份
-  badge: string
+  badge?: string    // 徽章标签（如"今年"、"开物"等）
   term?: string     // 对应的节气名称（如"惊蛰"、"立冬"）
   year?: number     // 公历年份，用于追加显示公历时间
 }
