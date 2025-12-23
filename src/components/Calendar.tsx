@@ -824,11 +824,6 @@ export default function Calendar({
                     }
                     const tooltip = tooltipParts.join('\n')
 
-                    // 获取闰卦（用于显示）
-                    const termIntercalary = day.isTermStart && day.termName 
-                      ? getIntercalaryHexagramByName(day.termName) 
-                      : null
-
                     return (
                       <div
                         key={day.dayOfMonth}
@@ -839,7 +834,6 @@ export default function Calendar({
                         {day.isTermStart && (
                           <span className={`term-badge ${termClass}`}>
                             {day.termName}
-                            {termIntercalary && <span className="intercalary-symbol">{termIntercalary.unicode}</span>}
                           </span>
                         )}
                         {isToday && <div className="today-dot"></div>}
