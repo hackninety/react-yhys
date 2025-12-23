@@ -25,7 +25,7 @@
     {
       "id": "yu-yao-li",
       "name": "虞尧立",
-      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之子二千一百五十六、甲辰年。",
+      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之未二千一百五十六、甲辰年。",
       "color": "#CD853F",
       "colorEnd": "#8B4513",
       "textColor": "#ffffff",
@@ -37,7 +37,7 @@
     {
       "id": "yu-yao-shui",
       "name": "洪水方割，命鯀治之",
-      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之子二千一百五十八、甲辰年。",
+      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之酉二千一百五十八、甲辰年。",
       "color": "#CD853F",
       "colorEnd": "#8B4513",
       "textColor": "#ffffff",
@@ -49,7 +49,7 @@
     {
       "id": "yu-yao-zhi",
       "name": "徵舜登庸",
-      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之子二千一百五十八、癸丑年。",
+      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之酉二千一百五十八、癸丑年。",
       "color": "#CD853F",
       "colorEnd": "#8B4513",
       "textColor": "#ffffff",
@@ -61,7 +61,7 @@
     {
       "id": "yu-yao-jian",
       "name": "薦舜于天命之位",
-      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之子二千一百五十八、乙卯年。",
+      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之酉二千一百五十八、乙卯年。",
       "color": "#CD853F",
       "colorEnd": "#8B4513",
       "textColor": "#ffffff",
@@ -73,7 +73,7 @@
     {
       "id": "yu-shun-li",
       "name": "正月上日，舜受命于文祖",
-      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之子二千一百五十八、丙辰年。",
+      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之酉二千一百五十八、丙辰年。",
       "color": "#CD853F",
       "colorEnd": "#8B4513",
       "textColor": "#ffffff",
@@ -477,8 +477,7 @@
       "yun": 192,
       "shi": 2302,
       "sui": 69042,
-      "year": 2025,
-      "badge": "今年"
+      "year": 2025
     }
   ],
   "comments": {

@@ -12,9 +12,17 @@ export default defineConfig({
   server: {
     host: '0.0.0.0',
     port: 5173,
+    // HMR 配置：确保 Docker 环境下 WebSocket 连接正常
+    hmr: {
+      host: 'localhost',
+      port: 5173,
+      clientPort: 5173,
+    },
     watch: {
       // Docker 环境下需要启用轮询模式以检测文件变化
       usePolling: true,
+      // 轮询间隔（毫秒），降低 CPU 占用
+      interval: 1000,
     },
   },
 })
