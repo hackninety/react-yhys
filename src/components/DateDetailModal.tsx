@@ -131,7 +131,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
           <h2>日期详情</h2>
           <div className="date-summary">
             <span className="gregorian">{detail.gregorian.dateStr} 星期{detail.gregorian.weekday}</span>
-            <span className="lunar">{detail.lunar.dateStr}</span>
+            {detail.lunar && <span className="lunar">{detail.lunar.dateStr}</span>}
           </div>
         </div>
         
@@ -142,30 +142,37 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
             
             <div className="bazi-comparison">
               {/* Lunisolar 版本 */}
-              <div className="bazi-version">
-                <h4>📚 Lunisolar 插件版</h4>
-                <div className="bazi-pillars">
-                  <BaziPillarDisplay pillar={detail.bazi.year} label="年柱" />
-                  <BaziPillarDisplay pillar={detail.bazi.month} label="月柱" />
-                  <BaziPillarDisplay pillar={detail.bazi.day} label="日柱" />
-                  <BaziPillarDisplay pillar={detail.bazi.hour} label="时柱" />
+              {detail.bazi ? (
+                <div className="bazi-version">
+                  <h4>📚 Lunisolar 插件版</h4>
+                  <div className="bazi-pillars">
+                    <BaziPillarDisplay pillar={detail.bazi.year} label="年柱" />
+                    <BaziPillarDisplay pillar={detail.bazi.month} label="月柱" />
+                    <BaziPillarDisplay pillar={detail.bazi.day} label="日柱" />
+                    <BaziPillarDisplay pillar={detail.bazi.hour} label="时柱" />
+                  </div>
                 </div>
-              </div>
+              ) : (
+                <div className="bazi-version">
+                  <h4>📚 Lunisolar 插件版</h4>
+                  <p className="unsupported-notice">此日期超出 Lunisolar 支持范围（公元前722年～公元2200年）</p>
+                </div>
+              )}
               
               {/* 自己算法版本（夏历） */}
               <div className="bazi-version">
                 <h4>🔧 自定义算法版（夏历）</h4>
                 <div className="bazi-simple">
-                  <span className={customBazi.yearGanZhi === detail.bazi.year.ganZhi ? 'match' : 'mismatch'}>
+                  <span className={detail.bazi && customBazi.yearGanZhi === detail.bazi.year.ganZhi ? 'match' : ''}>
                     年：{customBazi.yearGanZhi}
                   </span>
-                  <span className={customBazi.monthGanZhi === detail.bazi.month.ganZhi ? 'match' : 'mismatch'}>
+                  <span className={detail.bazi && customBazi.monthGanZhi === detail.bazi.month.ganZhi ? 'match' : ''}>
                     月：{customBazi.monthGanZhi}
                   </span>
-                  <span className={customBazi.dayGanZhi === detail.bazi.day.ganZhi ? 'match' : 'mismatch'}>
+                  <span className={detail.bazi && customBazi.dayGanZhi === detail.bazi.day.ganZhi ? 'match' : ''}>
                     日：{customBazi.dayGanZhi}
                   </span>
-                  <span className={customBazi.hourGanZhi === detail.bazi.hour.ganZhi ? 'match' : 'mismatch'}>
+                  <span className={detail.bazi && customBazi.hourGanZhi === detail.bazi.hour.ganZhi ? 'match' : ''}>
                     时：{customBazi.hourGanZhi}
                   </span>
                 </div>
@@ -255,23 +262,30 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
           )}
           
           {/* 农历详情 */}
-          <section className="section lunar-section">
-            <h3>农历</h3>
-            <div className="lunar-info">
-              <div className="lunar-item">
-                <span className="label">农历年</span>
-                <span className="value">{detail.lunar.yearGanZhi}年（{detail.lunar.year}）</span>
+          {detail.lunar ? (
+            <section className="section lunar-section">
+              <h3>农历</h3>
+              <div className="lunar-info">
+                <div className="lunar-item">
+                  <span className="label">农历年</span>
+                  <span className="value">{detail.lunar.yearGanZhi}年（{detail.lunar.year}）</span>
+                </div>
+                <div className="lunar-item">
+                  <span className="label">农历月</span>
+                  <span className="value">{detail.lunar.monthName}{detail.lunar.isLeapMonth ? '（闰月）' : ''}</span>
+                </div>
+                <div className="lunar-item">
+                  <span className="label">农历日</span>
+                  <span className="value">{detail.lunar.dayName}</span>
+                </div>
               </div>
-              <div className="lunar-item">
-                <span className="label">农历月</span>
-                <span className="value">{detail.lunar.monthName}{detail.lunar.isLeapMonth ? '（闰月）' : ''}</span>
-              </div>
-              <div className="lunar-item">
-                <span className="label">农历日</span>
-                <span className="value">{detail.lunar.dayName}</span>
-              </div>
-            </div>
-          </section>
+            </section>
+          ) : (
+            <section className="section lunar-section">
+              <h3>农历</h3>
+              <p className="unsupported-notice">此日期超出 Lunisolar 支持范围（公元前722年～公元2200年）</p>
+            </section>
+          )}
         </div>
       </div>
     </div>

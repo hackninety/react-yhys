@@ -24,7 +24,7 @@ const LUNAR_DAYS = [
 /**
  * 获取农历日期信息
  * @param date 公历日期
- * @returns 农历日期对象
+ * @returns 农历日期对象，如果超出范围则返回null
  */
 export function getLunarDate(date: Date): {
   year: number       // 农历年（数字）
@@ -34,50 +34,66 @@ export function getLunarDate(date: Date): {
   monthName: string  // 月份名称（如"正月"、"闰四月"）
   dayName: string    // 日期名称（如"初一"、"十五"）
   yearName: string   // 年份名称（如"甲子年"）
-} {
-  const lunar = lunisolar(date)
-  const lunarData = lunar.lunar
-  
-  const monthIndex = lunarData.month - 1  // lunisolar 月份从1开始
-  const dayIndex = lunarData.day - 1
-  
-  const isLeapMonth = lunarData.isLeapMonth
-  const monthName = isLeapMonth 
-    ? `闰${LUNAR_MONTHS[monthIndex]}` 
-    : LUNAR_MONTHS[monthIndex]
-  const dayName = LUNAR_DAYS[dayIndex]
-  
-  // 获取干支年名
-  const yearName = lunar.format('cY')
-  
-  return {
-    year: lunarData.year,
-    month: lunarData.month,
-    day: lunarData.day,
-    isLeapMonth,
-    monthName,
-    dayName,
-    yearName,
+} | null {
+  try {
+    // lunisolar库只支持有限的日期范围
+    const year = date.getFullYear()
+    if (year < -722 || year > 2200) {
+      return null // 超出范围
+    }
+    
+    const lunar = lunisolar(date)
+    const lunarData = lunar.lunar
+    
+    const monthIndex = lunarData.month - 1  // lunisolar 月份从1开始
+    const dayIndex = lunarData.day - 1
+    
+    const isLeapMonth = lunarData.isLeapMonth
+    const monthName = isLeapMonth 
+      ? `闰${LUNAR_MONTHS[monthIndex]}` 
+      : LUNAR_MONTHS[monthIndex]
+    const dayName = LUNAR_DAYS[dayIndex]
+    
+    // 获取干支年名
+    const yearName = lunar.format('cY')
+    
+    return {
+      year: lunarData.year,
+      month: lunarData.month,
+      day: lunarData.day,
+      isLeapMonth,
+      monthName,
+      dayName,
+      yearName,
+    }
+  } catch {
+    return null // 发生错误时返回null
   }
 }
 
 /**
  * 获取格式化的农历日期字符串
  * @param date 公历日期
- * @returns 格式化的农历日期，如"正月初一"、"闰四月十五"
+ * @returns 格式化的农历日期，如"正月初一"、"闰四月十五"；超出范围返回空字符串
  */
 export function getLunarDateString(date: Date): string {
   const lunar = getLunarDate(date)
+  if (!lunar) {
+    return '' // 超出范围或发生错误，不显示农历
+  }
   return `${lunar.monthName}${lunar.dayName}`
 }
 
 /**
  * 获取完整的农历日期字符串（含年份）
  * @param date 公历日期
- * @returns 格式化的农历日期，如"甲子年正月初一"
+ * @returns 格式化的农历日期，如"甲子年正月初一"；超出范围返回空字符串
  */
 export function getFullLunarDateString(date: Date): string {
   const lunar = getLunarDate(date)
+  if (!lunar) {
+    return '' // 超出范围或发生错误
+  }
   return `${lunar.yearName}${lunar.monthName}${lunar.dayName}`
 }
 
@@ -96,7 +112,7 @@ export interface BaziPillar {
  * 完整的日期详情（包含 lunisolar 所有功能）
  */
 export interface DateDetail {
-  // 公历
+  // 公历（总是可用）
   gregorian: {
     year: number
     month: number
@@ -106,7 +122,7 @@ export interface DateDetail {
     weekday: string
     dateStr: string
   }
-  // 农历
+  // 农历（超出lunisolar支持范围时为null）
   lunar: {
     year: number
     month: number
@@ -116,14 +132,14 @@ export interface DateDetail {
     dayName: string
     yearGanZhi: string
     dateStr: string
-  }
-  // 八字四柱（lunisolar 版本）
+  } | null
+  // 八字四柱（超出lunisolar支持范围时为null）
   bazi: {
     year: BaziPillar
     month: BaziPillar
     day: BaziPillar
     hour: BaziPillar
-  }
+  } | null
   // 节气
   solarTerm: string | null
   // 星期
@@ -208,13 +224,10 @@ function parsePillar(ganZhi: string): BaziPillar {
 /**
  * 获取完整的日期详情（包含 lunisolar 所有功能）
  * @param date 公历日期
- * @returns 完整的日期详情对象
+ * @returns 完整的日期详情对象，如果超出lunisolar支持范围则lunar/bazi等为null
  */
 export function getDateDetail(date: Date): DateDetail {
-  const ls = lunisolar(date)
-  const lunarData = ls.lunar
-  
-  // 公历信息
+  // 公历信息（总是可用）
   const gregorian = {
     year: date.getFullYear(),
     month: date.getMonth() + 1,
@@ -225,57 +238,84 @@ export function getDateDetail(date: Date): DateDetail {
     dateStr: `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`,
   }
   
-  // 农历信息
-  const monthIndex = lunarData.month - 1
-  const dayIndex = lunarData.day - 1
-  const isLeapMonth = lunarData.isLeapMonth
-  const monthName = isLeapMonth 
-    ? `闰${LUNAR_MONTHS[monthIndex]}` 
-    : LUNAR_MONTHS[monthIndex]
-  const dayName = LUNAR_DAYS[dayIndex]
-  const yearGanZhi = ls.format('cY')
-  
-  const lunar = {
-    year: lunarData.year,
-    month: lunarData.month,
-    day: lunarData.day,
-    isLeapMonth,
-    monthName,
-    dayName,
-    yearGanZhi,
-    dateStr: `${yearGanZhi}年${monthName}${dayName}`,
+  // 检查日期是否在lunisolar支持范围内
+  const year = date.getFullYear()
+  if (year < -722 || year > 2200) {
+    // 超出范围，返回基本信息
+    return {
+      gregorian,
+      lunar: null,
+      bazi: null,
+      solarTerm: null,
+      weekdayIndex: date.getDay(),
+    }
   }
   
-  // 八字四柱
-  const yearBazi = ls.format('cY')
-  const monthBazi = ls.format('cM')
-  const dayBazi = ls.format('cD')
-  const hourBazi = ls.format('cH')
-  
-  const bazi = {
-    year: parsePillar(yearBazi),
-    month: parsePillar(monthBazi),
-    day: parsePillar(dayBazi),
-    hour: parsePillar(hourBazi),
-  }
-  
-  // 节气（lunisolar 的节气信息）
-  let solarTerm: string | null = null
   try {
-    const term = ls.solarTerm
-    if (term) {
-      solarTerm = term.toString()
+    const ls = lunisolar(date)
+    const lunarData = ls.lunar
+    
+    // 农历信息
+    const monthIndex = lunarData.month - 1
+    const dayIndex = lunarData.day - 1
+    const isLeapMonth = lunarData.isLeapMonth
+    const monthName = isLeapMonth 
+      ? `闰${LUNAR_MONTHS[monthIndex]}` 
+      : LUNAR_MONTHS[monthIndex]
+    const dayName = LUNAR_DAYS[dayIndex]
+    const yearGanZhi = ls.format('cY')
+    
+    const lunar = {
+      year: lunarData.year,
+      month: lunarData.month,
+      day: lunarData.day,
+      isLeapMonth,
+      monthName,
+      dayName,
+      yearGanZhi,
+      dateStr: `${yearGanZhi}年${monthName}${dayName}`,
+    }
+    
+    // 八字四柱
+    const yearBazi = ls.format('cY')
+    const monthBazi = ls.format('cM')
+    const dayBazi = ls.format('cD')
+    const hourBazi = ls.format('cH')
+    
+    const bazi = {
+      year: parsePillar(yearBazi),
+      month: parsePillar(monthBazi),
+      day: parsePillar(dayBazi),
+      hour: parsePillar(hourBazi),
+    }
+    
+    // 节气（lunisolar 的节气信息）
+    let solarTerm: string | null = null
+    try {
+      const term = ls.solarTerm
+      if (term) {
+        solarTerm = term.toString()
+      }
+    } catch {
+      solarTerm = null
+    }
+    
+    return {
+      gregorian,
+      lunar,
+      bazi,
+      solarTerm,
+      weekdayIndex: date.getDay(),
     }
   } catch {
-    solarTerm = null
-  }
-  
-  return {
-    gregorian,
-    lunar,
-    bazi,
-    solarTerm,
-    weekdayIndex: date.getDay(),
+    // 发生错误时返回基本信息
+    return {
+      gregorian,
+      lunar: null,
+      bazi: null,
+      solarTerm: null,
+      weekdayIndex: date.getDay(),
+    }
   }
 }
 
