@@ -41,7 +41,7 @@ import {
   getSpecialDateBadgeStyle,
 } from '../data/specialDates'
 import { getHexagramByIndex } from '../data/hexagrams'
-import { getYunHexagramByGlobal, getShiHexagramByYear, getShiHexagramByGlobal, getSuiHexagramByHuangjiYear, getSuiHexagramDetail, getYueHexagramDetail, getYueHexagram, getIntercalaryHexagramByName, getRiHexagramDetail, getShiChenHexagramDetail, getHuiHexagram } from '../data/hexagrams64'
+import { getYunHexagramByGlobal, getShiHexagramByYear, getShiHexagramByGlobal, getIntercalaryHexagramByName, getHuiHexagram } from '../data/hexagrams64'
 import { getSolarTerm, getTermStartDate } from '../utils/solarTerms'
 import { getGanZhi, getYearGanZhi, getMonthGanZhi, getHourGanZhi, getHuangjiMonthGanZhi, getHuangjiMonthHexagram } from '../utils/ganzhi'
 import { getYearLv, getMonthLv, getDayLv, getHourLvByDate } from '../utils/lvlv'
@@ -94,16 +94,8 @@ export default function Calendar({
     const yearGanZhi = getYearGanZhi(now) // 夏历年干支（作为参考）
     const huangjiMonthGanZhi = getHuangjiMonthGanZhi(now) // 皇极月干支
     const huangjiMonthHexagramOld = getHuangjiMonthHexagram(now) // 皇极月卦（十二消息卦/会卦）- 保留用于其他地方
-    // 新的月卦计算：先天60卦循环
-    const yueHexagramDetail = getYueHexagramDetail(gregorianYear, now.getMonth() + 1)
     const dayGanZhi = getGanZhi(now)
     const hourGanZhi = getHourGanZhi(now)
-    
-    // 日卦计算：先天60卦循环，与六十甲子日对应
-    const riHexagramDetail = getRiHexagramDetail(now)
-    
-    // 时卦计算：十二消息卦，与十二时辰对应
-    const shiChenHexagramDetail = getShiChenHexagramDetail(now)
     
     // 计算当前世卦（不剔除四正卦）
     const currentShiHexagram = getShiHexagramByYear(huangjiSui)
@@ -112,9 +104,6 @@ export default function Calendar({
     const currentShiNumber = Math.ceil(huangjiSui / 30)
     // 计算当前运序号（每运12世）
     const currentYunNumber = Math.ceil(currentShiNumber / 12)
-    
-    // 计算当前岁卦（先天60卦循环，使用皇极年对应的公历年份）
-    const suiHexagramDetail = getSuiHexagramDetail(huangjiGregorianYear)
     
     return {
       date: now,
@@ -127,26 +116,13 @@ export default function Calendar({
       // 皇极四柱 + 夏历年干支
       yearGanZhi, // 夏历年干支（参考）
       huangjiMonthGanZhi, // 皇极月干支
-      huangjiMonthHexagramOld, // 皇极月卦（十二消息卦/会卦）- 旧版保留
-      // 新的月卦（先天60卦循环）
-      currentYueHexagram: yueHexagramDetail.yueHexagram,
-      yueIndexIn60: yueHexagramDetail.indexIn60,
+      huangjiMonthHexagramOld, // 皇极月卦（十二消息卦/会卦）- 保留用于其他地方
       dayGanZhi,
       hourGanZhi,
       // 世卦信息
       currentShiHexagram, // 当前世卦
       currentShiNumber, // 当前世序号
       currentYunNumber, // 当前运序号
-      // 岁卦信息（先天60卦循环）
-      currentSuiHexagram: suiHexagramDetail.suiHexagram, // 当前岁卦
-      suiIndexIn60: suiHexagramDetail.indexIn60, // 岁卦在60卦序中的位置
-      // 日卦信息（先天60卦循环）
-      currentRiHexagram: riHexagramDetail.riHexagram, // 当前日卦
-      riIndexIn60: riHexagramDetail.indexIn60, // 日卦在60卦序中的位置
-      // 时卦信息（十二消息卦）
-      currentShiChenHexagram: shiChenHexagramDetail.shiChenHexagram, // 当前时卦
-      shiChenBranchName: shiChenHexagramDetail.branchName, // 时辰地支名
-      shiChenBranchIndex: shiChenHexagramDetail.branchIndex, // 时辰地支索引
       // 四柱律吕
       yearLv: getYearLv(huangjiYearJiazi[0]), // 年律（按皇极年干）
       monthLv: getMonthLv(termInfo.huangji.month), // 月律（按皇极月支）
@@ -377,8 +353,7 @@ export default function Calendar({
       const jiazi = getYearJiazi(state.yearInCycle + 1)
       const yunHexagram = getYunHexagramByGlobal(state.globalYun)
       const shiHexagram = getShiHexagramByGlobal(state.globalShi)
-      const suiHexagram = getSuiHexagramByHuangjiYear(state.yearInCycle + 1)
-      return `星${state.yunStem}${state.globalYun} ${yunHexagram.unicode}${yunHexagram.name}　·　辰${state.shiBranch}${state.globalShi} ${shiHexagram.unicode}${shiHexagram.name}　·　岁${jiazi} ${suiHexagram.unicode}${suiHexagram.name}`
+      return `星${state.yunStem}${state.globalYun} ${yunHexagram.unicode}${yunHexagram.name}　·　辰${state.shiBranch}${state.globalShi} ${shiHexagram.unicode}${shiHexagram.name}　·　岁${jiazi}`
     }
     return viewData?.title ?? ''
   }
@@ -421,29 +396,9 @@ export default function Calendar({
         </span>
         <span className="bazi-pillars">
           <span className="bazi-pillar">{todayInfo.huangjiYearJiazi}年</span>
-          {todayInfo.currentSuiHexagram && (
-            <span className="sui-hexagram" title={`岁卦：先天60卦序第${todayInfo.suiIndexIn60}位`}>
-              {todayInfo.currentSuiHexagram.unicode}{todayInfo.currentSuiHexagram.name}
-            </span>
-          )}
           <span className="bazi-pillar">{todayInfo.huangjiMonthGanZhi}月</span>
-          {todayInfo.currentYueHexagram && (
-            <span className="month-hexagram" title={`月卦：先天60卦序第${todayInfo.yueIndexIn60}位`}>
-              {todayInfo.currentYueHexagram.unicode}{todayInfo.currentYueHexagram.name}
-            </span>
-          )}
           <span className="bazi-pillar">{todayInfo.dayGanZhi}日</span>
-          {todayInfo.currentRiHexagram && (
-            <span className="ri-hexagram" title={`日卦：先天60卦序第${todayInfo.riIndexIn60}位`}>
-              {todayInfo.currentRiHexagram.unicode}{todayInfo.currentRiHexagram.name}
-            </span>
-          )}
           <span className="bazi-pillar">{todayInfo.hourGanZhi}时</span>
-          {todayInfo.currentShiChenHexagram && (
-            <span className="shichen-hexagram" title={`时卦：${todayInfo.shiChenBranchName}时对应十二消息卦`}>
-              {todayInfo.currentShiChenHexagram.unicode}{todayInfo.currentShiChenHexagram.name}
-            </span>
-          )}
         </span>
         {/* 律吕信息 */}
         <span className="lvlv-pillars">
@@ -720,13 +675,6 @@ export default function Calendar({
             
             // 计算月卦（先天60卦循环）
             // 皇极月索引 → 公历月份
-            const gregorianMonthForHexagram = ((month.index + 11) % 12) + 1
-            // 如果是子月（索引0），对应的是上一年的公历12月
-            const gregorianYearForHexagram = month.index === 0 
-              ? currentGregorianYear - 1 
-              : currentGregorianYear
-            const monthHexagram = getYueHexagram(gregorianYearForHexagram, gregorianMonthForHexagram)
-
             return (
               <div 
                 key={month.index} 
@@ -796,11 +744,6 @@ export default function Calendar({
                     // 皇极月干支（冬至换年、冬至起子月）
                     const huangjiMonthGanZhiForDay = getHuangjiMonthGanZhi(targetDate)
                     
-                    // 计算该日的卦象
-                    const suiHexagramForDay = getSuiHexagramByHuangjiYear(huangjiYearForDay)
-                    const yueHexagramForDay = getYueHexagram(targetDate.getFullYear(), targetDate.getMonth() + 1)
-                    const riHexagramForDay = getRiHexagramDetail(targetDate)
-                    
                     // 计算该日的律吕
                     const yearLvForDay = getYearLv(huangjiYearJiaziForDay[0])
                     // 计算皇极月支索引：子月=0, 丑月=1, ...
@@ -818,7 +761,7 @@ export default function Calendar({
                     const lunarDateStr = getLunarDateString(targetDate)
                     
                     const tooltipParts = [
-                      `皇历：${huangjiYearJiaziForDay}年${suiHexagramForDay.unicode}${suiHexagramForDay.name} ${huangjiMonthGanZhiForDay}月${yueHexagramForDay.unicode}${yueHexagramForDay.name} ${dayGanZhi}日${riHexagramForDay.riHexagram.unicode}${riHexagramForDay.riHexagram.name}`,
+                      `皇历：${huangjiYearJiaziForDay}年 ${huangjiMonthGanZhiForDay}月 ${dayGanZhi}日`,
                       `律吕：${yearLvForDay.name} ${monthLvForDay.name} ${dayLvForDay.name}`,
                       `公历：${gregorianDateStr}`,
                       `农历：${lunarDateStr}`,
@@ -862,10 +805,6 @@ export default function Calendar({
                 
                 <div className="hui-info">
                   <span className="hui-years">第{month.index + 1}月</span>
-                  <span className="hui-terms hui-hexagram">
-                    <span className="hexagram-symbol">{monthHexagram.unicode}</span>
-                    <span className="hexagram-name">{monthHexagram.name}</span>
-                  </span>
                 </div>
               </div>
             )
@@ -1016,15 +955,12 @@ export default function Calendar({
                       </div>
                     )}
                     
-                    {/* 卦象显示（会级和世级） */}
-                    {(zoomLevel === 'hui' || zoomLevel === 'shi') && (
+                    {/* 卦象显示（仅会级） */}
+                    {zoomLevel === 'hui' && (
                       <div className="zoom-card-hexagram">
                         {(() => {
                           // 会级视图：使用运卦（爻变计算，剔除四正卦）
-                          // 世级视图：使用岁卦（先天60卦循环，每年一卦）
-                          const hexagram = zoomLevel === 'hui' 
-                            ? getYunHexagramByGlobal(globalYunNumber)
-                            : getSuiHexagramByHuangjiYear(globalYear)
+                          const hexagram = getYunHexagramByGlobal(globalYunNumber)
                           return (
                             <>
                               <span className="hexagram-symbol">{hexagram.unicode}</span>

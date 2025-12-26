@@ -7,7 +7,6 @@
 import { useMemo } from 'react'
 import { getDateDetail, type BaziPillar } from '../utils/lunar'
 import { getYearGanZhi, getMonthGanZhi, getHourGanZhi, getGanZhi, getHuangjiMonthGanZhi } from '../utils/ganzhi'
-import { getSuiHexagramByHuangjiYear, getYueHexagramDetail, getRiHexagramDetail, getShiChenHexagramDetail, getIntercalaryHexagramByName } from '../data/hexagrams64'
 import { getYearLv, getMonthLv, getDayLv, getHourLvByDate } from '../utils/lvlv'
 import { getSolarTerm } from '../utils/solarTerms'
 import { getYearJiazi } from '../utils/calendar'
@@ -76,17 +75,6 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     return { yearGanZhi, monthGanZhi, dayGanZhi, hourGanZhi }
   }, [date, huangjiYear])
   
-  // 获取皇极卦象
-  const hexagrams = useMemo(() => {
-    const suiHexagram = getSuiHexagramByHuangjiYear(huangjiYear)
-    // getYueHexagramDetail 需要公历年和公历月
-    const gregorianYear = date.getFullYear()
-    const gregorianMonth = date.getMonth() + 1
-    const yueHexagram = getYueHexagramDetail(gregorianYear, gregorianMonth)
-    const riHexagram = getRiHexagramDetail(date)
-    const shiChenHexagram = getShiChenHexagramDetail(date)
-    return { suiHexagram, yueHexagram, riHexagram, shiChenHexagram }
-  }, [date, huangjiYear])
   
   // 获取律吕
   const lvlv = useMemo(() => {
@@ -114,13 +102,6 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     return getSolarTerm(date)
   }, [date])
   
-  // 获取闰卦（如果是节气日）
-  const intercalaryHexagram = useMemo(() => {
-    if (solarTermInfo && solarTermInfo.termName) {
-      return getIntercalaryHexagramByName(solarTermInfo.termName)
-    }
-    return null
-  }, [solarTermInfo])
   
   return (
     <div className="date-detail-overlay" onClick={onClose}>
@@ -191,32 +172,6 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
             </div>
           </section>
           
-          {/* 皇极经世卦象 */}
-          <section className="section hexagram-section">
-            <h3>皇极经世卦象</h3>
-            <div className="hexagram-grid">
-              <div className="hexagram-item">
-                <span className="hexagram-label">岁卦</span>
-                <span className="hexagram-symbol">{hexagrams.suiHexagram.unicode}</span>
-                <span className="hexagram-name">{hexagrams.suiHexagram.name}</span>
-              </div>
-              <div className="hexagram-item">
-                <span className="hexagram-label">月卦</span>
-                <span className="hexagram-symbol">{hexagrams.yueHexagram.yueHexagram.unicode}</span>
-                <span className="hexagram-name">{hexagrams.yueHexagram.yueHexagram.name}</span>
-              </div>
-              <div className="hexagram-item">
-                <span className="hexagram-label">日卦</span>
-                <span className="hexagram-symbol">{hexagrams.riHexagram.riHexagram.unicode}</span>
-                <span className="hexagram-name">{hexagrams.riHexagram.riHexagram.name}</span>
-              </div>
-              <div className="hexagram-item">
-                <span className="hexagram-label">时卦</span>
-                <span className="hexagram-symbol">{hexagrams.shiChenHexagram.shiChenHexagram.unicode}</span>
-                <span className="hexagram-name">{hexagrams.shiChenHexagram.shiChenHexagram.name}</span>
-              </div>
-            </div>
-          </section>
           
           {/* 律吕 */}
           <section className="section lvlv-section">
@@ -252,11 +207,6 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
               <div className="term-info">
                 <span className="term-name">{solarTermInfo.termName}</span>
                 <span className="term-day">（{solarTermInfo.dayInTerm === 0 ? '当日' : `第${solarTermInfo.dayInTerm + 1}天`}）</span>
-                {intercalaryHexagram && (
-                  <span className="intercalary-hexagram">
-                    闰卦：{intercalaryHexagram.unicode}{intercalaryHexagram.name}
-                  </span>
-                )}
               </div>
             </section>
           )}
