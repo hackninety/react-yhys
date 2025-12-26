@@ -34,24 +34,31 @@ export const BRANCH_PINYIN = ['Zǐ', 'Chǒu', 'Yín', 'Mǎo', 'Chén', 'Sì', 'W
 // 地支序号（用于显示）
 export const BRANCH_NUMBER = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12] as const
 
-// 获取天干（按10循环）
+// 安全的取模函数（处理负数）
+// JavaScript 中 -1 % 10 = -1，而非 9
+// 此函数确保结果始终为 0 到 divisor-1 之间的正数
+function safeMod(n: number, divisor: number): number {
+  return ((n % divisor) + divisor) % divisor
+}
+
+// 获取天干（按10循环，支持负数索引）
 export function getStem(index: number): string {
-  return HEAVENLY_STEMS[index % 10]
+  return HEAVENLY_STEMS[safeMod(index, 10)]
 }
 
 // 获取天干拼音
 export function getStemPinyin(index: number): string {
-  return STEM_PINYIN[index % 10]
+  return STEM_PINYIN[safeMod(index, 10)]
 }
 
-// 获取地支（按12循环）
+// 获取地支（按12循环，支持负数索引）
 export function getBranch(index: number): string {
-  return EARTHLY_BRANCHES[index % 12]
+  return EARTHLY_BRANCHES[safeMod(index, 12)]
 }
 
 // 获取地支拼音
 export function getBranchPinyin(index: number): string {
-  return BRANCH_PINYIN[index % 12]
+  return BRANCH_PINYIN[safeMod(index, 12)]
 }
 
 // ============================================
@@ -65,10 +72,10 @@ export function getBranchPinyin(index: number): string {
 // 甲辰、乙巳、丙午、丁未、戊申、己酉、庚戌、辛亥、壬子、癸丑、
 // 甲寅、乙卯、丙辰、丁巳、戊午、己未、庚申、辛酉、壬戌、癸亥
 
-// 根据年份索引获取六十甲子（0-based，0=甲子）
+// 根据年份索引获取六十甲子（0-based，0=甲子，支持负数索引）
 export function getJiaziName(yearIndex: number): string {
-  const stemIndex = yearIndex % 10
-  const branchIndex = yearIndex % 12
+  const stemIndex = safeMod(yearIndex, 10)
+  const branchIndex = safeMod(yearIndex, 12)
   return HEAVENLY_STEMS[stemIndex] + EARTHLY_BRANCHES[branchIndex]
 }
 
@@ -120,14 +127,14 @@ export function gregorianYearToSui(gregorianYear: number): number {
 }
 
 
-// 获取六十甲子的天干部分
+// 获取六十甲子的天干部分（支持负数年份）
 export function getYearStem(globalYearNumber: number): string {
-  return HEAVENLY_STEMS[(globalYearNumber - 1) % 10]
+  return HEAVENLY_STEMS[safeMod(globalYearNumber - 1, 10)]
 }
 
-// 获取六十甲子的地支部分
+// 获取六十甲子的地支部分（支持负数年份）
 export function getYearBranch(globalYearNumber: number): string {
-  return EARTHLY_BRANCHES[(globalYearNumber - 1) % 12]
+  return EARTHLY_BRANCHES[safeMod(globalYearNumber - 1, 12)]
 }
 
 // 二十四节气
@@ -705,17 +712,17 @@ function getTermSummaryForRange(startIndex: number, count: number): string[] {
 }
 
 /**
- * 获取会名称
+ * 获取会名称（支持负数索引）
  */
 export function getHuiName(huiIndex: number): string {
-  return `${EARTHLY_BRANCHES[huiIndex % 12]}会`
+  return `${EARTHLY_BRANCHES[safeMod(huiIndex, 12)]}会`
 }
 
 /**
- * 获取月名称
+ * 获取月名称（支持负数索引）
  */
 export function getMonthName(monthIndex: number): string {
-  return `${EARTHLY_BRANCHES[monthIndex % 12]}月`
+  return `${EARTHLY_BRANCHES[safeMod(monthIndex, 12)]}月`
 }
 
 /**
@@ -723,7 +730,7 @@ export function getMonthName(monthIndex: number): string {
  */
 export function formatPosition(state: CalendarState): string {
   const huiName = getHuiName(state.hui)
-  return `第${state.yuan + 1}元 · ${huiName} · 第${state.yun + 1}运 · ${EARTHLY_BRANCHES[state.shi]}世 · 第${state.yearInShi + 1}年`
+  return `第${state.yuan + 1}元 · ${huiName} · 第${state.yun + 1}运 · ${EARTHLY_BRANCHES[safeMod(state.shi, 12)]}世 · 第${state.yearInShi + 1}年`
 }
 
 /**
