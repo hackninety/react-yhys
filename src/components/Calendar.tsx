@@ -9,6 +9,7 @@ import {
   TOTAL_SHIS,
   YUNS_PER_HUI,
   SHIS_PER_YUN,
+  YEARS_PER_SHI,
   ZOOM_LEVELS,
   ZOOM_INFO,
   zoomIn,
@@ -892,6 +893,9 @@ export default function Calendar({
                 const specialDateBySui = zoomLevel === 'shi' ? findSpecialDateBySui(globalYear) : undefined
                 // 动态判断是否是"今年"（皇极经世历以冬至换年）
                 const isCurrentHuangjiYearInShi = zoomLevel === 'shi' && globalYear === todayInfo.huangjiSui
+                // 会级视图：判断当前运是否包含今年
+                const currentYun = Math.ceil(todayInfo.huangjiSui / (SHIS_PER_YUN * YEARS_PER_SHI))
+                const isCurrentYunInHui = zoomLevel === 'hui' && globalYunNumber === currentYun
                 // 计算运节气（星节气）：1元360运，每15运一个运节气
                 const yunTermIndex = zoomLevel === 'hui' ? getYunTermIndex(globalYunNumber) : -1
                 const yunTermName = yunTermIndex >= 0 ? SOLAR_TERMS[yunTermIndex] : ''
@@ -905,7 +909,7 @@ export default function Calendar({
                 return (
                   <div
                     key={item.index}
-                    className={`zoom-card ${activeSpecialDate ? 'special-yun' : ''} ${isCurrentHuangjiYearInShi ? 'current-year' : ''}`}
+                    className={`zoom-card ${activeSpecialDate ? 'special-yun' : ''} ${isCurrentHuangjiYearInShi || isCurrentYunInHui ? 'current-year' : ''}`}
                     style={activeSpecialDate ? { borderColor: activeSpecialDate.color, boxShadow: `0 0 12px ${activeSpecialDate.color}40` } : undefined}
                     onClick={() => handleZoomIn(item.index)}
                   >
@@ -923,7 +927,7 @@ export default function Calendar({
                           <>{item.name}</>
                         )}
                         {item.pinyin && <span className="zoom-card-pinyin">{item.pinyin}</span>}
-                        {isCurrentHuangjiYearInShi && (
+                        {(isCurrentHuangjiYearInShi || isCurrentYunInHui) && (
                           <span className="today-badge">今年</span>
                         )}
                         {activeSpecialDate?.badge && (
