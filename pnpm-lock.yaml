@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      lunisolar:
+        specifier: ^2.6.0
+        version: 2.6.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -482,6 +485,9 @@ packages:
 
   lru-cache@5.1.1:
     resolution: {integrity: sha512-KpNARQA3Iwv+jTA0utUVVbrh+Jlrr1Fv0e56GGzAFOXN7dk/FviaDW8LHmK52DlcH4WP2n6gI8vN1aesBFgo9w==}
+
+  lunisolar@2.6.0:
+    resolution: {integrity: sha512-Q2Ph0MtYDovbX5lvvo2FvM+bFzZVZaIb70q+FyQLheZ4xuL5tvCBP/uEU5KwG+vfo0ztzGPrlIitOcGhltfwvQ==}
 
   ms@2.1.3:
     resolution: {integrity: sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA==}
@@ -959,6 +965,8 @@ snapshots:
   lru-cache@5.1.1:
     dependencies:
       yallist: 3.1.1
+
+  lunisolar@2.6.0: {}
 
   ms@2.1.3: {}
 

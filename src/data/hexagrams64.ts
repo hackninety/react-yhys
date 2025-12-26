@@ -182,58 +182,156 @@ function isFourPrincipalHexagram(binary: number): boolean {
 }
 
 /**
+ * 先天六十四卦次序（邵雍方圆图，从乾开始顺时针）
+ * 对应的二进制值（0-63）
+ * 
+ * 原文依据：
+ * "乾之数一，兑之数二，离之数三，震之数四，
+ *  巽之数五，坎之数六，艮之数七，坤之数八，
+ *  交相重而为六十四焉。"
+ * 
+ * 先天八卦数与二进制对应：
+ * 乾(1)=111=7, 兑(2)=011=3, 离(3)=101=5, 震(4)=001=1
+ * 巽(5)=110=6, 坎(6)=010=2, 艮(7)=100=4, 坤(8)=000=0
+ * 
+ * 圆图顺序规则（从乾顺时针）：
+ * 【阳消阴长半圈】乾(1,1) → 姤(1,5) → ... → 剥(7,8) → 坤(8,8)
+ * 【阳长阴消半圈】坤(8,8) → 复(8,4) → ... → 夬(2,1) → 回到乾(1,1)
+ * 
+ * 完整64卦顺序：
+ *  1.乾   2.姤   3.大过  4.鼎   5.恒   6.巽   7.井   8.蛊
+ *  9.升  10.讼  11.困  12.未济 13.解  14.涣  15.坎  16.蒙
+ * 17.师  18.遁  19.咸  20.旅  21.小过 22.渐  23.蹇  24.艮
+ * 25.谦  26.否  27.萃  28.晋  29.豫  30.观  31.比  32.剥
+ * 33.坤  34.复  35.颐  36.屯  37.益  38.震  39.噬嗑 40.随
+ * 41.无妄 42.明夷 43.贲  44.既济 45.家人 46.丰  47.离  48.革
+ * 49.同人 50.临  51.损  52.节  53.中孚 54.归妹 55.睽  56.兑
+ * 57.履  58.泰  59.大畜 60.需  61.小畜 62.大壮 63.大有 64.夬
+ */
+const XIANTIAN_64_SEQUENCE_FOR_YUN = [
+  63, //  1.乾(1,1)*
+  62, //  2.姤(1,5)
+  30, //  3.大过(2,5)
+  46, //  4.鼎(3,5)
+  14, //  5.恒(4,5)
+  54, //  6.巽(5,5)
+  22, //  7.井(6,5)
+  38, //  8.蛊(7,5)
+  6,  //  9.升(8,5)
+  58, // 10.讼(1,6)
+  26, // 11.困(2,6)
+  42, // 12.未济(3,6)
+  10, // 13.解(4,6)
+  50, // 14.涣(5,6)
+  18, // 15.坎(6,6)*
+  34, // 16.蒙(7,6)
+  2,  // 17.师(8,6)
+  60, // 18.遁(1,7)
+  28, // 19.咸(2,7)
+  44, // 20.旅(3,7)
+  12, // 21.小过(4,7)
+  52, // 22.渐(5,7)
+  20, // 23.蹇(6,7)
+  36, // 24.艮(7,7)
+  4,  // 25.谦(8,7)
+  56, // 26.否(1,8)
+  24, // 27.萃(2,8)
+  40, // 28.晋(3,8)
+  8,  // 29.豫(4,8)
+  48, // 30.观(5,8)
+  16, // 31.比(6,8)
+  32, // 32.剥(7,8)
+  0,  // 33.坤(8,8)*
+  1,  // 34.复(8,4)
+  33, // 35.颐(7,4)
+  17, // 36.屯(6,4)
+  49, // 37.益(5,4)
+  9,  // 38.震(4,4)
+  41, // 39.噬嗑(3,4)
+  25, // 40.随(2,4)
+  57, // 41.无妄(1,4)
+  5,  // 42.明夷(8,3)
+  37, // 43.贲(7,3)
+  21, // 44.既济(6,3)
+  53, // 45.家人(5,3)
+  13, // 46.丰(4,3)
+  45, // 47.离(3,3)*
+  29, // 48.革(2,3)
+  61, // 49.同人(1,3)
+  3,  // 50.临(8,2)
+  35, // 51.损(7,2)
+  19, // 52.节(6,2)
+  51, // 53.中孚(5,2)
+  11, // 54.归妹(4,2)
+  43, // 55.睽(3,2)
+  27, // 56.兑(2,2)
+  59, // 57.履(1,2)
+  7,  // 58.泰(8,1)
+  39, // 59.大畜(7,1)
+  23, // 60.需(6,1)
+  55, // 61.小畜(5,1)
+  15, // 62.大壮(4,1)
+  47, // 63.大有(3,1)
+  31, // 64.夬(2,1)
+  // → 回到乾(1,1)
+]
+
+/**
+ * 先天六十卦次序（剔除四正卦：乾坤坎离）
+ * 用于运卦计算
+ * 
+ * 12会 × 5卦/会 = 60卦
+ * 每卦统领6运，60卦 × 6运/卦 = 360运
+ * 
+ * 会卦分配表（按先天圆图顺序）：
+ * 子会(0): 姤 → 大过 → 鼎 → 恒 → 巽 （第1-5卦）
+ * 丑会(1): 井 → 蛊 → 升 → 讼 → 困 （第6-10卦）
+ * 寅会(2): 未济 → 解 → 涣 → 蒙 → 师 （第11-15卦）
+ * 卯会(3): 遁 → 咸 → 旅 → 小过 → 渐 （第16-20卦）
+ * 辰会(4): 蹇 → 艮 → 谦 → 否 → 萃 （第21-25卦）
+ * 巳会(5): 晋 → 豫 → 观 → 比 → 剥 （第26-30卦）
+ * 午会(6): 复 → 颐 → 屯 → 益 → 震 （第31-35卦）
+ * 未会(7): 噬嗑 → 随 → 无妄 → 明夷 → 贲 （第36-40卦）
+ * 申会(8): 既济 → 家人 → 丰 → 革 → 同人 （第41-45卦）
+ * 酉会(9): 临 → 损 → 节 → 中孚 → 归妹 （第46-50卦）
+ * 戌会(10): 睽 → 兑 → 履 → 泰 → 大畜 （第51-55卦）
+ * 亥会(11): 需 → 小畜 → 大壮 → 大有 → 夬 （第56-60卦）
+ */
+const XIANTIAN_60_SEQUENCE_FOR_YUN = XIANTIAN_64_SEQUENCE_FOR_YUN.filter(
+  binary => !FOUR_PRINCIPAL_HEXAGRAMS.includes(binary)
+)
+
+/**
  * 计算运卦（星卦）
- * 皇极经世书中，每会30运，运卦通过对会卦（辟卦）进行爻变得到
+ * 皇极经世书中，每会30运，按先天60卦序分配
  * 
- * 重要规则：需要剔除四正卦（乾、坤、坎、离）
+ * 核心规则：
+ * - 60卦（64卦剔除四正卦）按先天序分配到12会
+ * - 每会5卦，每卦统领6运
+ * - 5卦 × 6运/卦 = 30运/会
+ * - 60卦 × 6运/卦 = 360运/元
  * 
- * 算法：
- * 1. 从会卦的初爻开始依次爻变
- * 2. 如果爻变后得到四正卦，则跳过，继续下一个爻变
- * 3. 直到得到30个非四正卦为止
+ * 原文依据：
+ * "64卦×6爻=384爻，减去四正卦24爻=360用数"
+ * 360用数对应360运，每爻对应1运
  * 
  * @param huiIndex 会的索引（0-11，对应子到亥）
  * @param yunInHui 运在会内的序号（0-29）
  * @returns 运卦信息
  */
 export function getYunHexagram(huiIndex: number, yunInHui: number): Hexagram64 {
-  // 获取该会的辟卦
-  const sovereignBinary = TWELVE_SOVEREIGN_HEXAGRAMS[huiIndex % 12]
+  // 每会5卦，计算该会在60卦序中的起始位置
+  const huiStartIndex = (huiIndex % 12) * 5
   
-  // 生成该会的所有运卦序列（剔除四正卦）
-  const yunSequence: number[] = []
-  let yaoIndex = 0 // 当前爻位（0-5，对应初爻到上爻）
-  let round = 0 // 轮数
+  // 每卦统领6运，计算该运对应的卦在会内的位置（0-4）
+  const hexagramIndexInHui = Math.floor((yunInHui % 30) / 6)
   
-  while (yunSequence.length < 30) {
-    // 计算爻位（1-6）
-    const yaoPosition = (yaoIndex % 6) + 1
-    
-    // 进行爻变
-    const changedBinary = changeYao(sovereignBinary, yaoPosition)
-    
-    // 如果不是四正卦，则加入序列
-    if (!isFourPrincipalHexagram(changedBinary)) {
-      yunSequence.push(changedBinary)
-    }
-    
-    yaoIndex++
-    
-    // 每6个爻为一轮
-    if (yaoIndex % 6 === 0) {
-      round++
-    }
-    
-    // 防止无限循环（理论上不应该发生）
-    if (yaoIndex > 200) {
-      console.error('运卦计算异常：无法生成30个非四正卦')
-      break
-    }
-  }
+  // 计算在60卦序中的全局索引
+  const globalIndex = huiStartIndex + hexagramIndexInHui
   
-  // 返回指定序号的运卦
-  const yunBinary = yunSequence[yunInHui % 30]
-  return getHexagram64(yunBinary)
+  // 获取对应的卦
+  const binary = XIANTIAN_60_SEQUENCE_FOR_YUN[globalIndex]
+  return getHexagram64(binary)
 }
 
 /**
@@ -423,26 +521,28 @@ const XIANTIAN_60_SEQUENCE = XIANTIAN_64_SEQUENCE.filter(
 /**
  * 计算岁卦（年卦/值年卦）
  * 皇极经世书中，岁卦按先天60卦次序循环（剔除四正卦）
- * 每年对应一个卦，按先天卦序逆向循环
+ * 每年对应一个卦，与六十甲子年一一对应
  * 
- * 锚点：公历2025年（皇极69043年）= 革卦（先天序第18位，60卦序第17位）
+ * 锚点规则："日甲月子，合乎为复"
+ * - 甲子年 = 复卦（子月消息卦）
+ * - 复卦在先天60卦序中索引29
+ * - 正向循环：甲子(0)→复卦，乙丑(1)→姤卦...
  * 
  * @param gregorianYear 公历年份
  * @returns 岁卦信息
  */
 export function getSuiHexagram(gregorianYear: number): Hexagram64 {
-  // 锚点：2025年 = 革卦
-  // 革卦在先天60卦序中的索引（从0开始）
-  // 先天64卦序：革=18位，离=19位被剔除，所以革在60卦序中是第17位（索引16）
-  const ANCHOR_YEAR = 2025
-  const ANCHOR_INDEX = 16 // 革卦在60卦序中的索引
+  // 锚点：甲子年(1984) = 复卦
+  // 复卦在先天60卦序中的索引 = 30（第31位）
+  const JIAZI_YEAR = 1984 // 甲子年
+  const JIAZI_INDEX = 30  // 复卦在60卦序中的索引
   
-  // 计算年份差（每年-1，即逆向循环）
-  const yearDiff = ANCHOR_YEAR - gregorianYear
+  // 计算该年的干支索引（0-59）
+  let ganzhiIndex = (gregorianYear - JIAZI_YEAR) % 60
+  if (ganzhiIndex < 0) ganzhiIndex += 60
   
-  // 计算在60卦序中的索引（逆向循环）
-  let index = (ANCHOR_INDEX + yearDiff) % 60
-  if (index < 0) index += 60
+  // 计算在60卦序中的索引（正向循环）
+  const index = (JIAZI_INDEX + ganzhiIndex) % 60
   
   const binary = XIANTIAN_60_SEQUENCE[index]
   return getHexagram64(binary)
@@ -469,12 +569,13 @@ export function getSuiHexagramDetail(gregorianYear: number): {
   indexIn60: number
   gregorianYear: number
 } {
-  const ANCHOR_YEAR = 2025
-  const ANCHOR_INDEX = 16
+  const JIAZI_YEAR = 1984
+  const JIAZI_INDEX = 30 // 复卦（60卦序第31位）
   
-  const yearDiff = ANCHOR_YEAR - gregorianYear
-  let index = (ANCHOR_INDEX + yearDiff) % 60
-  if (index < 0) index += 60
+  let ganzhiIndex = (gregorianYear - JIAZI_YEAR) % 60
+  if (ganzhiIndex < 0) ganzhiIndex += 60
+  
+  const index = (JIAZI_INDEX + ganzhiIndex) % 60
   
   const binary = XIANTIAN_60_SEQUENCE[index]
   const suiHexagram = getHexagram64(binary)
@@ -489,33 +590,30 @@ export function getSuiHexagramDetail(gregorianYear: number): {
 /**
  * 计算月卦（值月卦）
  * 皇极经世书中，月卦按先天60卦次序循环（剔除四正卦）
- * 每月对应一个卦，按先天卦序逆向循环
+ * 每月对应一个卦，按先天卦序正向循环
  * 
- * 计算方式：
- * - 基于公历年月计算总月数
- * - 锚点：公历2025年12月（皇极子月）= 同人卦（先天60卦序第16位，索引15）
- * - 每月递减1（逆向循环）
- * 
- * 注：皇极月从冬至开始（约公历12月），子月=12月，丑月=1月...
+ * 锚点规则："日甲月子，合乎为复"
+ * - 甲子年子月（1984年12月）= 复卦
+ * - 复卦在先天60卦序中索引29
+ * - 60个月为一个完整循环
  * 
  * @param gregorianYear 公历年份
  * @param gregorianMonth 公历月份（1-12）
  * @returns 月卦信息
  */
 export function getYueHexagram(gregorianYear: number, gregorianMonth: number): Hexagram64 {
-  // 锚点：2025年12月 = 同人卦（革卦之后一个月）
-  // 同人卦在先天60卦序中的索引 = 15（革卦是16，同人是15）
-  const ANCHOR_YEAR = 2025
+  // 锚点：1984年12月（甲子年子月）= 复卦
+  const ANCHOR_YEAR = 1984
   const ANCHOR_MONTH = 12
-  const ANCHOR_INDEX = 15 // 同人卦在60卦序中的索引
+  const JIAZI_INDEX = 30 // 复卦在60卦序中的索引（第31位）
   
   // 计算从锚点到目标日期的月份差
   const anchorTotalMonths = ANCHOR_YEAR * 12 + ANCHOR_MONTH
   const targetTotalMonths = gregorianYear * 12 + gregorianMonth
-  const monthDiff = anchorTotalMonths - targetTotalMonths
+  let monthDiff = targetTotalMonths - anchorTotalMonths
   
-  // 计算在60卦序中的索引（逆向循环）
-  let index = (ANCHOR_INDEX + monthDiff) % 60
+  // 计算在60卦序中的索引（正向循环）
+  let index = (JIAZI_INDEX + monthDiff) % 60
   if (index < 0) index += 60
   
   const binary = XIANTIAN_60_SEQUENCE[index]
@@ -556,15 +654,15 @@ export function getYueHexagramDetail(gregorianYear: number, gregorianMonth: numb
   gregorianYear: number
   gregorianMonth: number
 } {
-  const ANCHOR_YEAR = 2025
+  const ANCHOR_YEAR = 1984
   const ANCHOR_MONTH = 12
-  const ANCHOR_INDEX = 15
+  const JIAZI_INDEX = 30 // 复卦（60卦序第31位）
   
   const anchorTotalMonths = ANCHOR_YEAR * 12 + ANCHOR_MONTH
   const targetTotalMonths = gregorianYear * 12 + gregorianMonth
-  const monthDiff = anchorTotalMonths - targetTotalMonths
+  let monthDiff = targetTotalMonths - anchorTotalMonths
   
-  let index = (ANCHOR_INDEX + monthDiff) % 60
+  let index = (JIAZI_INDEX + monthDiff) % 60
   if (index < 0) index += 60
   
   const binary = XIANTIAN_60_SEQUENCE[index]
@@ -583,20 +681,25 @@ export function getYueHexagramDetail(gregorianYear: number, gregorianMonth: numb
  * 皇极经世书中，日卦按先天60卦次序循环（剔除四正卦）
  * 每日对应一个卦，与六十甲子日循环对应
  * 
- * 计算方式：
- * - 基于日干支索引（0-59）映射到先天60卦
- * - 锚点：甲子日 = 夬卦（先天60卦序第1位，索引0）
- *   （夬卦是剔除乾卦后的第一卦）
+ * 锚点规则："日甲月子，合乎为复"
+ * - 甲子日 = 复卦（与甲子年相同）
+ * - 复卦在先天60卦序中索引29
+ * - 正向循环：甲子(0)→复卦，乙丑(1)→姤卦...
  * 
  * @param dayGanZhiIndex 日干支索引（0-59，0=甲子）
  * @returns 日卦信息
  */
 export function getRiHexagram(dayGanZhiIndex: number): Hexagram64 {
+  // 锚点：甲子日 = 复卦（索引30，第31位）
+  const JIAZI_INDEX = 30 // 复卦在60卦序中的索引
+  
   // 六十甲子与先天60卦一一对应
-  // 甲子(0) → 夬卦(索引0)
-  // 乙丑(1) → 大有卦(索引1)
+  // 甲子(0) → 复卦(索引30)
+  // 乙丑(1) → 颐卦(索引31)
   // ...循环
-  const index = ((dayGanZhiIndex % 60) + 60) % 60
+  let ganzhiIndex = ((dayGanZhiIndex % 60) + 60) % 60
+  const index = (JIAZI_INDEX + ganzhiIndex) % 60
+  
   const binary = XIANTIAN_60_SEQUENCE[index]
   return getHexagram64(binary)
 }
@@ -635,7 +738,8 @@ export function getRiHexagramDetail(date: Date): {
   dayGanZhiIndex: number
 } {
   const BASE_DATE = new Date(2000, 0, 1)
-  const BASE_INDEX = 54
+  const BASE_INDEX = 54 // 戊午日
+  const JIAZI_INDEX = 30 // 复卦在60卦序中的索引（第31位）
   
   const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
   const base = new Date(BASE_DATE.getFullYear(), BASE_DATE.getMonth(), BASE_DATE.getDate())
@@ -645,12 +749,15 @@ export function getRiHexagramDetail(date: Date): {
   let dayGanZhiIndex = (BASE_INDEX + diffDays) % 60
   if (dayGanZhiIndex < 0) dayGanZhiIndex += 60
   
-  const binary = XIANTIAN_60_SEQUENCE[dayGanZhiIndex]
+  // 计算在60卦序中的索引（甲子=复卦）
+  const hexagramIndex = (JIAZI_INDEX + dayGanZhiIndex) % 60
+  
+  const binary = XIANTIAN_60_SEQUENCE[hexagramIndex]
   const riHexagram = getHexagram64(binary)
   
   return {
     riHexagram,
-    indexIn60: dayGanZhiIndex + 1, // 1-based
+    indexIn60: hexagramIndex + 1, // 1-based
     dayGanZhiIndex,
   }
 }

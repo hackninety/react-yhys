@@ -1,0 +1,1 @@
+{"root":["./src/App.tsx","./src/main.tsx","./src/vite-env.d.ts","./src/components/Calendar.tsx","./src/components/DateDetailModal.tsx","./src/data/hexagrams.ts","./src/data/hexagrams64.ts","./src/data/specialDates.ts","./src/utils/calendar.ts","./src/utils/ganzhi.ts","./src/utils/lunar.ts","./src/utils/lvlv.ts","./src/utils/solarTerms.ts"],"version":"5.6.3"}

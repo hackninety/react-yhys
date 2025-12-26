@@ -1,0 +1,338 @@
+/* 日期详情弹出卡片样式 */
+
+.date-detail-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.date-detail-modal {
+  background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from { 
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.close-btn {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.close-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.1);
+}
+
+.modal-header {
+  padding: 24px 24px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  position: relative;
+}
+
+.modal-header h2 {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.date-summary {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.date-summary .gregorian {
+  color: #94a3b8;
+  font-size: 1rem;
+}
+
+.date-summary .lunar {
+  color: #fbbf24;
+  font-size: 1rem;
+}
+
+.modal-content {
+  padding: 16px 24px 24px;
+}
+
+.section {
+  margin-bottom: 24px;
+}
+
+.section h3 {
+  margin: 0 0 12px;
+  font-size: 1.1rem;
+  color: #e2e8f0;
+  padding-bottom: 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* 八字对比区域 */
+.bazi-comparison {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.bazi-version {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.bazi-version h4 {
+  margin: 0 0 12px;
+  font-size: 0.9rem;
+  color: #94a3b8;
+}
+
+.bazi-pillars {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.bazi-pillar-card {
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+}
+
+.pillar-label {
+  font-size: 0.75rem;
+  color: #64748b;
+  margin-bottom: 8px;
+}
+
+.pillar-ganzhi {
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.pillar-ganzhi .gan,
+.pillar-ganzhi .zhi {
+  display: inline-block;
+}
+
+.pillar-wuxing {
+  font-size: 0.85rem;
+  margin-bottom: 4px;
+}
+
+.pillar-nayin {
+  font-size: 0.75rem;
+  color: #a78bfa;
+}
+
+.bazi-simple {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+
+.bazi-simple span {
+  background: rgba(0, 0, 0, 0.2);
+  padding: 8px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+.bazi-simple .match {
+  color: #22c55e;
+  border: 1px solid rgba(34, 197, 94, 0.3);
+}
+
+.bazi-simple .mismatch {
+  color: #ef4444;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.huangji-version {
+  border: 1px solid rgba(251, 191, 36, 0.3);
+}
+
+.huangji-version h4 {
+  color: #fbbf24;
+}
+
+/* 卦象区域 */
+.hexagram-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.hexagram-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.hexagram-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.hexagram-symbol {
+  font-size: 2rem;
+  color: #fbbf24;
+}
+
+.hexagram-name {
+  font-size: 0.9rem;
+  color: #e2e8f0;
+}
+
+/* 律吕区域 */
+.lvlv-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+}
+
+.lvlv-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lvlv-label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.lvlv-name {
+  font-size: 1.2rem;
+  color: #a78bfa;
+  font-weight: bold;
+}
+
+.lvlv-type {
+  font-size: 0.75rem;
+  color: #94a3b8;
+}
+
+/* 节气区域 */
+.term-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px 16px;
+}
+
+.term-name {
+  font-size: 1.2rem;
+  color: #22c55e;
+  font-weight: bold;
+}
+
+.term-day {
+  color: #94a3b8;
+  font-size: 0.9rem;
+}
+
+.intercalary-hexagram {
+  color: #fbbf24;
+}
+
+/* 农历区域 */
+.lunar-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.lunar-item {
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.lunar-item .label {
+  font-size: 0.75rem;
+  color: #64748b;
+}
+
+.lunar-item .value {
+  font-size: 1rem;
+  color: #e2e8f0;
+}
+
+/* 响应式 */
+@media (max-width: 600px) {
+  .date-detail-modal {
+    width: 95%;
+    max-height: 95vh;
+  }
+  
+  .bazi-pillars,
+  .hexagram-grid,
+  .lvlv-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .bazi-simple {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  
+  .lunar-info {
+    grid-template-columns: 1fr;
+  }
+}
+

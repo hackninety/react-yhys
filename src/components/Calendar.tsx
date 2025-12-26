@@ -1,4 +1,4 @@
-import { useMemo, useCallback } from 'react'
+import { useMemo, useCallback, useState } from 'react'
 import {
   buildYear,
   buildYuan,
@@ -44,6 +44,8 @@ import { getYunHexagramByGlobal, getShiHexagramByYear, getShiHexagramByGlobal, g
 import { getSolarTerm, getTermStartDate } from '../utils/solarTerms'
 import { getGanZhi, getYearGanZhi, getMonthGanZhi, getHourGanZhi, getHuangjiMonthGanZhi, getHuangjiMonthHexagram } from '../utils/ganzhi'
 import { getYearLv, getMonthLv, getDayLv, getHourLvByDate } from '../utils/lvlv'
+import { getLunarDateString } from '../utils/lunar'
+import { DateDetailModal } from './DateDetailModal'
 import './Calendar.css'
 
 interface CalendarProps {
@@ -61,6 +63,12 @@ export default function Calendar({
   onZoomChange,
   position,
 }: CalendarProps) {
+  // 日期详情弹出卡片状态
+  const [selectedDateInfo, setSelectedDateInfo] = useState<{
+    date: Date
+    huangjiYear: number
+  } | null>(null)
+  
   // 获取今日皇极经世日期信息
   const todayInfo = useMemo(() => {
     const now = new Date()
@@ -809,10 +817,14 @@ export default function Calendar({
                     const baziYearGanZhi = getYearGanZhi(targetDate)
                     const baziMonthGanZhi = getMonthGanZhi(targetDate)
                     
+                    // 获取农历日期
+                    const lunarDateStr = getLunarDateString(targetDate)
+                    
                     const tooltipParts = [
                       `皇历：${huangjiYearJiaziForDay}年${suiHexagramForDay.unicode}${suiHexagramForDay.name} ${huangjiMonthGanZhiForDay}月${yueHexagramForDay.unicode}${yueHexagramForDay.name} ${dayGanZhi}日${riHexagramForDay.riHexagram.unicode}${riHexagramForDay.riHexagram.name}`,
                       `律吕：${yearLvForDay.name} ${monthLvForDay.name} ${dayLvForDay.name}`,
                       `公历：${gregorianDateStr}`,
+                      `农历：${lunarDateStr}`,
                       `夏历：${baziYearGanZhi}年 ${baziMonthGanZhi}月 ${dayGanZhi}日`,
                     ]
                     if (day.isTermStart && day.termName) {
@@ -833,6 +845,11 @@ export default function Calendar({
                         key={day.dayOfMonth}
                         className={`day-cell ${day.isTermStart ? 'has-term' : ''} ${isToday ? 'today' : ''}`}
                         title={tooltip}
+                        onClick={() => setSelectedDateInfo({
+                          date: targetDate,
+                          huangjiYear: huangjiYearForDay
+                        })}
+                        style={{ cursor: 'pointer' }}
                       >
                         <span className="day-number">{dayGanZhi}</span>
                         {day.isTermStart && (
@@ -1066,6 +1083,15 @@ export default function Calendar({
           日甲（元）= 12月（会）= 360星（运）= 4320辰（世）= 129600年
         </p>
       </footer>
+      
+      {/* 日期详情弹出卡片 */}
+      {selectedDateInfo && (
+        <DateDetailModal
+          date={selectedDateInfo.date}
+          huangjiYear={selectedDateInfo.huangjiYear}
+          onClose={() => setSelectedDateInfo(null)}
+        />
+      )}
     </div>
   )
 }
