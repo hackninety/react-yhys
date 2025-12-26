@@ -481,11 +481,9 @@ export default function Calendar({
 
       {/* 导航 */}
       <nav className="calendar-nav">
-        {zoomLevel !== 'yuan' && (
-          <button className="nav-btn" onClick={handlePrev}>
-            ← 上一{zoomInfo.alias}
-          </button>
-        )}
+        <button className="nav-btn" onClick={handlePrev}>
+          ← 上一{zoomInfo.alias}
+        </button>
         
         {parentLevel && (
           <button className="nav-btn zoom-out-btn" onClick={handleZoomOut}>
@@ -493,11 +491,9 @@ export default function Calendar({
           </button>
         )}
         
-        {zoomLevel !== 'yuan' && (
-          <button className="nav-btn" onClick={handleNext}>
-            下一{zoomInfo.alias} →
-          </button>
-        )}
+        <button className="nav-btn" onClick={handleNext}>
+          下一{zoomInfo.alias} →
+        </button>
       </nav>
 
       {/* 内容区域 */}
