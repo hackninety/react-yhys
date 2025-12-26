@@ -175,9 +175,11 @@ export function getIntercalaryHexagramByName(termName: string): typeof FOUR_INTE
 }
 
 /**
- * 判断是否为四正卦
+ * 判断是否为四正卦（乾坤坎离）
+ * @param binary 卦的二进制值
+ * @returns 是否为四正卦
  */
-function isFourPrincipalHexagram(binary: number): boolean {
+export function isFourPrincipalHexagram(binary: number): boolean {
   return FOUR_PRINCIPAL_HEXAGRAMS.includes(binary)
 }
 
@@ -379,11 +381,16 @@ export function getHuiHexagram(huiIndex: number): Hexagram64 {
  * - 遵循"父生子，子生孙"的逻辑
  * - 会（辟卦）→ 运（运卦）→ 世（世卦）
  * - 世卦由**运卦**爻变产生
- * - **剔除四正卦**（与运卦相同）
+ * - 四正卦作为"闰卦"使用
+ * 
+ * 原文依据：
+ * "不用者，非不用也，用之以作闰卦"
+ * 当爻变产生四正卦时，该四正卦作为闰卦用于该世
  * 
  * 算法：
- * - 每运12世，需要12个非四正卦的世卦
- * - 对运卦进行爻变，遇到四正卦则跳过
+ * - 每运12世 = 6卦 × 2世/卦
+ * - 对运卦从初爻到上爻依次爻变，产生6个世卦
+ * - 遇到四正卦不跳过，直接作为闰卦使用
  * - 每2世共用一个世卦
  * 
  * @param huiIndex 会的索引（0-11，对应子到亥）
@@ -398,25 +405,11 @@ export function getShiHexagram(huiIndex: number, yunInHui: number, shiInYun: num
   // 计算需要第几个世卦（每2世共用一个，共6个）
   const shiHexagramIndex = Math.floor((shiInYun % 12) / 2)
   
-  // 对运卦进行爻变，生成非四正卦的世卦序列
-  const shiSequence: number[] = []
-  let yaoIndex = 0
+  // 对运卦从初爻到上爻依次爻变，产生6个世卦
+  // 四正卦作为"闰卦"使用，不跳过
+  const yaoPosition = shiHexagramIndex + 1 // 1-6，对应初爻到上爻
+  const shiBinary = changeYao(yunHexagram.binary, yaoPosition)
   
-  while (shiSequence.length < 6) {
-    const yaoPosition = (yaoIndex % 6) + 1
-    const changedBinary = changeYao(yunHexagram.binary, yaoPosition)
-    
-    // 剔除四正卦（乾坤坎离）
-    if (!isFourPrincipalHexagram(changedBinary)) {
-      shiSequence.push(changedBinary)
-    }
-    yaoIndex++
-    
-    // 防止无限循环（理论上最多需要10次爻变）
-    if (yaoIndex > 12) break
-  }
-  
-  const shiBinary = shiSequence[shiHexagramIndex % shiSequence.length]
   return getHexagram64(shiBinary)
 }
 
