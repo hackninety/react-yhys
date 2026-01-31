@@ -1,6 +1,8 @@
 {
-    "name": "yhys-0x7c-cc",
+    "name": "0x7c-yhys",
     "compatibility_date": "2026-01-31",
+    "workers_dev": true,
+    "preview_urls": true,
     "assets": {
         "directory": "./dist"
     }
