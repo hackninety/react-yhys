@@ -275,6 +275,13 @@
   line-height: 1.2;
 }
 
+.chain-footnote {
+  font-style: italic;
+  font-size: 0.55rem;
+  color: #64748b;
+  margin-top: 2px;
+}
+
 .chain-arrow {
   font-size: 1rem;
   color: #475569;

@@ -232,6 +232,9 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
                   <div className="chain-symbol">{item.hex.unicode}</div>
                   <div className="chain-name">{item.hex.name}</div>
                   <div className="chain-note">{item.note}</div>
+                  {(item.level === '月' || item.level === '日') && (
+                    <div className="chain-note chain-footnote">干支索引→60卦序·"皆取于复"</div>
+                  )}
                   {i < hexagramChain.length - 1 && (
                     <div className="chain-arrow">↓</div>
                   )}
