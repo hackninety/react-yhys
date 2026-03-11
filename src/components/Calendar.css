@@ -103,10 +103,10 @@
 
 .daily-lvlv-play-btn.playing {
   color: #ef4444;
-  animation: bounceNote 0.8s infinite alternate;
+  animation: lvlvBounce 0.8s infinite alternate;
 }
 
-@keyframes bounceNote {
+@keyframes lvlvBounce {
   from { transform: translateY(0); }
   to { transform: translateY(-3px); }
 }

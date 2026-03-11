@@ -41,6 +41,7 @@ export const LVLV_FREQUENCIES = generateFrequencies();
 let audioCtx: AudioContext | null = null;
 let currentOscillators: OscillatorNode[] = [];
 let currentGainNodes: GainNode[] = [];
+let isAborted = false;  // 用于中断 playFourPillarsLv 循环
 
 function getAudioContext(): AudioContext {
   if (!audioCtx) {
@@ -53,6 +54,7 @@ function getAudioContext(): AudioContext {
 }
 
 export function stopLvlvAudio() {
+  isAborted = true;  // 中断四柱循环
   const now = audioCtx ? audioCtx.currentTime : 0;
   
   currentGainNodes.forEach(gain => {
@@ -60,13 +62,13 @@ export function stopLvlvAudio() {
       // 快速淡出，避免爆音
       gain.gain.cancelScheduledValues(now);
       gain.gain.setTargetAtTime(0, now, 0.05);
-    } catch(e) {}
+    } catch(_e) { /* node may already be disconnected */ }
   });
 
   currentOscillators.forEach(osc => {
     try {
       osc.stop(now + 0.1);
-    } catch(e) {}
+    } catch(_e) { /* node may already have stopped */ }
   });
   
   currentOscillators = [];
@@ -149,8 +151,11 @@ export function playLvlvTone(index: number, duration: number = 2.5, volume: numb
  */
 export async function playFourPillarsLv(indexes: number[]) {
   stopLvlvAudio(); // 先停止之前的播放
+  isAborted = false;  // 重置中断标记
   
   for (let i = 0; i < indexes.length; i++) {
+    if (isAborted) return;  // 用户按了停止 → 立即退出循环
+    
     // 四柱每个音叠接播放：前一个音释放时，下一个音起（间隔0.6秒）
     playLvlvTone(indexes[i], 3.0, 0.6);
     if (i < indexes.length - 1) {
