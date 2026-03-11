@@ -698,6 +698,143 @@
   color: #e2e8f0;
 }
 
+/* =========================================
+ * 声音唱和专用样式
+ * ========================================= */
+.changhe-section {
+  position: relative;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding-top: 20px;
+  margin-top: 20px;
+}
+
+.changhe-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.changhe-item {
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 16px;
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.changhe-item:hover {
+  transform: translateY(-2px);
+  background: rgba(255, 255, 255, 0.05);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.2);
+}
+
+.changhe-item.tian-sheng {
+  border-left: 3px solid #3b82f6;
+}
+
+.changhe-item.di-yin {
+  border-left: 3px solid #f59e0b;
+}
+
+.changhe-item.tian-sheng.changhe-active {
+  border-color: #3b82f6;
+  background: rgba(59, 130, 246, 0.15);
+  box-shadow: 0 0 15px rgba(59, 130, 246, 0.2);
+}
+
+.changhe-item.di-yin.changhe-active {
+  border-color: #f59e0b;
+  background: rgba(245, 158, 11, 0.15);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.2);
+}
+
+.changhe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.changhe-label {
+  font-size: 0.75rem;
+  color: rgba(255, 255, 255, 0.5);
+  background: rgba(0, 0, 0, 0.3);
+  padding: 2px 8px;
+  border-radius: 12px;
+  letter-spacing: 0.5px;
+}
+
+.changhe-main {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 4px 0;
+}
+
+.changhe-name {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #fff;
+  font-family: var(--font-number);
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+.changhe-props {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.changhe-chars {
+  display: flex;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+
+.char-tag {
+  background: rgba(0, 0, 0, 0.3);
+  padding: 3px 8px;
+  border-radius: 4px;
+  color: #94a3b8;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.changhe-item.tian-sheng .char-tag {
+  background: rgba(59, 130, 246, 0.1);
+  color: #93c5fd;
+  border-color: rgba(59, 130, 246, 0.2);
+}
+
+.char-example {
+  background: rgba(245, 158, 11, 0.1);
+  color: #fcd34d;
+  padding: 3px 8px;
+  border-radius: 4px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.changhe-detail {
+  top: auto;
+  bottom: 0px;
+  margin-top: 16px;
+  position: relative;
+  background: linear-gradient(to bottom, #2a2a35, #1e1e24);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+}
+
 /* 响应式 */
 @media (max-width: 600px) {
   .date-detail-modal {
@@ -716,6 +853,10 @@
   }
   
   .lunar-info {
+    grid-template-columns: 1fr;
+  }
+  
+  .changhe-grid {
     grid-template-columns: 1fr;
   }
 }

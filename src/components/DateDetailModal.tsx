@@ -11,6 +11,7 @@ import { getYearLv, getMonthLv, getDayLv, getHourLvByDate } from '../utils/lvlv'
 import { getSolarTerm } from '../utils/solarTerms'
 import { getYearJiazi, YEARS_PER_SHI, SHIS_PER_YUN, YUNS_PER_HUI } from '../utils/calendar'
 import { playLvlvTone, playFourPillarsLv, stopLvlvAudio } from '../utils/lvlvAudio'
+import { getTianSheng, getDiYin, type TianSheng, type DiYin } from '../utils/changhe'
 import {
   getHuiHexagram,
   getYunHexagramDetailByGlobal,
@@ -136,6 +137,9 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
   const [selectedLvlv, setSelectedLvlv] = useState<LvLv | null>(null)
   const [selectedLvlvPillar, setSelectedLvlvPillar] = useState<string | null>(null)
   
+  // 声音唱和弹窗状态
+  const [selectedChanghe, setSelectedChanghe] = useState<{type: 'tian'|'di', data: TianSheng|DiYin} | null>(null)
+
   // 播放状态
   const [playingPillar, setPlayingPillar] = useState<string | null>(null)
   const [isPlayingAll, setIsPlayingAll] = useState(false)
@@ -198,6 +202,20 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     const dayLv = getDayLv(dayGanZhi[0])  // 日律按日干
     const hourLv = getHourLvByDate(date)  // 时律按时支
     return { yearLv, monthLv, dayLv, hourLv }
+  }, [date])
+
+  // 获取声音唱和 (仅以当日的干支做示例概览映射)
+  const changhe = useMemo(() => {
+    const dayGanZhi = getGanZhi(date)
+    const STEMS = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸']
+    const BRANCHES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
+    const stemIndex = STEMS.indexOf(dayGanZhi[0])
+    const branchIndex = BRANCHES.indexOf(dayGanZhi[1])
+    
+    return {
+      tianSheng: getTianSheng(stemIndex >= 0 ? stemIndex : 0),
+      diYin: getDiYin(branchIndex >= 0 ? branchIndex : 0)
+    }
   }, [date])
   
   // 获取节气
@@ -427,6 +445,74 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
               </div>
             )}
             <p className="lvlv-footer-note">黄畿《皇极经世书传》：&ldquo;声音律吕与象数卦爻互为表里&rdquo;</p>
+          </section>
+
+          {/* 声音唱和（邵雍原理） */}
+          <section className="section changhe-section">
+            <div className="lvlv-header-row">
+              <h3>声音唱和<span className="section-subtitle">邵雍《皇极经世书》声音唱和图概览</span></h3>
+            </div>
+            
+            <div className="changhe-grid">
+              {/* 天声 */}
+              <div 
+                className={`changhe-item tian-sheng ${selectedChanghe?.type === 'tian' ? 'changhe-active' : ''}`}
+                onClick={() => setSelectedChanghe(selectedChanghe?.type === 'tian' ? null : { type: 'tian', data: changhe.tianSheng })}
+              >
+                <div className="changhe-header">
+                  <span className="changhe-label">今日天干对应</span>
+                </div>
+                <div className="changhe-main">
+                  <span className="changhe-name">天声{changhe.tianSheng.name}</span>
+                  <span className="changhe-props">{changhe.tianSheng.xiang}象 · {changhe.tianSheng.qingZhuo}{changhe.tianSheng.xiSheng}</span>
+                </div>
+                <div className="changhe-chars">
+                  <span className="char-tag">平: {changhe.tianSheng.yuns.ping || '无'}</span>
+                  <span className="char-tag">上: {changhe.tianSheng.yuns.shang || '无'}</span>
+                  <span className="char-tag">去: {changhe.tianSheng.yuns.qu || '无'}</span>
+                </div>
+              </div>
+
+              {/* 地音 */}
+              <div 
+                className={`changhe-item di-yin ${selectedChanghe?.type === 'di' ? 'changhe-active' : ''}`}
+                onClick={() => setSelectedChanghe(selectedChanghe?.type === 'di' ? null : { type: 'di', data: changhe.diYin })}
+              >
+                <div className="changhe-header">
+                  <span className="changhe-label">今日地支对应</span>
+                </div>
+                <div className="changhe-main">
+                  <span className="changhe-name">地音{changhe.diYin.name}</span>
+                  <span className="changhe-props">{changhe.diYin.xiang}象 · {changhe.diYin.qingZhuo}{changhe.diYin.huFa}</span>
+                </div>
+                <div className="changhe-chars">
+                  <span className="char-example">组字例：{changhe.diYin.chars}</span>
+                </div>
+              </div>
+            </div>
+
+            {/* 唱和详情弹窗 */}
+            {selectedChanghe && (
+              <div className="lvlv-detail-popup changhe-detail">
+                <div className="lvlv-detail-header">
+                  <span className="lvlv-detail-badge yin">
+                    {selectedChanghe.type === 'tian' ? '天之用声 (112)' : '地之用音 (152)'}
+                  </span>
+                  <span className="lvlv-detail-title">{selectedChanghe.data.name}</span>
+                  <button className="lvlv-detail-close" onClick={() => setSelectedChanghe(null)}>✕</button>
+                </div>
+                <p className="lvlv-detail-desc">
+                  {selectedChanghe.type === 'tian' 
+                    ? `天声取天干之数（共十组）。今日天干对应第${(selectedChanghe.data as TianSheng).index + 1}组韵母（${(selectedChanghe.data as TianSheng).xiang}象${(selectedChanghe.data as TianSheng).qingZhuo}${(selectedChanghe.data as TianSheng).xiSheng}）。`
+                    : `地音取地支之数（共十二组）。今日地支对应第${(selectedChanghe.data as DiYin).index + 1}组声母（${(selectedChanghe.data as DiYin).xiang}象${(selectedChanghe.data as DiYin).qingZhuo}${(selectedChanghe.data as DiYin).huFa}）。`
+                  }
+                </p>
+                <blockquote className="lvlv-detail-origin">
+                  黄畿《皇极经世书传》："声音律吕，圆唱方和，而后乾坤坎离用焉，天地万物之理贯于一矣。天声一百一十二，地音一百五十二。"
+                </blockquote>
+                <p className="lvlv-detail-relation">注：完整的10×12唱和千字发音矩阵图正在开发中。</p>
+              </div>
+            )}
           </section>
           
           {/* 节气信息 */}
