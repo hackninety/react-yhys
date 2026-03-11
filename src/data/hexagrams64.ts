@@ -504,14 +504,20 @@ export function getShiHexagram(huiIndex: number, yunInHui: number, shiInYun: num
   // 获取该运的运卦
   const yunHexagram = getYunHexagram(huiIndex, yunInHui)
   
-  // 计算这是该运内的第几个“甲子世”（每2世为一单位，范围0-5）
+  // 计算这是该运内的第几个"甲子世"（每2世为一单位，范围0-5）
   const jiaziShiIndex = Math.floor(shiInYun / 2)
   
-  // 变动对应的爻（1-6，依次为初爻到上爻）
-  const yaoToChange = jiaziShiIndex + 1
+  // 预计算所有有效变爻结果（剔除四正卦：乾坤坎离）
+  const validShiBinaries: number[] = []
+  for (let i = 1; i <= 6; i++) {
+    const candidate = changeYao(yunHexagram.binary, i)
+    if (!isFourPrincipalHexagram(candidate)) {
+      validShiBinaries.push(candidate)
+    }
+  }
   
-  // 世卦 = 运卦变爻
-  const shiBinary = changeYao(yunHexagram.binary, yaoToChange)
+  // 用取模确保序列平滑流转，遇四正卦则"跃过一爻，以次变之"
+  const shiBinary = validShiBinaries[jiaziShiIndex % validShiBinaries.length]
   
   return getHexagram64(shiBinary)
 }
@@ -558,8 +564,11 @@ const XIANTIAN_60_SEQUENCE = XIANTIAN_60_SEQUENCE_FOR_YUN
 
 /**
  * 计算岁卦（年卦/值年卦）- 正统皇极算法：世统年
- * 年卦由该年所属的世卦派生：以六十甲子偏移决定变爻位，6年一循环。
- * 若变出四正卦（乾坤坎离，作闰卦不用），则顺移至下一爻，直到非四正卦。
+ * 年卦由该年所属的世卦派生：以六十甲子偏移决定变爻位。
+ * 若变出四正卦（乾坤坎离，作闰卦不用），则跳过该爻，"以次变之"。
+ *
+ * 使用预过滤法：先收集所有有效变爻结果（剔除四正卦），
+ * 再按 ganzhiOffset 取模选取，保证连续年份绝不产出同一卦。
  *
  * @param gregorianYear 公历年份
  * @returns 岁卦信息
@@ -572,20 +581,18 @@ export function getSuiHexagram(gregorianYear: number): Hexagram64 {
   let ganzhiOffset = (gregorianYear - 1984) % 60
   if (ganzhiOffset < 0) ganzhiOffset += 60
 
-  // 变动爻位（1-6），6年一循环
-  const baseYao = (ganzhiOffset % 6) + 1
-
-  // 依次尝试 baseYao, baseYao+1, ... 直到非四正卦（最多6次必定找到）
-  for (let i = 0; i < 6; i++) {
-    const yao = ((baseYao - 1 + i) % 6) + 1
-    const candidate = changeYao(shiHexagram.binary, yao)
+  // 预计算所有有效变爻结果（剔除四正卦）
+  const validSuiBinaries: number[] = []
+  for (let i = 1; i <= 6; i++) {
+    const candidate = changeYao(shiHexagram.binary, i)
     if (!isFourPrincipalHexagram(candidate)) {
-      return getHexagram64(candidate)
+      validSuiBinaries.push(candidate)
     }
   }
 
-  // 理论上不可能到这里（世卦本身不是四正卦时，至少有5个非四正变卦）
-  return getHexagram64(changeYao(shiHexagram.binary, baseYao))
+  // 用取模确保序列平滑流转，连续年份绝不重复
+  const suiBinary = validSuiBinaries[ganzhiOffset % validSuiBinaries.length]
+  return getHexagram64(suiBinary)
 }
 
 /**
