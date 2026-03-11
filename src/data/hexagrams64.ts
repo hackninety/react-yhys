@@ -507,17 +507,13 @@ export function getShiHexagram(huiIndex: number, yunInHui: number, shiInYun: num
   // 计算这是该运内的第几个"甲子世"（每2世为一单位，范围0-5）
   const jiaziShiIndex = Math.floor(shiInYun / 2)
   
-  // 预计算所有有效变爻结果（剔除四正卦：乾坤坎离）
-  const validShiBinaries: number[] = []
-  for (let i = 1; i <= 6; i++) {
-    const candidate = changeYao(yunHexagram.binary, i)
-    if (!isFourPrincipalHexagram(candidate)) {
-      validShiBinaries.push(candidate)
-    }
-  }
+  // 变动对应的爻（1-6，依次为初爻到上爻）
+  // 注意：世卦层面不做四正卦避让，四正卦可以合法出现为世卦
+  // 四正卦避让仅在岁卦（getSuiHexagram）层面执行
+  const yaoToChange = jiaziShiIndex + 1
   
-  // 用取模确保序列平滑流转，遇四正卦则"跃过一爻，以次变之"
-  const shiBinary = validShiBinaries[jiaziShiIndex % validShiBinaries.length]
+  // 世卦 = 运卦变爻
+  const shiBinary = changeYao(yunHexagram.binary, yaoToChange)
   
   return getHexagram64(shiBinary)
 }
