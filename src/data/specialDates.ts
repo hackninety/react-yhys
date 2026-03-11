@@ -28,18 +28,18 @@ export interface SpecialDatesData {
 export const specialDates: SpecialDate[] = specialDatesData.specialDates
 
 // 根据运编号查找特殊日期
-export function findSpecialDateByYun(yunNumber: number): SpecialDate | undefined {
-  return specialDates.find(d => d.yun === yunNumber)
+export function findSpecialDateByYun(yunNumber: number): SpecialDate[] {
+  return specialDates.filter(d => d.yun === yunNumber)
 }
 
 // 根据世编号查找特殊日期
-export function findSpecialDateByShi(shiNumber: number): SpecialDate | undefined {
-  return specialDates.find(d => d.shi === shiNumber)
+export function findSpecialDateByShi(shiNumber: number): SpecialDate[] {
+  return specialDates.filter(d => d.shi === shiNumber)
 }
 
 // 根据岁编号查找特殊日期（全局年份，1-129600）
-export function findSpecialDateBySui(suiNumber: number): SpecialDate | undefined {
-  return specialDates.find(d => d.sui === suiNumber)
+export function findSpecialDateBySui(suiNumber: number): SpecialDate[] {
+  return specialDates.filter(d => d.sui === suiNumber)
 }
 
 // 获取特殊日期的样式

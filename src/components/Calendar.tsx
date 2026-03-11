@@ -491,8 +491,10 @@ export default function Calendar({
                     // 计算世（辰）范围：每运12世
                     const shiStart = (globalYunNumber - 1) * 12 + 1
                     const shiEnd = globalYunNumber * 12
-                    // 查找特殊日期
-                    const specialDate = findSpecialDateByYun(globalYunNumber)
+                    // 查找特殊日期(运) 可能有多个
+                    const specialDatesArr = findSpecialDateByYun(globalYunNumber)
+                    const mainSpecialDate = specialDatesArr.length > 0 ? specialDatesArr[0] : null
+                    
                     // 节气：第1格和第16格有节气
                     const hasTerm = yun.index === 0 || yun.index === 15
                     const termName = yun.index === 0 ? hui.termStart : (yun.index === 15 ? hui.termEnd : null)
@@ -500,12 +502,16 @@ export default function Calendar({
                     // 判断是否是当前运（包含今年）
                     const currentYun = Math.ceil(todayInfo.huangjiSui / (SHIS_PER_YUN * YEARS_PER_SHI))
                     const isCurrentYun = globalYunNumber === currentYun
+                    
+                    // 生成合并的标题描述
+                    const descStr = specialDatesArr.map(d => `【${d.name}: ${d.description}】`).join(' ')
+                    
                     return (
                       <div
                         key={yun.index}
-                        className={`day-cell yun-cell ${hasTerm ? 'has-term' : ''} ${specialDate ? 'special-date' : ''} ${isCurrentYun ? 'current-yun' : ''}`}
-                        style={specialDate ? getSpecialDateStyle(specialDate) : undefined}
-                        title={`第${globalYunNumber}星（运） · ${shiStart}-${shiEnd}辰（世） · 年${(yun.yearStart % TOTAL_YEARS) + 1}-${(yun.yearEnd % TOTAL_YEARS) + 1}${specialDate ? ` · 【${specialDate.description}】` : ''}${isCurrentYun ? ' · 【今年所在运 · 火德】' : ''}`}
+                        className={`day-cell yun-cell ${hasTerm ? 'has-term' : ''} ${mainSpecialDate ? 'special-date' : ''} ${isCurrentYun ? 'current-yun' : ''}`}
+                        style={mainSpecialDate ? getSpecialDateStyle(mainSpecialDate) : undefined}
+                        title={`第${globalYunNumber}星（运） · ${shiStart}-${shiEnd}辰（世） · 年${(yun.yearStart % TOTAL_YEARS) + 1}-${(yun.yearEnd % TOTAL_YEARS) + 1}${descStr ? ` · ${descStr}` : ''}${isCurrentYun ? ' · 【今年所在运 · 火德】' : ''}`}
                         onClick={(e) => {
                           e.stopPropagation()
                           // 跳转到对应的运页面
@@ -521,11 +527,13 @@ export default function Calendar({
                         {termName && (
                           <span className={`term-badge ${termClass}`}>{termName}</span>
                         )}
-                        {specialDate?.badge && (
-                          <span className="special-date-badge" style={getSpecialDateBadgeStyle(specialDate)}>
-                            {specialDate.badge}
-                          </span>
-                        )}
+                        {specialDatesArr.map((sd, i) => (
+                           sd.badge ? (
+                             <span key={i} className={`special-date-badge ${specialDatesArr.length > 1 ? 'multi-badge' : ''}`} style={getSpecialDateBadgeStyle(sd)}>
+                               {sd.badge}
+                             </span>
+                           ) : null
+                        ))}
                         {isCurrentYun && (
                           <span className="current-yun-badge">今·火</span>
                         )}
@@ -568,16 +576,18 @@ export default function Calendar({
                 // 计算世（辰）的全局编号
                 const globalShiNumber = shiOffset + shi.index + 1
                 // 查找特殊日期（根据世编号）
-                const specialDateForShi = findSpecialDateByShi(globalShiNumber)
+                const specialDatesForShi = findSpecialDateByShi(globalShiNumber)
+                const mainSpecialShi = specialDatesForShi.length > 0 ? specialDatesForShi[0] : null
+                
                 // 特殊世卡片的边框样式
-                const shiCardStyle = specialDateForShi ? {
-                  borderColor: specialDateForShi.color,
-                  boxShadow: `0 0 12px ${specialDateForShi.color}40`,
+                const shiCardStyle = mainSpecialShi ? {
+                  borderColor: mainSpecialShi.color,
+                  boxShadow: `0 0 12px ${mainSpecialShi.color}40`,
                 } : undefined
                 return (
                   <div 
                     key={shi.index} 
-                    className={`month-card shi-card ${shi.index === KAIWU_INDEX ? 'kaiwu' : ''} ${shi.index === BIWU_INDEX ? 'biwu' : ''} ${specialDateForShi ? 'special-shi' : ''}`}
+                    className={`month-card shi-card ${shi.index === KAIWU_INDEX ? 'kaiwu' : ''} ${shi.index === BIWU_INDEX ? 'biwu' : ''} ${mainSpecialShi ? 'special-shi' : ''}`}
                     style={shiCardStyle}
                     onClick={() => handleZoomIn(shi.index)}
                   >
@@ -587,14 +597,17 @@ export default function Calendar({
                       <span className="month-number">第{globalShiNumber}世</span>
                       {shi.index === KAIWU_INDEX && <span className="kaiwu-badge">开物</span>}
                       {shi.index === BIWU_INDEX && <span className="biwu-badge">闭物</span>}
-                      {specialDateForShi?.badge && (
-                        <span 
-                          className="special-shi-badge" 
-                          style={getSpecialDateBadgeStyle(specialDateForShi)}
-                        >
-                          {specialDateForShi.badge}
-                        </span>
-                      )}
+                      {specialDatesForShi.map((sd, i) => (
+                        sd.badge ? (
+                          <span 
+                            key={i}
+                            className={`special-shi-badge ${specialDatesForShi.length > 1 ? 'multi-badge' : ''}`} 
+                            style={getSpecialDateBadgeStyle(sd)}
+                          >
+                            {sd.badge}
+                          </span>
+                        ) : null
+                      ))}
                     </h3>
                     
                     <div className="days-grid nians-grid" onClick={(e) => e.stopPropagation()}>
@@ -605,16 +618,22 @@ export default function Calendar({
                         // 计算六十甲子：全局年编号
                         const globalYearNumber = (nian.yearIndex % TOTAL_YEARS) + 1
                         const jiazi = getYearJiazi(globalYearNumber)
-                        // 根据岁编号查找特殊日期
-                        const specialDateForNian = findSpecialDateBySui(globalYearNumber)
+                        // 根据岁编号查找特殊日期(可能有多个)
+                        const specialDatesForNian = findSpecialDateBySui(globalYearNumber)
+                        const mainSpecialNian = specialDatesForNian.length > 0 ? specialDatesForNian[0] : null
+                        
                         // 动态判断是否是"今年"（皇极经世历以冬至换年）
                         const isCurrentHuangjiYear = globalYearNumber === todayInfo.huangjiSui
+                        
+                        // 多事件提示文字拼接
+                        const descStr = specialDatesForNian.map(d => `【${d.name}】`).join(' ')
+                        
                         return (
                           <div
                             key={nian.index}
-                            className={`day-cell nian-cell ${hasTerm ? 'has-term' : ''} ${specialDateForNian ? 'special-date' : ''} ${isCurrentHuangjiYear ? 'current-year' : ''}`}
-                            style={specialDateForNian ? getSpecialDateStyle(specialDateForNian) : undefined}
-                            title={`岁${jiazi} · 第${globalYearNumber}年 · ${formatGregorianYear(globalYearNumber)}${specialDateForNian ? ` · 【${specialDateForNian.name}】` : ''}${isCurrentHuangjiYear ? ' · 【今年】' : ''}`}
+                            className={`day-cell nian-cell ${hasTerm ? 'has-term' : ''} ${mainSpecialNian ? 'special-date' : ''} ${isCurrentHuangjiYear ? 'current-year' : ''}`}
+                            style={mainSpecialNian ? getSpecialDateStyle(mainSpecialNian) : undefined}
+                            title={`岁${jiazi} · 第${globalYearNumber}年 · ${formatGregorianYear(globalYearNumber)}${descStr ? ` · ${descStr}` : ''}${isCurrentHuangjiYear ? ' · 【今年】' : ''}`}
                             onClick={(e) => {
                               e.stopPropagation()
                               // 跳转到对应的年页面
@@ -634,11 +653,13 @@ export default function Calendar({
                             {termName && (
                               <span className={`term-badge ${termClass}`}>{termName}</span>
                             )}
-                            {specialDateForNian?.badge && (
-                              <span className="special-date-badge" style={getSpecialDateBadgeStyle(specialDateForNian)}>
-                                {specialDateForNian.badge}
-                              </span>
-                            )}
+                            {specialDatesForNian.map((sd, i) => (
+                              sd.badge ? (
+                                <span key={i} className={`special-date-badge ${specialDatesForNian.length > 1 ? 'multi-badge' : ''}`} style={getSpecialDateBadgeStyle(sd)}>
+                                  {sd.badge}
+                                </span>
+                              ) : null
+                            ))}
                             {isCurrentHuangjiYear && (
                               <span className="today-badge">今年</span>
                             )}
@@ -852,10 +873,12 @@ export default function Calendar({
                 // 计算全局运编号（仅在会级视图中使用）
                 const globalYunNumber = zoomLevel === 'hui' ? yunOffset + item.index + 1 : 0
                 // 查找特殊日期（开物/闭物等）
-                const specialDate = zoomLevel === 'hui' ? findSpecialDateByYun(globalYunNumber) : undefined
+                const specialDatesForYun = zoomLevel === 'hui' ? findSpecialDateByYun(globalYunNumber) : []
+                const specialDate = specialDatesForYun.length > 0 ? specialDatesForYun[0] : undefined
                 // 世级视图：根据sui查找特殊日期
                 const globalYear = (item.yearStart % TOTAL_YEARS) + 1
-                const specialDateBySui = zoomLevel === 'shi' ? findSpecialDateBySui(globalYear) : undefined
+                const specialDatesBySui = zoomLevel === 'shi' ? findSpecialDateBySui(globalYear) : []
+                const specialDateBySui = specialDatesBySui.length > 0 ? specialDatesBySui[0] : undefined
                 // 动态判断是否是"今年"（皇极经世历以冬至换年）
                 const isCurrentHuangjiYearInShi = zoomLevel === 'shi' && globalYear === todayInfo.huangjiSui
                 // 会级视图：判断当前运是否包含今年
