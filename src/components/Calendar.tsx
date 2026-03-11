@@ -1068,6 +1068,9 @@ export default function Calendar({
         <p className="footer-note">
           日甲（元）= 12月（会）= 360星（运）= 4320辰（世）= 129600年
         </p>
+        <p className="footer-note footer-attribution">
+          算法依据邵雍《皇极经世书》原文及黄畿《皇极经世书传》注解
+        </p>
       </footer>
       
       {/* 日期详情弹出卡片 */}
