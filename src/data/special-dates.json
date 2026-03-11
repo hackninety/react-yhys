@@ -455,9 +455,177 @@
       "badge": "小甲"
     },
     {
+      "id": "event-65369",
+      "name": "商雍己立",
+      "description": "金德，經日之甲、經月之午七、經星之乙一百八十二、經辰之午二千一百七十九、壬辰年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 182,
+      "shi": 2179,
+      "sui": 65369,
+      "badge": "商"
+    },
+    {
+      "id": "event-65381",
+      "name": "商太戊立",
+      "description": "金德，經日之甲、經月之午七、經星之乙一百八十二、經辰之未二千一百八十、甲辰年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 182,
+      "shi": 2180,
+      "sui": 65381,
+      "badge": "商"
+    },
+    {
+      "id": "event-65456",
+      "name": "商仲丁立",
+      "description": "金德，經日之甲、經月之午七、經星之乙一百八十二、經辰之酉二千一百八十二、己未年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 182,
+      "shi": 2182,
+      "sui": 65456,
+      "badge": "商"
+    },
+    {
+      "id": "event-65465",
+      "name": "商河亶甲立",
+      "description": "金德，經日之甲、經月之午七、經星之乙一百八十二、經辰之戌二千一百八十三、戊辰年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 182,
+      "shi": 2183,
+      "sui": 65465,
+      "badge": "商"
+    },
+    {
+      "id": "event-65474",
+      "name": "商祖乙立",
+      "description": "金德，經日之甲、經月之午七、經星之乙一百八十二、經辰之戌二千一百八十三、丁丑年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 182,
+      "shi": 2183,
+      "sui": 65474,
+      "badge": "商"
+    },
+    {
+      "id": "event-65493",
+      "name": "商祖辛立",
+      "description": "金德，經日之甲、經月之午七、經星之乙一百八十二、經辰之亥二千一百八十四、丙申年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 182,
+      "shi": 2184,
+      "sui": 65493,
+      "badge": "商"
+    },
+    {
+      "id": "event-65509",
+      "name": "商沃甲立",
+      "description": "金德，經日之甲、經月之午七、經星之乙一百八十二、經辰之亥二千一百八十四、壬子年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 182,
+      "shi": 2184,
+      "sui": 65509,
+      "badge": "商"
+    },
+    {
+      "id": "event-65534",
+      "name": "商祖丁立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之子二千一百八十五、丁丑年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2185,
+      "sui": 65534,
+      "badge": "商"
+    },
+    {
+      "id": "event-65559",
+      "name": "商南庚立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之丑二千一百八十六、壬寅年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2186,
+      "sui": 65559,
+      "badge": "商"
+    },
+    {
+      "id": "event-65584",
+      "name": "商阳甲立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之寅二千一百八十七、丁卯年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2187,
+      "sui": 65584,
+      "badge": "商"
+    },
+    {
+      "id": "event-65601",
+      "name": "商盘庚立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之寅二千一百八十七、甲申年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2187,
+      "sui": 65601,
+      "badge": "商"
+    },
+    {
+      "id": "event-65629",
+      "name": "商小辛立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之卯二千一百八十八、壬子年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2188,
+      "sui": 65629,
+      "badge": "商"
+    },
+    {
+      "id": "event-65650",
+      "name": "商小乙立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之辰二千一百八十九、癸酉年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2189,
+      "sui": 65650,
+      "badge": "商"
+    },
+    {
+      "id": "event-65660",
+      "name": "商武丁立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之辰二千一百八十九、癸未年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2189,
+      "sui": 65660,
+      "badge": "商"
+    },
+    {
       "id": "event-65717",
       "name": "盘庚迁殷",
-      "description": "土德，經日之甲、經星之丙一八三、經辰之午二一九一、庚辰年。",
+      "description": "土德，經日之甲、經月之午七、經星之丙一百八十三、經辰之午二千一百九十一、庚辰年。",
       "color": "#555",
       "colorEnd": "#222",
       "textColor": "#ffffff",
@@ -467,9 +635,45 @@
       "badge": "商"
     },
     {
+      "id": "event-65719",
+      "name": "商祖庚立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之午二千一百九十一、壬午年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2191,
+      "sui": 65719,
+      "badge": "商"
+    },
+    {
+      "id": "event-65730",
+      "name": "商祖甲立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之午二千一百九十一、癸巳年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2191,
+      "sui": 65730,
+      "badge": "商"
+    },
+    {
+      "id": "event-65763",
+      "name": "商廩辛立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之申二千一百九十三、丙寅年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2193,
+      "sui": 65763,
+      "badge": "商"
+    },
+    {
       "id": "event-65767",
       "name": "武丁中兴",
-      "description": "土德，經日之甲、經星之丙一八三、經辰之申二一九三、庚午年。",
+      "description": "土德，經日之甲、經月之午七、經星之丙一百八十三、經辰之申二千一百九十三、庚午年。",
       "color": "#555",
       "colorEnd": "#222",
       "textColor": "#ffffff",
@@ -479,9 +683,57 @@
       "badge": "商"
     },
     {
+      "id": "event-65792",
+      "name": "商武乙立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之酉二千一百九十四、乙未年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2194,
+      "sui": 65792,
+      "badge": "商"
+    },
+    {
+      "id": "event-65826",
+      "name": "商太丁立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之戌二千一百九十五、己巳年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2195,
+      "sui": 65826,
+      "badge": "商"
+    },
+    {
+      "id": "event-65839",
+      "name": "商帝乙立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之戌二千一百九十五、壬午年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2195,
+      "sui": 65839,
+      "badge": "商"
+    },
+    {
+      "id": "event-65862",
+      "name": "商帝辛（纣）立",
+      "description": "金德，經日之甲、經月之午七、經星之丙一百八十三、經辰之亥二千一百九十六、乙巳年。",
+      "color": "#D4AF37",
+      "colorEnd": "#B8860B",
+      "textColor": "#ffffff",
+      "yun": 183,
+      "shi": 2196,
+      "sui": 65862,
+      "badge": "商"
+    },
+    {
       "id": "zhou-wu-li",
       "name": "周武王建立周朝",
-      "description": "火德，經日之甲、經星之丁一八四、經辰之子二一九七、己卯年。",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之子二千一百九十七、己卯年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -491,9 +743,45 @@
       "badge": "周"
     },
     {
+      "id": "event-65902",
+      "name": "周成王立",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之子二千一百九十七、乙酉年。",
+      "color": "#8B0000",
+      "colorEnd": "#A52A2A",
+      "textColor": "#ffffff",
+      "yun": 184,
+      "shi": 2197,
+      "sui": 65902,
+      "badge": "周"
+    },
+    {
+      "id": "event-65939",
+      "name": "周康王立",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之丑二千一百九十八、壬戌年。",
+      "color": "#8B0000",
+      "colorEnd": "#A52A2A",
+      "textColor": "#ffffff",
+      "yun": 184,
+      "shi": 2198,
+      "sui": 65939,
+      "badge": "周"
+    },
+    {
+      "id": "event-65965",
+      "name": "周昭王立",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之寅二千一百九十九、戊子年。",
+      "color": "#8B0000",
+      "colorEnd": "#A52A2A",
+      "textColor": "#ffffff",
+      "yun": 184,
+      "shi": 2199,
+      "sui": 65965,
+      "badge": "周"
+    },
+    {
       "id": "event-65971",
       "name": "牧野之战",
-      "description": "火德，經日之甲、經星之丁一八四、經辰之卯二二零零、甲午年。",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之卯二千二百、甲午年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -503,9 +791,45 @@
       "badge": "周"
     },
     {
+      "id": "event-66016",
+      "name": "周穆王立",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之辰二千二百零一、己卯年。",
+      "color": "#8B0000",
+      "colorEnd": "#A52A2A",
+      "textColor": "#ffffff",
+      "yun": 184,
+      "shi": 2201,
+      "sui": 66016,
+      "badge": "周"
+    },
+    {
+      "id": "event-66083",
+      "name": "周懿王立",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之午二千二百零三、丙戌年。",
+      "color": "#8B0000",
+      "colorEnd": "#A52A2A",
+      "textColor": "#ffffff",
+      "yun": 184,
+      "shi": 2203,
+      "sui": 66083,
+      "badge": "周"
+    },
+    {
+      "id": "event-66139",
+      "name": "周厉王立",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之申二千二百零五、壬午年。",
+      "color": "#8B0000",
+      "colorEnd": "#A52A2A",
+      "textColor": "#ffffff",
+      "yun": 184,
+      "shi": 2205,
+      "sui": 66139,
+      "badge": "周"
+    },
+    {
       "id": "event-66176",
       "name": "国人暴动(共和元年)",
-      "description": "火德，經日之甲、經星之丁一八四、經辰之酉二二零六、己未年。",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之酉二千二百零六、己未年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -515,9 +839,33 @@
       "badge": "周"
     },
     {
+      "id": "event-66190",
+      "name": "周宣王立",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之戌二千二百零七、癸酉年。",
+      "color": "#8B0000",
+      "colorEnd": "#A52A2A",
+      "textColor": "#ffffff",
+      "yun": 184,
+      "shi": 2207,
+      "sui": 66190,
+      "badge": "周"
+    },
+    {
+      "id": "event-66236",
+      "name": "周幽王立",
+      "description": "火德，經日之甲、經月之午七、經星之丁一百八十四、經辰之亥二千二百零八、己未年。",
+      "color": "#8B0000",
+      "colorEnd": "#A52A2A",
+      "textColor": "#ffffff",
+      "yun": 184,
+      "shi": 2208,
+      "sui": 66236,
+      "badge": "周"
+    },
+    {
       "id": "event-66247",
       "name": "平王东迁(春秋始)",
-      "description": "火德，經日之甲、經星之戊一八五、經辰之子二二零九、庚午年。",
+      "description": "火德，經日之甲、經月之午七、經星之戊一百八十五、經辰之子二千二百零九、庚午年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -529,7 +877,7 @@
     {
       "id": "zhou-ping-wang",
       "name": "周平王东迁",
-      "description": "火德，經日之甲、經星之戊一八五、經辰之子二二零九、辛未年。",
+      "description": "火德，經日之甲、經月之午七、經星之戊一百八十五、經辰之子二千二百零九、辛未年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -541,7 +889,7 @@
     {
       "id": "event-66366",
       "name": "齐桓公称霸(葵丘之盟)",
-      "description": "火德，經日之甲、經星之戊一八五、經辰之辰二二一三、己巳年。",
+      "description": "火德，經日之甲、經月之午七、經星之戊一百八十五、經辰之辰二千二百一十三、己巳年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -553,7 +901,7 @@
     {
       "id": "event-66385",
       "name": "城濮之战(晋文公称霸)",
-      "description": "火德，經日之甲、經星之戊一八五、經辰之辰二二一三、戊子年。",
+      "description": "火德，經日之甲、經月之午七、經星之戊一百八十五、經辰之辰二千二百一十三、戊子年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -565,7 +913,7 @@
     {
       "id": "event-66466",
       "name": "孔子出生",
-      "description": "火德，經日之甲、經星之戊一八五、經辰之未二二一六、己酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之戊一百八十五、經辰之未二千二百一十六、己酉年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -577,7 +925,7 @@
     {
       "id": "event-66538",
       "name": "孔子卒",
-      "description": "火德，經日之甲、經星之戊一八五、經辰之酉二二一八、辛酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之戊一百八十五、經辰之酉二千二百一十八、辛酉年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -589,7 +937,7 @@
     {
       "id": "event-66614",
       "name": "三家分晋(战国始)",
-      "description": "火德，經日之甲、經星之己一八六、經辰之子二二二一、丁丑年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之子二千二百二十一、丁丑年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -601,7 +949,7 @@
     {
       "id": "event-66645",
       "name": "孟子出生",
-      "description": "火德，經日之甲、經星之己一八六、經辰之丑二二二二、戊申年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之丑二千二百二十二、戊申年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -613,7 +961,7 @@
     {
       "id": "event-66661",
       "name": "商鞅变法",
-      "description": "火德，經日之甲、經星之己一八六、經辰之寅二二二三、甲子年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之寅二千二百二十三、甲子年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -625,7 +973,7 @@
     {
       "id": "event-66757",
       "name": "长平之战",
-      "description": "火德，經日之甲、經星之己一八六、經辰之巳二二二六、庚子年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之巳二千二百二十六、庚子年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -637,7 +985,7 @@
     {
       "id": "event-66761",
       "name": "秦灭周",
-      "description": "水德，經日之甲、經星之己一八六、經辰之巳二二二六、甲辰年。",
+      "description": "水德，經日之甲、經月之午七、經星之己一百八十六、經辰之巳二千二百二十六、甲辰年。",
       "color": "#2F4F4F",
       "colorEnd": "#000000",
       "textColor": "#ffffff",
@@ -649,7 +997,7 @@
     {
       "id": "event-66796",
       "name": "秦始皇大统",
-      "description": "水德，經日之甲、經星之己一八六、經辰之午二二二七、己卯年。",
+      "description": "水德，經日之甲、經月之午七、經星之己一百八十六、經辰之午二千二百二十七、己卯年。",
       "color": "#2F4F4F",
       "colorEnd": "#000000",
       "textColor": "#ffffff",
@@ -661,7 +1009,7 @@
     {
       "id": "qin-shi-huang",
       "name": "秦始皇统一六国",
-      "description": "水德，經日之甲、經星之己一八六、經辰之午二二二七、庚辰年。",
+      "description": "水德，經日之甲、經月之午七、經星之己一百八十六、經辰之午二千二百二十七、庚辰年。",
       "color": "#2F4F4F",
       "colorEnd": "#000000",
       "textColor": "#ffffff",
@@ -673,7 +1021,7 @@
     {
       "id": "event-66804",
       "name": "焚书",
-      "description": "水德，經日之甲、經星之己一八六、經辰之午二二二七、丁亥年。",
+      "description": "水德，經日之甲、經月之午七、經星之己一百八十六、經辰之午二千二百二十七、丁亥年。",
       "color": "#2F4F4F",
       "colorEnd": "#000000",
       "textColor": "#ffffff",
@@ -685,7 +1033,7 @@
     {
       "id": "event-66805",
       "name": "坑儒",
-      "description": "水德，經日之甲、經星之己一八六、經辰之午二二二七、戊子年。",
+      "description": "水德，經日之甲、經月之午七、經星之己一百八十六、經辰之午二千二百二十七、戊子年。",
       "color": "#2F4F4F",
       "colorEnd": "#000000",
       "textColor": "#ffffff",
@@ -697,7 +1045,7 @@
     {
       "id": "event-66808",
       "name": "陈胜吴广起义",
-      "description": "水德，經日之甲、經星之己一八六、經辰之午二二二七、辛卯年。",
+      "description": "水德，經日之甲、經月之午七、經星之己一百八十六、經辰之午二千二百二十七、辛卯年。",
       "color": "#2F4F4F",
       "colorEnd": "#000000",
       "textColor": "#ffffff",
@@ -709,7 +1057,7 @@
     {
       "id": "event-66810",
       "name": "巨鹿之战",
-      "description": "水德，經日之甲、經星之己一八六、經辰之午二二二七、癸巳年。",
+      "description": "水德，經日之甲、經月之午七、經星之己一百八十六、經辰之午二千二百二十七、癸巳年。",
       "color": "#2F4F4F",
       "colorEnd": "#000000",
       "textColor": "#ffffff",
@@ -721,7 +1069,7 @@
     {
       "id": "event-66811",
       "name": "楚汉之争始",
-      "description": "火德，經日之甲、經星之己一八六、經辰之未二二二八、甲午年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之未二千二百二十八、甲午年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -733,7 +1081,7 @@
     {
       "id": "event-66815",
       "name": "垓下之战(高祖称帝)",
-      "description": "火德，經日之甲、經星之己一八六、經辰之未二二二八、戊戌年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之未二千二百二十八、戊戌年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -745,7 +1093,7 @@
     {
       "id": "han-gaozu",
       "name": "汉高祖建汉",
-      "description": "火德，經日之甲、經星之己一八六、經辰之未二二二八、己亥年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之未二千二百二十八、己亥年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -757,7 +1105,7 @@
     {
       "id": "event-66817",
       "name": "白登之围",
-      "description": "火德，經日之甲、經星之己一八六、經辰之未二二二八、庚子年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之未二千二百二十八、庚子年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -769,7 +1117,7 @@
     {
       "id": "event-66837",
       "name": "文景之治始",
-      "description": "火德，經日之甲、經星之己一八六、經辰之未二二二八、庚申年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之未二千二百二十八、庚申年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -781,7 +1129,7 @@
     {
       "id": "event-66863",
       "name": "七国之乱",
-      "description": "火德，經日之甲、經星之己一八六、經辰之申二二二九、丙戌年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之申二千二百二十九、丙戌年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -793,7 +1141,7 @@
     {
       "id": "event-66876",
       "name": "汉武帝即位",
-      "description": "火德，經日之甲、經星之己一八六、經辰之酉二二三零、己亥年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之酉二千二百三十、己亥年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -805,7 +1153,7 @@
     {
       "id": "event-66879",
       "name": "张骞出使西域",
-      "description": "火德，經日之甲、經星之己一八六、經辰之酉二二三零、壬寅年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之酉二千二百三十、壬寅年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -817,7 +1165,7 @@
     {
       "id": "event-66898",
       "name": "漠北之战",
-      "description": "火德，經日之甲、經星之己一八六、經辰之酉二二三零、辛酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之酉二千二百三十、辛酉年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -829,7 +1177,7 @@
     {
       "id": "event-66913",
       "name": "太初改历",
-      "description": "火德，經日之甲、經星之己一八六、經辰之戌二二三一、丙子年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之戌二千二百三十一、丙子年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -841,7 +1189,7 @@
     {
       "id": "event-66917",
       "name": "苏武牧羊",
-      "description": "火德，經日之甲、經星之己一八六、經辰之戌二二三一、庚辰年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之戌二千二百三十一、庚辰年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -853,7 +1201,7 @@
     {
       "id": "event-66930",
       "name": "昭宣中兴始",
-      "description": "火德，經日之甲、經星之己一八六、經辰之戌二二三一、癸巳年。",
+      "description": "火德，經日之甲、經月之午七、經星之己一百八十六、經辰之戌二千二百三十一、癸巳年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -878,7 +1226,7 @@
     {
       "id": "xin-wangmang",
       "name": "王莽代汉建新",
-      "description": "土德，經日之甲、經星之庚一八七、經辰之寅二二三五、己巳年。",
+      "description": "土德，經日之甲、經月之午七、經星之庚一百八十七、經辰之寅二千二百三十五、己巳年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -890,7 +1238,7 @@
     {
       "id": "event-67034",
       "name": "绿林赤眉起义",
-      "description": "土德，經日之甲、經星之庚一八七、經辰之寅二二三五、丁丑年。",
+      "description": "土德，經日之甲、經月之午七、經星之庚一百八十七、經辰之寅二千二百三十五、丁丑年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -902,7 +1250,7 @@
     {
       "id": "event-67040",
       "name": "昆阳之战",
-      "description": "土德，經日之甲、經星之庚一八七、經辰之寅二二三五、癸未年。",
+      "description": "土德，經日之甲、經月之午七、經星之庚一百八十七、經辰之寅二千二百三十五、癸未年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -914,7 +1262,7 @@
     {
       "id": "han-guangwu",
       "name": "汉光武帝建东汉",
-      "description": "火德，經日之甲、經星之庚一八七、經辰之寅二二三五、乙酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之庚一百八十七、經辰之寅二千二百三十五、乙酉年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -926,7 +1274,7 @@
     {
       "id": "event-67090",
       "name": "班超使西域",
-      "description": "火德，經日之甲、經星之庚一八七、經辰之辰二二三七、癸酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之庚一百八十七、經辰之辰二千二百三十七、癸酉年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -938,7 +1286,7 @@
     {
       "id": "event-67201",
       "name": "黄巾起义",
-      "description": "火德，經日之甲、經星之庚一八七、經辰之申二二四一、甲子年。",
+      "description": "火德，經日之甲、經月之午七、經星之庚一百八十七、經辰之申二千二百四十一、甲子年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -950,7 +1298,7 @@
     {
       "id": "event-67206",
       "name": "董卓进京",
-      "description": "火德，經日之甲、經星之庚一八七、經辰之申二二四一、己巳年。",
+      "description": "火德，經日之甲、經月之午七、經星之庚一百八十七、經辰之申二千二百四十一、己巳年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -962,7 +1310,7 @@
     {
       "id": "event-67217",
       "name": "官渡之战",
-      "description": "火德，經日之甲、經星之庚一八七、經辰之申二二四一、庚辰年。",
+      "description": "火德，經日之甲、經月之午七、經星之庚一百八十七、經辰之申二千二百四十一、庚辰年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -974,7 +1322,7 @@
     {
       "id": "event-67225",
       "name": "赤壁之战",
-      "description": "火德，經日之甲、經星之庚一八七、經辰之申二二四一、戊子年。",
+      "description": "火德，經日之甲、經月之午七、經星之庚一百八十七、經辰之申二千二百四十一、戊子年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -986,7 +1334,7 @@
     {
       "id": "wei-wen",
       "name": "魏文帝代汉",
-      "description": "土德，經日之甲、經星之庚一八七、經辰之酉二二四二、庚子年。",
+      "description": "土德，經日之甲、經月之午七、經星之庚一百八十七、經辰之酉二千二百四十二、庚子年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -998,7 +1346,7 @@
     {
       "id": "event-67238",
       "name": "刘备称帝(蜀汉)",
-      "description": "火德，經日之甲、經星之庚一八七、經辰之酉二二四二、辛丑年。",
+      "description": "火德，經日之甲、經月之午七、經星之庚一百八十七、經辰之酉二千二百四十二、辛丑年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1010,7 +1358,7 @@
     {
       "id": "event-67239",
       "name": "孙权称王(吴)",
-      "description": "火德，經日之甲、經星之庚一八七、經辰之酉二二四二、壬寅年。",
+      "description": "火德，經日之甲、經月之午七、經星之庚一百八十七、經辰之酉二千二百四十二、壬寅年。",
       "color": "#228B22",
       "colorEnd": "#006400",
       "textColor": "#ffffff",
@@ -1022,7 +1370,7 @@
     {
       "id": "event-67251",
       "name": "诸葛亮卒于五丈原",
-      "description": "火德，經日之甲、經星之庚一八七、經辰之酉二二四二、甲寅年。",
+      "description": "火德，經日之甲、經月之午七、經星之庚一百八十七、經辰之酉二千二百四十二、甲寅年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1034,7 +1382,7 @@
     {
       "id": "event-67280",
       "name": "魏灭蜀",
-      "description": "土德，經日之甲、經星之庚一八七、經辰之戌二二四三、癸未年。",
+      "description": "土德，經日之甲、經月之午七、經星之庚一百八十七、經辰之戌二千二百四十三、癸未年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1046,7 +1394,7 @@
     {
       "id": "jin-wu",
       "name": "晋武帝建晋",
-      "description": "金德，經日之甲、經星之庚一八七、經辰之戌二二四三、乙酉年。",
+      "description": "金德，經日之甲、經月之午七、經星之庚一百八十七、經辰之戌二千二百四十三、乙酉年。",
       "color": "#D4AF37",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1058,7 +1406,7 @@
     {
       "id": "event-67297",
       "name": "晋灭吴(三国终)",
-      "description": "金德，經日之甲、經星之庚一八七、經辰之亥二二四四、庚子年。",
+      "description": "金德，經日之甲、經月之午七、經星之庚一百八十七、經辰之亥二千二百四十四、庚子年。",
       "color": "#D4AF37",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1070,7 +1418,7 @@
     {
       "id": "event-67308",
       "name": "八王之乱始",
-      "description": "金德，經日之甲、經星之庚一八七、經辰之亥二二四四、辛亥年。",
+      "description": "金德，經日之甲、經月之午七、經星之庚一百八十七、經辰之亥二千二百四十四、辛亥年。",
       "color": "#D4AF37",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1082,7 +1430,7 @@
     {
       "id": "event-67328",
       "name": "永嘉之乱",
-      "description": "金德，經日之甲、經星之辛一八八、經辰之子二二四五、辛未年。",
+      "description": "金德，經日之甲、經月之午七、經星之辛一百八十八、經辰之子二千二百四十五、辛未年。",
       "color": "#D4AF37",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1094,7 +1442,7 @@
     {
       "id": "event-67334",
       "name": "东晋建立",
-      "description": "金德，經日之甲、經星之辛一八八、經辰之子二二四五、丁丑年。",
+      "description": "金德，經日之甲、經月之午七、經星之辛一百八十八、經辰之子二千二百四十五、丁丑年。",
       "color": "#D4AF37",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1106,7 +1454,7 @@
     {
       "id": "event-67400",
       "name": "淝水之战",
-      "description": "金德，經日之甲、經星之辛一八八、經辰之寅二二四七、癸未年。",
+      "description": "金德，經日之甲、經月之午七、經星之辛一百八十八、經辰之寅二千二百四十七、癸未年。",
       "color": "#D4AF37",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1118,7 +1466,7 @@
     {
       "id": "event-67437",
       "name": "刘裕代晋建宋",
-      "description": "火德，經日之甲、經星之辛一八八、經辰之卯二二四八、庚申年。",
+      "description": "火德，經日之甲、經月之午七、經星之辛一百八十八、經辰之卯二千二百四十八、庚申年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1130,7 +1478,7 @@
     {
       "id": "event-67456",
       "name": "北魏拓跋焘统一北方",
-      "description": "土德，經日之甲、經星之辛一八八、經辰之辰二二四九、己卯年。",
+      "description": "土德，經日之甲、經月之午七、經星之辛一百八十八、經辰之辰二千二百四十九、己卯年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1142,7 +1490,7 @@
     {
       "id": "event-67511",
       "name": "孝文帝迁都洛阳",
-      "description": "土德，經日之甲、經星之辛一八八、經辰之午二二五一、甲戌年。",
+      "description": "土德，經日之甲、經月之午七、經星之辛一百八十八、經辰之午二千二百五十一、甲戌年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1154,7 +1502,7 @@
     {
       "id": "event-67565",
       "name": "侯景之乱",
-      "description": "火德，經日之甲、經星之辛一八八、經辰之申二二五三、戊辰年。",
+      "description": "火德，經日之甲、經月之午七、經星之辛一百八十八、經辰之申二千二百五十三、戊辰年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1166,7 +1514,7 @@
     {
       "id": "event-67574",
       "name": "陈霸先建陈",
-      "description": "火德，經日之甲、經星之辛一八八、經辰之申二二五三、丁丑年。",
+      "description": "火德，經日之甲、經月之午七、經星之辛一百八十八、經辰之申二千二百五十三、丁丑年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1178,7 +1526,7 @@
     {
       "id": "sui-wen",
       "name": "隋文帝建隋",
-      "description": "火德，經日之甲、經星之辛一八八、經辰之酉二二五四、辛丑年。",
+      "description": "火德，經日之甲、經月之午七、經星之辛一百八十八、經辰之酉二千二百五十四、辛丑年。",
       "color": "#FF8C00",
       "colorEnd": "#FF4500",
       "textColor": "#ffffff",
@@ -1190,7 +1538,7 @@
     {
       "id": "event-67606",
       "name": "隋灭陈(统一)",
-      "description": "火德，經日之甲、經星之辛一八八、經辰之酉二二五四、己酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之辛一百八十八、經辰之酉二千二百五十四、己酉年。",
       "color": "#FF8C00",
       "colorEnd": "#FF4500",
       "textColor": "#ffffff",
@@ -1202,7 +1550,7 @@
     {
       "id": "event-67622",
       "name": "开凿大运河",
-      "description": "火德，經日之甲、經星之辛一八八、經辰之戌二二五五、乙丑年。",
+      "description": "火德，經日之甲、經月之午七、經星之辛一百八十八、經辰之戌二千二百五十五、乙丑年。",
       "color": "#FF8C00",
       "colorEnd": "#FF4500",
       "textColor": "#ffffff",
@@ -1214,7 +1562,7 @@
     {
       "id": "event-67628",
       "name": "隋末农民起义始",
-      "description": "火德，經日之甲、經星之辛一八八、經辰之戌二二五五、辛未年。",
+      "description": "火德，經日之甲、經月之午七、經星之辛一百八十八、經辰之戌二千二百五十五、辛未年。",
       "color": "#FF8C00",
       "colorEnd": "#FF4500",
       "textColor": "#ffffff",
@@ -1226,7 +1574,7 @@
     {
       "id": "tang-gaozu",
       "name": "唐高祖建唐",
-      "description": "土德，經日之甲、經星之辛一八八、經辰之戌二二五五、戊寅年。",
+      "description": "土德，經日之甲、經月之午七、經星之辛一百八十八、經辰之戌二千二百五十五、戊寅年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1238,7 +1586,7 @@
     {
       "id": "event-67643",
       "name": "玄武门之变",
-      "description": "土德，經日之甲、經星之辛一八八、經辰之戌二二五五、丙戌年。",
+      "description": "土德，經日之甲、經月之午七、經星之辛一百八十八、經辰之戌二千二百五十五、丙戌年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1250,7 +1598,7 @@
     {
       "id": "event-67644",
       "name": "贞观之治始",
-      "description": "土德，經日之甲、經星之辛一八八、經辰之戌二二五五、丁亥年。",
+      "description": "土德，經日之甲、經月之午七、經星之辛一百八十八、經辰之戌二千二百五十五、丁亥年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1262,7 +1610,7 @@
     {
       "id": "event-67658",
       "name": "文成公主入藏",
-      "description": "土德，經日之甲、經星之辛一八八、經辰之亥二二五六、辛丑年。",
+      "description": "土德，經日之甲、經月之午七、經星之辛一百八十八、經辰之亥二千二百五十六、辛丑年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1274,7 +1622,7 @@
     {
       "id": "event-67707",
       "name": "武则天称帝(周)",
-      "description": "火德，經日之甲、經星之壬一八九、經辰之子二二五七、庚寅年。",
+      "description": "火德，經日之甲、經月之午七、經星之壬一百八十九、經辰之子二千二百五十七、庚寅年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1286,7 +1634,7 @@
     {
       "id": "event-67722",
       "name": "神龙政变(唐复辟)",
-      "description": "土德，經日之甲、經星之壬一八九、經辰之丑二二五八、乙巳年。",
+      "description": "土德，經日之甲、經月之午七、經星之壬一百八十九、經辰之丑二千二百五十八、乙巳年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1298,7 +1646,7 @@
     {
       "id": "event-67730",
       "name": "开元盛世始",
-      "description": "土德，經日之甲、經星之壬一八九、經辰之丑二二五八、癸丑年。",
+      "description": "土德，經日之甲、經月之午七、經星之壬一百八十九、經辰之丑二千二百五十八、癸丑年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1310,7 +1658,7 @@
     {
       "id": "event-67772",
       "name": "安史之乱爆发",
-      "description": "土德，經日之甲、經星之壬一八九、經辰之卯二二六零、乙未年。",
+      "description": "土德，經日之甲、經月之午七、經星之壬一百八十九、經辰之卯二千二百六十、乙未年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1322,7 +1670,7 @@
     {
       "id": "event-67780",
       "name": "安史之乱平定",
-      "description": "土德，經日之甲、經星之壬一八九、經辰之卯二二六零、癸卯年。",
+      "description": "土德，經日之甲、經月之午七、經星之壬一百八十九、經辰之卯二千二百六十、癸卯年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1334,7 +1682,7 @@
     {
       "id": "event-67797",
       "name": "两税法",
-      "description": "土德，經日之甲、經星之壬一八九、經辰之卯二二六零、庚申年。",
+      "description": "土德，經日之甲、經月之午七、經星之壬一百八十九、經辰之卯二千二百六十、庚申年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1346,7 +1694,7 @@
     {
       "id": "event-67852",
       "name": "甘露之变",
-      "description": "土德，經日之甲、經星之壬一八九、經辰之巳二二六二、乙卯年。",
+      "description": "土德，經日之甲、經月之午七、經星之壬一百八十九、經辰之巳二千二百六十二、乙卯年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1358,7 +1706,7 @@
     {
       "id": "event-67892",
       "name": "黄巢起义始",
-      "description": "土德，經日之甲、經星之壬一八九、經辰之未二二六四、乙未年。",
+      "description": "土德，經日之甲、經月之午七、經星之壬一百八十九、經辰之未二千二百六十四、乙未年。",
       "color": "#DAA520",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1370,7 +1718,7 @@
     {
       "id": "event-67924",
       "name": "朱温灭唐(五代始)",
-      "description": "火德，經日之甲、經星之壬一八九、經辰之申二二六五、丁卯年。",
+      "description": "火德，經日之甲、經月之午七、經星之壬一百八十九、經辰之申二千二百六十五、丁卯年。",
       "color": "#CD5C5C",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1382,7 +1730,7 @@
     {
       "id": "event-67933",
       "name": "耶律阿保机建契丹",
-      "description": "土德，經日之甲、經星之壬一八九、經辰之申二二六五、丙子年。",
+      "description": "土德，經日之甲、經月之午七、經星之壬一百八十九、經辰之申二千二百六十五、丙子年。",
       "color": "#4682B4",
       "colorEnd": "#000080",
       "textColor": "#ffffff",
@@ -1394,7 +1742,7 @@
     {
       "id": "event-67953",
       "name": "石敬瑭割燕云十六州",
-      "description": "金德，經日之甲、經星之壬一八九、經辰之酉二二六六、丙申年。",
+      "description": "金德，經日之甲、經月之午七、經星之壬一百八十九、經辰之酉二千二百六十六、丙申年。",
       "color": "#D4AF37",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1406,7 +1754,7 @@
     {
       "id": "event-67971",
       "name": "周世宗显德之治",
-      "description": "火德，經日之甲、經星之壬一八九、經辰之酉二二六六、甲寅年。",
+      "description": "火德，經日之甲、經月之午七、經星之壬一百八十九、經辰之酉二千二百六十六、甲寅年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1418,7 +1766,7 @@
     {
       "id": "song-taizu",
       "name": "宋太祖建宋",
-      "description": "火德，經日之甲、經星之壬一八九、經辰之酉二二六六、庚申年。",
+      "description": "火德，經日之甲、經月之午七、經星之壬一百八十九、經辰之酉二千二百六十六、庚申年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1430,7 +1778,7 @@
     {
       "id": "event-67978",
       "name": "杯酒释兵权",
-      "description": "火德，經日之甲、經星之壬一八九、經辰之酉二二六六、辛酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之壬一百八十九、經辰之酉二千二百六十六、辛酉年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1442,7 +1790,7 @@
     {
       "id": "event-68021",
       "name": "澶渊之盟",
-      "description": "火德，經日之甲、經星之壬一八九、經辰之亥二二六八、甲辰年。",
+      "description": "火德，經日之甲、經月之午七、經星之壬一百八十九、經辰之亥二千二百六十八、甲辰年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1454,7 +1802,7 @@
     {
       "id": "event-68055",
       "name": "李元昊建西夏",
-      "description": "土德，經日之甲、經星之癸一九零、經辰之子二二六九、戊寅年。",
+      "description": "土德，經日之甲、經月之午七、經星之癸一百九十、經辰之子二千二百六十九、戊寅年。",
       "color": "#2F4F4F",
       "colorEnd": "#000000",
       "textColor": "#ffffff",
@@ -1466,7 +1814,7 @@
     {
       "id": "event-68086",
       "name": "王安石变法",
-      "description": "火德，經日之甲、經星之癸一九零、經辰之丑二二七零、己酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之癸一百九十、經辰之丑二千二百七十、己酉年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1478,7 +1826,7 @@
     {
       "id": "event-68132",
       "name": "完颜阿骨打建金",
-      "description": "金德，經日之甲、經星之癸一九零、經辰之卯二二七二、乙未年。",
+      "description": "金德，經日之甲、經月之午七、經星之癸一百九十、經辰之卯二千二百七十二、乙未年。",
       "color": "#D4AF37",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1490,7 +1838,7 @@
     {
       "id": "event-68137",
       "name": "方腊起义",
-      "description": "火德，經日之甲、經星之癸一九零、經辰之卯二二七二、庚子年。",
+      "description": "火德，經日之甲、經月之午七、經星之癸一百九十、經辰之卯二千二百七十二、庚子年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1502,7 +1850,7 @@
     {
       "id": "event-68142",
       "name": "金灭辽",
-      "description": "金德，經日之甲、經星之癸一九零、經辰之卯二二七二、乙巳年。",
+      "description": "金德，經日之甲、經月之午七、經星之癸一百九十、經辰之卯二千二百七十二、乙巳年。",
       "color": "#D4AF37",
       "colorEnd": "#B8860B",
       "textColor": "#ffffff",
@@ -1514,7 +1862,7 @@
     {
       "id": "song-gaozong",
       "name": "宋高宗建立南宋",
-      "description": "火德，經日之甲、經星之癸一九零、經辰之卯二二七二、丁未年。",
+      "description": "火德，經日之甲、經月之午七、經星之癸一百九十、經辰之卯二千二百七十二、丁未年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1526,7 +1874,7 @@
     {
       "id": "event-68158",
       "name": "绍兴和议",
-      "description": "火德，經日之甲、經星之癸一九零、經辰之卯二二七二、辛酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之癸一百九十、經辰之卯二千二百七十二、辛酉年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1538,7 +1886,7 @@
     {
       "id": "event-68159",
       "name": "岳飞遇害",
-      "description": "火德，經日之甲、經星之癸一九零、經辰之卯二二七二、壬戌年。",
+      "description": "火德，經日之甲、經月之午七、經星之癸一百九十、經辰之卯二千二百七十二、壬戌年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1550,7 +1898,7 @@
     {
       "id": "event-68223",
       "name": "成吉思汗建大蒙古国",
-      "description": "水德，經日之甲、經星之癸一九零、經辰之午二二七五、丙寅年。",
+      "description": "水德，經日之甲、經月之午七、經星之癸一百九十、經辰之午二千二百七十五、丙寅年。",
       "color": "#4682B4",
       "colorEnd": "#000080",
       "textColor": "#ffffff",
@@ -1562,7 +1910,7 @@
     {
       "id": "yuan-shizu",
       "name": "元世祖建元",
-      "description": "金德，經日之甲、經星之癸一九零、經辰之申二二七七、辛未年。",
+      "description": "金德，經日之甲、經月之午七、經星之癸一百九十、經辰之申二千二百七十七、辛未年。",
       "color": "#4682B4",
       "colorEnd": "#000080",
       "textColor": "#ffffff",
@@ -1574,7 +1922,7 @@
     {
       "id": "event-68296",
       "name": "崖山海战(南宋亡)",
-      "description": "火德，經日之甲、經星之癸一九零、經辰之申二二七七、己卯年。",
+      "description": "火德，經日之甲、經月之午七、經星之癸一百九十、經辰之申二千二百七十七、己卯年。",
       "color": "#8B0000",
       "colorEnd": "#A52A2A",
       "textColor": "#ffffff",
@@ -1584,9 +1932,9 @@
       "badge": "宋"
     },
     {
-      "id": "event-68296",
+      "id": "event-68296b",
       "name": "元灭南宋",
-      "description": "水德，經日之甲、經星之癸一九零、經辰之申二二七七、己卯年。",
+      "description": "水德，經日之甲、經月之午七、經星之癸一百九十、經辰之申二千二百七十七、己卯年。",
       "color": "#4682B4",
       "colorEnd": "#000080",
       "textColor": "#ffffff",
@@ -1598,7 +1946,7 @@
     {
       "id": "event-68368",
       "name": "红巾军起义",
-      "description": "水德，經日之甲、經星之癸一九零、經辰之戌二二七九、辛卯年。",
+      "description": "水德，經日之甲、經月之午七、經星之癸一百九十、經辰之戌二千二百七十九、辛卯年。",
       "color": "#4682B4",
       "colorEnd": "#000080",
       "textColor": "#ffffff",
@@ -1610,7 +1958,7 @@
     {
       "id": "ming-taizu",
       "name": "明太祖建明",
-      "description": "火德，經日之甲、經星之癸一九零、經辰之亥二二八零、戊申年。",
+      "description": "火德，經日之甲、經月之午七、經星之癸一百九十、經辰之亥二千二百八十、戊申年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1622,7 +1970,7 @@
     {
       "id": "event-68416",
       "name": "靖难之役始",
-      "description": "火德，經日之甲、經星之甲一九一、經辰之子二二八一、己卯年。",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之子二千二百八十一、己卯年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1632,9 +1980,21 @@
       "badge": "明"
     },
     {
+      "id": "event-68420",
+      "name": "明成祖立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之子二千二百八十一、癸未年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2281,
+      "sui": 68420,
+      "badge": "明"
+    },
+    {
       "id": "event-68422",
       "name": "郑和下西洋始",
-      "description": "火德，經日之甲、經星之甲一九一、經辰之子二二八一、乙酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之子二千二百八十一、乙酉年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1646,7 +2006,7 @@
     {
       "id": "event-68438",
       "name": "永乐迁都北京",
-      "description": "火德，經日之甲、經星之甲一九一、經辰之丑二二八二、辛丑年。",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之丑二千二百八十二、辛丑年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1656,9 +2016,45 @@
       "badge": "明"
     },
     {
+      "id": "event-68442",
+      "name": "明仁宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之丑二千二百八十二、乙巳年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2282,
+      "sui": 68442,
+      "badge": "明"
+    },
+    {
+      "id": "event-68443",
+      "name": "明宣宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之丑二千二百八十二、丙午年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2282,
+      "sui": 68443,
+      "badge": "明"
+    },
+    {
+      "id": "event-68453",
+      "name": "明英宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之丑二千二百八十二、丙辰年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2282,
+      "sui": 68453,
+      "badge": "明"
+    },
+    {
       "id": "event-68466",
       "name": "土木堡之变",
-      "description": "火德，經日之甲、經星之甲一九一、經辰之寅二二八三、己巳年。",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之寅二千二百八十三、己巳年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1668,9 +2064,21 @@
       "badge": "明"
     },
     {
+      "id": "event-68467",
+      "name": "明代宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之寅二千二百八十三、庚午年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2283,
+      "sui": 68467,
+      "badge": "明"
+    },
+    {
       "id": "event-68474",
       "name": "夺门之变",
-      "description": "火德，經日之甲、經星之甲一九一、經辰之寅二二八三、丁丑年。",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之寅二千二百八十三、丁丑年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1680,9 +2088,69 @@
       "badge": "明"
     },
     {
+      "id": "event-68482",
+      "name": "明宪宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之寅二千二百八十三、乙酉年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2283,
+      "sui": 68482,
+      "badge": "明"
+    },
+    {
+      "id": "event-68505",
+      "name": "明孝宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之卯二千二百八十四、戊申年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2284,
+      "sui": 68505,
+      "badge": "明"
+    },
+    {
+      "id": "event-68523",
+      "name": "明武宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之辰二千二百八十五、丙寅年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2285,
+      "sui": 68523,
+      "badge": "明"
+    },
+    {
+      "id": "event-68539",
+      "name": "明世宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之辰二千二百八十五、壬午年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2285,
+      "sui": 68539,
+      "badge": "明"
+    },
+    {
+      "id": "event-68584",
+      "name": "明穆宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之午二千二百八十七、丁卯年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2287,
+      "sui": 68584,
+      "badge": "明"
+    },
+    {
       "id": "event-68590",
       "name": "张居正变法",
-      "description": "火德，經日之甲、經星之甲一九一、經辰之午二二八七、癸酉年。",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之午二千二百八十七、癸酉年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1694,7 +2162,7 @@
     {
       "id": "event-68609",
       "name": "万历朝鲜战争",
-      "description": "火德，經日之甲、經星之甲一九一、經辰之午二二八七、壬辰年。",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之午二千二百八十七、壬辰年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1706,7 +2174,7 @@
     {
       "id": "event-68636",
       "name": "萨尔浒之战",
-      "description": "火德，經日之甲、經星之甲一九一、經辰之未二二八八、己未年。",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之未二千二百八十八、己未年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
@@ -1716,9 +2184,45 @@
       "badge": "明"
     },
     {
+      "id": "event-68637",
+      "name": "明光宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之未二千二百八十八、庚申年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2288,
+      "sui": 68637,
+      "badge": "明"
+    },
+    {
+      "id": "event-68638",
+      "name": "明熹宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之未二千二百八十八、辛酉年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2288,
+      "sui": 68638,
+      "badge": "明"
+    },
+    {
+      "id": "event-68645",
+      "name": "明思宗立",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之申二千二百八十九、戊辰年。",
+      "color": "#B22222",
+      "colorEnd": "#8B0000",
+      "textColor": "#ffffff",
+      "yun": 191,
+      "shi": 2289,
+      "sui": 68645,
+      "badge": "明"
+    },
+    {
       "id": "event-68661",
       "name": "明朝灭亡",
-      "description": "火德，經日之甲、經星之甲一九一、經辰之申二二八九、甲申年。",
+      "description": "火德，經日之甲、經月之午七、經星之甲一百九十一、經辰之申二千二百八十九、甲申年。",
       "color": "#B22222",
       "colorEnd": "#8B0000",
       "textColor": "#ffffff",
