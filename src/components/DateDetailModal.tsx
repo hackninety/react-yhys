@@ -12,6 +12,7 @@ import { getSolarTerm } from '../utils/solarTerms'
 import { getYearJiazi, YEARS_PER_SHI, SHIS_PER_YUN, YUNS_PER_HUI } from '../utils/calendar'
 import { playLvlvTone, playFourPillarsLv, stopLvlvAudio } from '../utils/lvlvAudio'
 import { getTianSheng, getDiYin, type TianSheng, type DiYin } from '../utils/changhe'
+import { ChangheMatrix } from './ChangheMatrix'
 import {
   getHuiHexagram,
   getYunHexagramDetailByGlobal,
@@ -139,6 +140,9 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
   
   // 声音唱和弹窗状态
   const [selectedChanghe, setSelectedChanghe] = useState<{type: 'tian'|'di', data: TianSheng|DiYin} | null>(null)
+  
+  // 完整版声音唱和矩阵状态
+  const [showChangheMatrix, setShowChangheMatrix] = useState(false)
 
   // 播放状态
   const [playingPillar, setPlayingPillar] = useState<string | null>(null)
@@ -266,6 +270,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
   
   
   return (
+    <>
     <div className="date-detail-overlay" onClick={onClose}>
       <div className="date-detail-modal" onClick={e => e.stopPropagation()}>
         <button className="close-btn" onClick={onClose}>×</button>
@@ -510,9 +515,19 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
                 <blockquote className="lvlv-detail-origin">
                   黄畿《皇极经世书传》："声音律吕，圆唱方和，而后乾坤坎离用焉，天地万物之理贯于一矣。天声一百一十二，地音一百五十二。"
                 </blockquote>
-                <p className="lvlv-detail-relation">注：完整的10×12唱和千字发音矩阵图正在开发中。</p>
               </div>
             )}
+
+            {/* 进入全集矩阵入口 */}
+            <div className="changhe-matrix-entrance">
+              <button 
+                className="btn-open-matrix"
+                onClick={() => setShowChangheMatrix(true)}
+              >
+                📊 查看完整声音唱和千字发音图
+              </button>
+              <p className="entrance-hint">包含 112 天声 × 152 地音的完整交互点派矩阵</p>
+            </div>
           </section>
           
           {/* 节气信息 */}
@@ -554,6 +569,15 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
         </div>
       </div>
     </div>
+      
+    {showChangheMatrix && (
+      <ChangheMatrix 
+        onClose={() => setShowChangheMatrix(false)} 
+        highlightTian={changhe.tianSheng.index}
+        highlightDi={changhe.diYin.index}
+      />
+    )}
+    </>
   )
 }
 
