@@ -527,13 +527,11 @@ export default function Calendar({
                         {termName && (
                           <span className={`term-badge ${termClass}`}>{termName}</span>
                         )}
-                        {specialDatesArr.map((sd, i) => (
-                           sd.badge ? (
-                             <span key={i} className={`special-date-badge ${specialDatesArr.length > 1 ? 'multi-badge' : ''}`} style={getSpecialDateBadgeStyle(sd)}>
-                               {sd.badge}
-                             </span>
-                           ) : null
-                        ))}
+                        {mainSpecialDate?.badge && (
+                           <span className="special-date-badge" style={getSpecialDateBadgeStyle(mainSpecialDate)}>
+                             {mainSpecialDate.badge}{specialDatesArr.length > 1 ? `+${specialDatesArr.length - 1}` : ''}
+                           </span>
+                         )}
                         {isCurrentYun && (
                           <span className="current-yun-badge">今·火</span>
                         )}
