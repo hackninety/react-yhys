@@ -356,19 +356,15 @@ export default function Calendar({
       const shiBranch = getBranch(globalShi - 1)
       const yunHexagram = getYunHexagramByGlobal(globalYun)
       const shiHexagram = getShiHexagramByGlobal(globalShi)
-      // 岁卦：用今年公历年份计算
-      const suiHex = getSuiHexagram(todayInfo.year)
-      const suiJiazi = getYearJiazi(todayInfo.huangjiSui)
-      return `星${yunStem}${globalYun} ${yunHexagram.unicode}${yunHexagram.name}　·　辰${shiBranch}${globalShi} ${shiHexagram.unicode}${shiHexagram.name}　·　岁${suiJiazi} ${suiHex.unicode}${suiHex.name}`
+      return `星${yunStem}${globalYun} ${yunHexagram.unicode}${yunHexagram.name}　·　辰${shiBranch}${globalShi} ${shiHexagram.unicode}${shiHexagram.name}`
     }
     if (zoomLevel === 'nian' && yearData) {
       const { state } = yearData
       const jiazi = getYearJiazi(state.yearInCycle + 1)
       const yunHexagram = getYunHexagramByGlobal(state.globalYun)
       const shiHexagram = getShiHexagramByGlobal(state.globalShi)
-      // 岁卦：用该世的公历起始年 + yearInCycle 算出对应公历年，再取岁卦
-      const suiGregorianYear = (state.globalShi - 1) * 30 - 67017 + state.yearInCycle + 1
-      const suiHex = getSuiHexagram(suiGregorianYear)
+      const currentSui = state.yearInCycle + 1
+      const suiHex = getSuiHexagram(suiToGregorianYear(currentSui))
       return `星${state.yunStem}${state.globalYun} ${yunHexagram.unicode}${yunHexagram.name}　·　辰${state.shiBranch}${state.globalShi} ${shiHexagram.unicode}${shiHexagram.name}　·　岁${jiazi} ${suiHex.unicode}${suiHex.name}`
     }
     return viewData?.title ?? ''
