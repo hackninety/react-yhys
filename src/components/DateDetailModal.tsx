@@ -20,8 +20,11 @@ import {
   getSuiHexagram,
   getYueHexagramByHuangji,
   getRiHexagramByDate,
+  getShiChenHexagramByDate,
   getHexagram64,
+  type Hexagram64, // Assuming Hexagram64 is a type based on the instruction's context
 } from '../data/hexagrams64'
+import { HEXAGRAM_INTERPRETATIONS } from '../data/hexagramInterpretations'
 import type { LvLv } from '../utils/lvlv'
 import './DateDetailModal.css'
 
@@ -134,9 +137,12 @@ function BaziPillarDisplay({ pillar, label }: { pillar: BaziPillar; label: strin
 }
 
 export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalProps) {
-  // 律吕详情弹窗状态
+  // 律吕弹窗状态
   const [selectedLvlv, setSelectedLvlv] = useState<LvLv | null>(null)
   const [selectedLvlvPillar, setSelectedLvlvPillar] = useState<string | null>(null)
+  
+  // 卦象解读弹窗状态
+  const [selectedHexagram, setSelectedHexagram] = useState<{level: string, hex: Hexagram64, interpretation: any} | null>(null)
   
   // 声音唱和弹窗状态
   const [selectedChanghe, setSelectedChanghe] = useState<{type: 'tian'|'di', data: TianSheng|DiYin} | null>(null)
@@ -257,6 +263,9 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     // 日卦
     const riHex = getRiHexagramByDate(date)
 
+    // 时卦 (按当前传入的Date时间的时辰)
+    const shiChenHex = getShiChenHexagramByDate(date)
+
     return [
       { level: '元（日）', name: '乾', hex: yuanHex, note: '一元统领' },
       { level: '会（月）', name: `第${huiIndex + 1}会`, hex: huiHex, note: '辟卦（消息卦）' },
@@ -265,6 +274,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
       { level: '岁（年）', name: `第${huangjiYear}年`, hex: suiHex, note: '世卦爻变' },
       { level: '月', name: `第${huangjiMonth + 1}月`, hex: yueHex, note: '先天60卦序' },
       { level: '日', name: '', hex: riHex, note: '先天60卦序' },
+      { level: '时', name: '当前时辰', hex: shiChenHex, note: '十二消息卦' },
     ]
   }, [date, huangjiYear])
   
@@ -339,25 +349,70 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
             </div>
           </section>
           
-          {/* 卦象链：元 → 会 → 运 → 世 → 岁 → 月 → 日 */}
+          {/* 卦象链：元 → 会 → 运 → 世 → 岁 → 月 → 日 → 时 */}
           <section className="section hexagram-chain-section">
             <h3>卦象链</h3>
             <div className="hexagram-chain">
-              {hexagramChain.map((item, i) => (
-                <div className="hexagram-chain-node" key={i}>
-                  <div className="chain-level">{item.level}</div>
-                  <div className="chain-symbol">{item.hex.unicode}</div>
-                  <div className="chain-name">{item.hex.name}</div>
-                  <div className="chain-note">{item.note}</div>
-                  {(item.level === '月' || item.level === '日') && (
-                    <div className="chain-note chain-footnote">干支索引→60卦序·"皆取于复"</div>
-                  )}
-                  {i < hexagramChain.length - 1 && (
-                    <div className="chain-arrow">↓</div>
-                  )}
-                </div>
-              ))}
+              {hexagramChain.map((item, i) => {
+                const isSelected = selectedHexagram?.level === item.level
+                const interpretation = HEXAGRAM_INTERPRETATIONS[item.hex.name]
+                
+                return (
+                  <div 
+                    className={`hexagram-chain-node ${isSelected ? 'hex-active' : ''}`} 
+                    key={i}
+                    onClick={() => {
+                      if (isSelected) {
+                        setSelectedHexagram(null)
+                      } else {
+                        setSelectedHexagram({ level: item.level, hex: item.hex, interpretation })
+                      }
+                    }}
+                    title="点击查看周易象辞与黄畿皇极解"
+                  >
+                    <div className="chain-level">{item.level}</div>
+                    <div className="chain-symbol">{item.hex.unicode}</div>
+                    <div className="chain-name">{item.hex.name}</div>
+                    <div className="chain-note">{item.note}</div>
+                    {(item.level === '月' || item.level === '日') && (
+                      <div className="chain-note chain-footnote">先天60序</div>
+                    )}
+                    {i < hexagramChain.length - 1 && (
+                      <div className="chain-arrow">↓</div>
+                    )}
+                  </div>
+                )
+              })}
             </div>
+            
+            {/* 卦象解读详情弹窗 */}
+            {selectedHexagram && (
+              <div className="hexagram-detail-popup">
+                <div className="lvlv-detail-header">
+                  <span className="lvlv-detail-badge yin">
+                    {selectedHexagram.level}卦
+                  </span>
+                  <span className="lvlv-detail-title">{selectedHexagram.hex.name}</span>
+                  <span className="hexagram-detail-symbol">{selectedHexagram.hex.unicode}</span>
+                  <button className="lvlv-detail-close" onClick={() => setSelectedHexagram(null)}>✕</button>
+                </div>
+                
+                {selectedHexagram.interpretation ? (
+                  <>
+                    <p className="hexagram-xiangci">
+                      <strong>《易·象》：</strong>{selectedHexagram.interpretation.xiangCi}
+                    </p>
+                    {selectedHexagram.interpretation.huangJiNote && (
+                      <blockquote className="lvlv-detail-origin">
+                        <strong>黄畿注：</strong>{selectedHexagram.interpretation.huangJiNote}
+                      </blockquote>
+                    )}
+                  </>
+                ) : (
+                  <p className="hexagram-xiangci">暂无解读数据</p>
+                )}
+              </div>
+            )}
           </section>
           
           

@@ -841,6 +841,57 @@
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
 }
 
+/* 卦象链交互与解读弹窗 */
+.hexagram-chain-node {
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+}
+
+.hexagram-chain-node:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+}
+
+.hexagram-chain-node.hex-active {
+  background: rgba(212, 175, 55, 0.1);
+  border-color: rgba(212, 175, 55, 0.4);
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.1);
+}
+
+.hexagram-detail-popup {
+  margin-top: 16px;
+  padding: 20px;
+  background: rgba(20, 20, 28, 0.95);
+  border: 1px solid #d4af37;
+  border-radius: 12px;
+  position: relative;
+  animation: slideDown 0.3s ease-out;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+.hexagram-detail-symbol {
+  font-size: 1.8rem;
+  margin-left: 12px;
+  line-height: 1;
+  color: #d4af37;
+}
+
+.hexagram-xiangci {
+  color: #e2e8f0;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin: 16px 0 12px 0;
+}
+
+.hexagram-xiangci strong {
+  color: #94a3b8;
+  font-weight: normal;
+}
+
 .changhe-matrix-entrance {
   margin-top: 24px;
   display: flex;
