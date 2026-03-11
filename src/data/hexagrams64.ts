@@ -1,13 +1,14 @@
 /**
  * 六十四卦完整数据
  * 用于皇极经世书的运卦（星卦）计算
- * 
+ *
  * 卦象用6位二进制表示（从初爻到上爻）：
  * - 阳爻 = 1
  * - 阴爻 = 0
- * 
+ *
  * 例如：乾卦 = 111111 = 63, 坤卦 = 000000 = 0
  */
+import { getTermStartDate } from '../utils/solarTerms'
 
 export interface Hexagram64 {
   binary: number      // 6位二进制值 (0-63)
@@ -621,91 +622,144 @@ export function getSuiHexagramDetail(gregorianYear: number): {
 }
 
 /**
- * 计算月卦（值月卦）
- * 皇极经世书中，月卦按先天60卦次序循环（剔除四正卦）
- * 每月对应一个卦，按先天卦序正向循环
+ * 计算月卦（值月卦）— 干支索引映射法
+ * 与日卦 getRiHexagram 完全一致的查表逻辑：
+ * "日甲月子，合乎为复" → 甲子月 = 复卦
  * 
- * 锚点规则："日甲月子，合乎为复"
- * - 甲子年子月（1984年12月）= 复卦
- * - 复卦在先天60卦序中索引29
- * - 60个月为一个完整循环
- * 
- * @param gregorianYear 公历年份
- * @param gregorianMonth 公历月份（1-12）
+ * @param monthGanZhiIndex 月建干支的六十甲子索引（0-59，0=甲子）
  * @returns 月卦信息
  */
-export function getYueHexagram(gregorianYear: number, gregorianMonth: number): Hexagram64 {
-  // 锚点：1984年12月（甲子年子月）= 复卦
-  const ANCHOR_YEAR = 1984
-  const ANCHOR_MONTH = 12
-  const JIAZI_INDEX = 30 // 复卦在60卦序中的索引（第31位）
+export function getYueHexagram(monthGanZhiIndex: number): Hexagram64 {
+  // 锚点：甲子月 = 复卦（与日卦相同）
+  const JIAZI_INDEX = 30 // 复卦在60卦序中的索引
   
-  // 计算从锚点到目标日期的月份差
-  const anchorTotalMonths = ANCHOR_YEAR * 12 + ANCHOR_MONTH
-  const targetTotalMonths = gregorianYear * 12 + gregorianMonth
-  let monthDiff = targetTotalMonths - anchorTotalMonths
-  
-  // 计算在60卦序中的索引（正向循环）
-  let index = (JIAZI_INDEX + monthDiff) % 60
-  if (index < 0) index += 60
+  let ganzhiIndex = ((monthGanZhiIndex % 60) + 60) % 60
+  const index = (JIAZI_INDEX + ganzhiIndex) % 60
   
   const binary = XIANTIAN_60_SEQUENCE[index]
   return getHexagram64(binary)
 }
 
+// 天干地支表（用于干支字符串→索引转换）
+const STEMS = ['甲','乙','丙','丁','戊','己','庚','辛','壬','癸']
+const BRANCHES = ['子','丑','寅','卯','辰','巳','午','未','申','酉','戌','亥']
+
+/**
+ * 将干支字符串转换为六十甲子索引（0-59）
+ * @param ganZhi 干支字符串，如 "辛卯"
+ * @returns 六十甲子索引（0=甲子, 1=乙丑, ...）
+ */
+function ganZhiToIndex(ganZhi: string): number {
+  if (ganZhi.length < 2) return 0
+  const stem = STEMS.indexOf(ganZhi[0])
+  const branch = BRANCHES.indexOf(ganZhi[1])
+  if (stem < 0 || branch < 0) return 0
+  // 天干和地支同奇同偶才合法
+  // 六十甲子索引 = 找到同时满足 index%10==stem 且 index%12==branch 的最小非负整数
+  for (let i = 0; i < 60; i++) {
+    if (i % 10 === stem && i % 12 === branch) return i
+  }
+  return 0
+}
+
+/**
+ * 根据日期计算月卦（自动获取月建干支）
+ * 使用夏历月建（以节分月、五虎遁月干支）
+ * @param date Date对象
+ * @returns 月卦信息
+ */
+export function getYueHexagramByDate(date: Date): Hexagram64 {
+  // 动态 import 会产生循环依赖，这里直接内联计算月建干支索引
+  // 与 ganzhi.ts 中 getMonthGanZhi 相同的逻辑
+  const year = date.getFullYear()
+  const d = new Date(year, date.getMonth(), date.getDate())
+  
+  // 12个"节"的索引
+  const jieIndices = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
+  // 节 → 月支对照（与 ganzhi.ts 中 TERM_TO_MONTH_BRANCH 一致）
+  const termToMonthBranch: Record<number, number> = {
+    0: 1, 2: 2, 4: 3, 6: 4, 8: 5, 10: 6,
+    12: 7, 14: 8, 16: 9, 18: 10, 20: 11, 22: 0,
+  }
+  
+  // 构建候选节气列表
+  interface JieCandidate { jieIdx: number; jieYear: number; jieDate: Date }
+  const candidates: JieCandidate[] = []
+  for (const jieIdx of jieIndices) {
+    candidates.push({ jieIdx, jieYear: year, jieDate: getTermStartDate(year, jieIdx) })
+  }
+  candidates.push({ jieIdx: 22, jieYear: year - 1, jieDate: getTermStartDate(year - 1, 22) })
+  candidates.sort((a, b) => b.jieDate.getTime() - a.jieDate.getTime())
+  
+  let found = candidates.find(c => d.getTime() >= c.jieDate.getTime())
+  if (!found) found = candidates[candidates.length - 1]
+  
+  const monthBranchIndex = termToMonthBranch[found.jieIdx]
+  
+  // 确定干支年份（以立春分年）
+  let yearForGanzhi: number
+  if (found.jieIdx === 22) {
+    yearForGanzhi = found.jieYear
+  } else if (found.jieIdx === 0) {
+    yearForGanzhi = found.jieYear - 1
+  } else {
+    yearForGanzhi = found.jieYear
+  }
+  
+  // 年干索引
+  let yearStemIndex = (yearForGanzhi - 1984) % 10
+  if (yearStemIndex < 0) yearStemIndex += 10
+  
+  // 寅月天干起始（五虎遁）
+  const yinMonthStemStart = [2, 4, 6, 8, 0, 2, 4, 6, 8, 0][yearStemIndex]
+  
+  // 月干
+  let monthOffset = monthBranchIndex - 2
+  if (monthOffset < 0) monthOffset += 12
+  const monthStemIndex = (yinMonthStemStart + monthOffset) % 10
+  
+  // 计算六十甲子索引
+  const ganZhiStr = STEMS[monthStemIndex] + BRANCHES[monthBranchIndex]
+  const monthGanZhiIndex = ganZhiToIndex(ganZhiStr)
+  
+  return getYueHexagram(monthGanZhiIndex)
+}
+
 /**
  * 根据皇极月份计算月卦
+ * 内部将皇极年月转换为公历日期，再获取月建干支
  * @param huangjiYear 皇极年份
  * @param huangjiMonth 皇极月份（1-12，1=子月）
  * @returns 月卦信息
  */
 export function getYueHexagramByHuangji(huangjiYear: number, huangjiMonth: number): Hexagram64 {
-  // 皇极月对应的公历月份
-  // 子月(1) = 公历12月, 丑月(2) = 公历1月, 寅月(3) = 公历2月...
-  // 皇极月 + 10 (mod 12) = 公历月
+  // 皇极月转公历月：子月(1)=12月, 丑月(2)=1月, 寅月(3)=2月...
   const gregorianMonth = ((huangjiMonth - 1 + 11) % 12) + 1
-  
-  // 皇极年对应的公历年份
   const gregorianYear = huangjiYear - 67017
-  
-  // 如果是子月（公历12月），属于上一个公历年
-  // 如果是丑-亥月（公历1-11月），属于当前公历年
   const adjustedGregorianYear = huangjiMonth === 1 ? gregorianYear - 1 : gregorianYear
   
-  return getYueHexagram(adjustedGregorianYear, gregorianMonth)
+  // 用该月中间日期(第15日)来确保节气判断正确
+  const date = new Date(adjustedGregorianYear, gregorianMonth - 1, 15)
+  return getYueHexagramByDate(date)
 }
 
 /**
  * 获取月卦的详细信息
- * @param gregorianYear 公历年份
- * @param gregorianMonth 公历月份（1-12）
+ * @param date Date对象
  * @returns 月卦详细信息
  */
-export function getYueHexagramDetail(gregorianYear: number, gregorianMonth: number): {
+export function getYueHexagramDetail(date: Date): {
   yueHexagram: Hexagram64
-  indexIn60: number
-  gregorianYear: number
-  gregorianMonth: number
+  monthGanZhiIndex: number
 } {
-  const ANCHOR_YEAR = 1984
-  const ANCHOR_MONTH = 12
-  const JIAZI_INDEX = 30 // 复卦（60卦序第31位）
-  
-  const anchorTotalMonths = ANCHOR_YEAR * 12 + ANCHOR_MONTH
-  const targetTotalMonths = gregorianYear * 12 + gregorianMonth
-  let monthDiff = targetTotalMonths - anchorTotalMonths
-  
-  let index = (JIAZI_INDEX + monthDiff) % 60
-  if (index < 0) index += 60
-  
-  const binary = XIANTIAN_60_SEQUENCE[index]
-  const yueHexagram = getHexagram64(binary)
+  const yueHexagram = getYueHexagramByDate(date)
+
+  // 反查索引（简化：直接在60卦序中找）
+  const idx = XIANTIAN_60_SEQUENCE.indexOf(yueHexagram.binary)
   
   return {
     yueHexagram,
-    indexIn60: index + 1, // 1-based
-    gregorianYear,
-    gregorianMonth,
+    monthGanZhiIndex: idx >= 0 ? idx + 1 : 0,
   }
 }
 

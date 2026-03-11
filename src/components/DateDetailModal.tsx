@@ -9,7 +9,16 @@ import { getDateDetail, type BaziPillar } from '../utils/lunar'
 import { getYearGanZhi, getMonthGanZhi, getHourGanZhi, getGanZhi, getHuangjiMonthGanZhi } from '../utils/ganzhi'
 import { getYearLv, getMonthLv, getDayLv, getHourLvByDate } from '../utils/lvlv'
 import { getSolarTerm } from '../utils/solarTerms'
-import { getYearJiazi } from '../utils/calendar'
+import { getYearJiazi, YEARS_PER_SHI, SHIS_PER_YUN, YUNS_PER_HUI } from '../utils/calendar'
+import {
+  getHuiHexagram,
+  getYunHexagramDetailByGlobal,
+  getShiHexagramByYear,
+  getSuiHexagram,
+  getYueHexagramByHuangji,
+  getRiHexagramByDate,
+  getHexagram64,
+} from '../data/hexagrams64'
 import './DateDetailModal.css'
 
 interface DateDetailModalProps {
@@ -101,6 +110,47 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
   const solarTermInfo = useMemo(() => {
     return getSolarTerm(date)
   }, [date])
+
+  // 计算卦象链：元 → 会 → 运 → 世 → 岁 → 月 → 日
+  const hexagramChain = useMemo(() => {
+    const gregorianYear = huangjiYear - 67017
+
+    // 元卦：乾（一元统领，固定）— binary 63 = 0b111111
+    const yuanHex = getHexagram64(63)
+
+    // 会卦（辟卦）：根据皇极年所在的会
+    const huiIndex = Math.floor((huangjiYear - 1) / (YUNS_PER_HUI * SHIS_PER_YUN * YEARS_PER_SHI)) % 12
+    const huiHex = getHuiHexagram(huiIndex)
+
+    // 运卦：根据全局运编号
+    const globalShiNumber = Math.ceil(huangjiYear / YEARS_PER_SHI)
+    const globalYunNumber = Math.ceil(globalShiNumber / SHIS_PER_YUN)
+    const yunDetail = getYunHexagramDetailByGlobal(globalYunNumber)
+
+    // 世卦
+    const shiHex = getShiHexagramByYear(huangjiYear)
+
+    // 岁卦
+    const suiHex = getSuiHexagram(gregorianYear)
+
+    // 月卦：使用节气信息获取皇极月
+    const termInfo = getSolarTerm(date)
+    const huangjiMonth = termInfo.huangji.month  // 0-11
+    const yueHex = getYueHexagramByHuangji(huangjiYear, huangjiMonth + 1)
+
+    // 日卦
+    const riHex = getRiHexagramByDate(date)
+
+    return [
+      { level: '元（日）', name: '乾', hex: yuanHex, note: '一元统领' },
+      { level: '会（月）', name: `第${huiIndex + 1}会`, hex: huiHex, note: '辟卦（消息卦）' },
+      { level: '运（星）', name: `第${globalYunNumber}运`, hex: yunDetail.yunHexagram, note: `${yunDetail.masterHexagram.name}→${yunDetail.yaoName}爻变` },
+      { level: '世（辰）', name: `第${globalShiNumber}世`, hex: shiHex, note: '运卦爻变' },
+      { level: '岁（年）', name: `第${huangjiYear}年`, hex: suiHex, note: '世卦爻变' },
+      { level: '月', name: `第${huangjiMonth + 1}月`, hex: yueHex, note: '先天60卦序' },
+      { level: '日', name: '', hex: riHex, note: '先天60卦序' },
+    ]
+  }, [date, huangjiYear])
   
   
   return (
@@ -169,6 +219,24 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
                   <span>时：{huangjiBazi.hourGanZhi}</span>
                 </div>
               </div>
+            </div>
+          </section>
+          
+          {/* 卦象链：元 → 会 → 运 → 世 → 岁 → 月 → 日 */}
+          <section className="section hexagram-chain-section">
+            <h3>卦象链</h3>
+            <div className="hexagram-chain">
+              {hexagramChain.map((item, i) => (
+                <div className="hexagram-chain-node" key={i}>
+                  <div className="chain-level">{item.level}</div>
+                  <div className="chain-symbol">{item.hex.unicode}</div>
+                  <div className="chain-name">{item.hex.name}</div>
+                  <div className="chain-note">{item.note}</div>
+                  {i < hexagramChain.length - 1 && (
+                    <div className="chain-arrow">↓</div>
+                  )}
+                </div>
+              ))}
             </div>
           </section>
           

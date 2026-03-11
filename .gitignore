@@ -45,5 +45,4 @@ coverage/
 *.tar.gz
 
 
-# Deployment scripts
-deploy_r2.sh
+tmp/

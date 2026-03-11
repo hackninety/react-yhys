@@ -481,15 +481,14 @@
   opacity: 1;
 }
 
-/* 卦象显示（会级和世级zoom-card右下角） */
+/* 卦象显示（会级和岁级zoom-card右下角） */
 .zoom-card-hexagram {
   position: absolute;
   bottom: 0.5rem;
   right: 0.5rem;
-  left: 0.5rem;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-end;
   gap: 0.25rem;
   font-size: 0.85rem;
   color: #CD853F;

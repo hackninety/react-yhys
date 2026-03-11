@@ -230,6 +230,75 @@
   color: #e2e8f0;
 }
 
+/* 卦象链 */
+.hexagram-chain {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 0;
+  overflow-x: auto;
+  padding: 8px 0;
+}
+
+.hexagram-chain-node {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 72px;
+  gap: 2px;
+  position: relative;
+}
+
+.chain-level {
+  font-size: 0.7rem;
+  color: #64748b;
+  white-space: nowrap;
+}
+
+.chain-symbol {
+  font-size: 1.8rem;
+  color: #fbbf24;
+  line-height: 1;
+}
+
+.chain-name {
+  font-size: 0.85rem;
+  color: #e2e8f0;
+  font-weight: 600;
+}
+
+.chain-note {
+  font-size: 0.6rem;
+  color: #94a3b8;
+  text-align: center;
+  max-width: 80px;
+  line-height: 1.2;
+}
+
+.chain-arrow {
+  font-size: 1rem;
+  color: #475569;
+  margin: 0 -6px;
+  align-self: center;
+}
+
+/* 水平布局时箭头改为右箭头 */
+@media (min-width: 601px) {
+  .hexagram-chain {
+    flex-direction: row;
+  }
+  .chain-arrow {
+    transform: rotate(-90deg);
+  }
+}
+
+@media (max-width: 600px) {
+  .hexagram-chain {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
 /* 律吕区域 */
 .lvlv-grid {
   display: grid;
