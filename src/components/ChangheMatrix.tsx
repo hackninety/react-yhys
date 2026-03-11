@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { CHANGHE_MATRIX } from '../data/changheMatrix'
+import { speakChangheChar, stopChangheAudio, isSpeechSupported } from '../utils/changheAudio'
 import './ChangheMatrix.css'
 
 interface ChangheMatrixProps {
@@ -12,6 +13,8 @@ const DI_YIN_ZHI = ['子(水开清)', '丑(火发浊)', '寅(水开清)', '卯(�
 
 export const ChangheMatrix: React.FC<ChangheMatrixProps> = ({ onClose, highlightTian, highlightDi }) => {
   const [mounted, setMounted] = useState(false)
+  const [speakingCell, setSpeakingCell] = useState<string | null>(null) // 'groupIdx-rowIdx-cellIdx'
+  const speechAvailable = isSpeechSupported()
 
   // 动画效果
   useEffect(() => {
@@ -19,8 +22,21 @@ export const ChangheMatrix: React.FC<ChangheMatrixProps> = ({ onClose, highlight
     document.body.style.overflow = 'hidden' // 防止背景滚动
     return () => {
       document.body.style.overflow = 'auto'
+      stopChangheAudio()
     }
   }, [])
+
+  const handleCharClick = useCallback((char: string, groupIdx: number, rowIdx: number, cellIdx: number) => {
+    if (!speechAvailable) return
+    const isEmpty = char === '○' || char === '●' || char === ''
+    if (isEmpty) return
+
+    const cellKey = `${groupIdx}-${rowIdx}-${cellIdx}`
+    setSpeakingCell(cellKey)
+    speakChangheChar(char, groupIdx).finally(() => {
+      setSpeakingCell(prev => prev === cellKey ? null : prev)
+    })
+  }, [speechAvailable])
 
   return (
     <div className={`changhe-matrix-overlay ${mounted ? 'visible' : ''}`}>
@@ -98,17 +114,23 @@ export const ChangheMatrix: React.FC<ChangheMatrixProps> = ({ onClose, highlight
                             const isHighlightDi = highlightDi === cellIdx
                             const isCross = isHighlightTian && isHighlightDi
                             const isEmpty = cell.char === '○' || cell.char === '●' || cell.char === ''
+                            const cellKey = `${groupIdx}-${rowIdx}-${cellIdx}`
+                            const isSpeaking = speakingCell === cellKey
                             
                             return (
                               <td 
                                 key={cellIdx} 
                                 className={`char-td 
-                                  ${isEmpty ? 'empty-char' : ''} 
+                                  ${isEmpty ? 'empty-char' : 'speakable'} 
                                   ${isHighlightDi ? 'td-highlight-di' : ''} 
                                   ${isCross ? 'td-highlight-cross' : ''}
+                                  ${isSpeaking ? 'speaking' : ''}
                                 `}
+                                onClick={() => handleCharClick(cell.char, groupIdx, rowIdx, cellIdx)}
+                                title={isEmpty ? '' : `点击朗读「${cell.char}」`}
                               >
                                 {cell.char}
+                                {isSpeaking && <span className="speak-indicator">🔊</span>}
                               </td>
                             )
                           })}
