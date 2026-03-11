@@ -41,7 +41,7 @@ import {
   getSpecialDateBadgeStyle,
 } from '../data/specialDates'
 import { getHexagramByIndex } from '../data/hexagrams'
-import { getYunHexagramByGlobal, getShiHexagramByYear, getShiHexagramByGlobal, getIntercalaryHexagramByName, getHuiHexagram } from '../data/hexagrams64'
+import { getYunHexagramByGlobal, getYunHexagramDetailByGlobal, getShiHexagramByYear, getShiHexagramByGlobal, getIntercalaryHexagramByName, getHuiHexagram } from '../data/hexagrams64'
 import { getSolarTerm, getTermStartDate } from '../utils/solarTerms'
 import { getGanZhi, getYearGanZhi, getMonthGanZhi, getHourGanZhi, getHuangjiMonthGanZhi, getHuangjiMonthHexagram } from '../utils/ganzhi'
 import { getYearLv, getMonthLv, getDayLv, getHourLvByDate } from '../utils/lvlv'
@@ -485,12 +485,15 @@ export default function Calendar({
                     const hasTerm = yun.index === 0 || yun.index === 15
                     const termName = yun.index === 0 ? hui.termStart : (yun.index === 15 ? hui.termEnd : null)
                     const termClass = termName ? SOLAR_TERM_CLASSES[termName] || '' : ''
+                    // 判断是否是当前运（包含今年）
+                    const currentYun = Math.ceil(todayInfo.huangjiSui / (SHIS_PER_YUN * YEARS_PER_SHI))
+                    const isCurrentYun = globalYunNumber === currentYun
                     return (
                       <div
                         key={yun.index}
-                        className={`day-cell yun-cell ${hasTerm ? 'has-term' : ''} ${specialDate ? 'special-date' : ''}`}
+                        className={`day-cell yun-cell ${hasTerm ? 'has-term' : ''} ${specialDate ? 'special-date' : ''} ${isCurrentYun ? 'current-yun' : ''}`}
                         style={specialDate ? getSpecialDateStyle(specialDate) : undefined}
-                        title={`第${globalYunNumber}星（运） · ${shiStart}-${shiEnd}辰（世） · 年${(yun.yearStart % TOTAL_YEARS) + 1}-${(yun.yearEnd % TOTAL_YEARS) + 1}${specialDate ? ` · 【${specialDate.description}】` : ''}`}
+                        title={`第${globalYunNumber}星（运） · ${shiStart}-${shiEnd}辰（世） · 年${(yun.yearStart % TOTAL_YEARS) + 1}-${(yun.yearEnd % TOTAL_YEARS) + 1}${specialDate ? ` · 【${specialDate.description}】` : ''}${isCurrentYun ? ' · 【今年所在运 · 火德】' : ''}`}
                         onClick={(e) => {
                           e.stopPropagation()
                           // 跳转到对应的运页面
@@ -510,6 +513,9 @@ export default function Calendar({
                           <span className="special-date-badge" style={getSpecialDateBadgeStyle(specialDate)}>
                             {specialDate.badge}
                           </span>
+                        )}
+                        {isCurrentYun && (
+                          <span className="current-yun-badge">今·火</span>
                         )}
                       </div>
                     )
@@ -955,16 +961,23 @@ export default function Calendar({
                       </div>
                     )}
                     
-                    {/* 卦象显示（仅会级） */}
+                    {/* 卦象显示（仅会级）- 显示变卦来源 */}
                     {zoomLevel === 'hui' && (
                       <div className="zoom-card-hexagram">
                         {(() => {
-                          // 会级视图：使用运卦（爻变计算，剔除四正卦）
-                          const hexagram = getYunHexagramByGlobal(globalYunNumber)
+                          // 会级视图：使用运卦详情（包含主卦来源）
+                          const detail = getYunHexagramDetailByGlobal(globalYunNumber)
                           return (
                             <>
-                              <span className="hexagram-symbol">{hexagram.unicode}</span>
-                              <span className="hexagram-name">{hexagram.name}</span>
+                              <div className="hexagram-source">
+                                <span className="master-hexagram" title={`主卦：${detail.masterHexagram.name}`}>
+                                  {detail.masterHexagram.unicode}{detail.masterHexagram.name}
+                                </span>
+                                <span className="hexagram-arrow">→</span>
+                                <span className="yun-hexagram" title={`运卦：${detail.yunHexagram.name}（${detail.yaoName}爻变）`}>
+                                  {detail.yunHexagram.unicode}{detail.yunHexagram.name}
+                                </span>
+                              </div>
                             </>
                           )
                         })()}

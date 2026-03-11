@@ -23,10 +23,22 @@
       "term": "立冬"
     },
     {
+      "id": "youxiong-huangdi-li",
+      "name": "黄帝立",
+      "description": "土德，經日之甲、經月之巳六、經星之甲一百七十九、經辰之未二千一百四十五、甲子年。",
+      "color": "#CD853F",
+      "colorEnd": "#8B4513",
+      "textColor": "#ffffff",
+      "yun": 179,
+      "shi": 2145,
+      "sui": 64321,
+      "badge": "轩辕"
+    },
+    {
       "id": "yu-yao-li",
       "name": "虞尧立",
-      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之未二千一百五十六、甲辰年。",
-      "color": "#CD853F",
+      "description": "金德，經日之甲、經月之巳六、經星之甲一百八十、經辰之未二千一百五十六、甲辰年。",
+      "color": "#D4AF37",
       "colorEnd": "#8B4513",
       "textColor": "#ffffff",
       "yun": 180,
@@ -121,9 +133,9 @@
     {
       "id": "xia-yu-li",
       "name": "正月朔旦，受命于神宗",
-      "description": "土德，經日之甲、經月之巳六、經星之甲一百八十、經辰之子二千一百六十、丁巳年。",
+      "description": "金德，經日之甲、經月之巳六、經星之甲一百八十、經辰之子二千一百六十、丁巳年。",
       "color": "#D4AF37",
-      "colorEnd": "#8B4513",
+      "colorEnd": "#B8860B",
       "textColor": "#ffffff",
       "yun": 180,
       "shi": 2160,
@@ -133,9 +145,9 @@
     {
       "id": "yu-shun-si",
       "name": "舜陟方乃死",
-      "description": "土德，經日之甲、經月之午七、經星之甲一百八十一、經辰之子二千一百六十一、癸酉年。",
+      "description": "金德，經日之甲、經月之午七、經星之甲一百八十一、經辰之子二千一百六十一、癸酉年。",
       "color": "#D4AF37",
-      "colorEnd": "#8B4513",
+      "colorEnd": "#B8860B",
       "textColor": "#ffffff",
       "yun": 181,
       "shi": 2161,
@@ -287,7 +299,7 @@
       "badge": "芒"
     },
     {
-      "id": "xia-mang-li",
+      "id": "xia-xie-li",
       "name": "夏泄立",
       "description": "金德，經日之甲、經月之午七、經星之甲一百八十一、經辰之子二千一百六十八、乙巳年。",
       "color": "#D4AF37",
@@ -343,20 +355,8 @@
       "textColor": "#ffffff",
       "yun": 181,
       "shi": 2172,
-      "sui": 65118,
+      "sui": 65139,
       "badge": "孔甲"
-    },
-    {
-      "id": "xia-gao-li",
-      "name": "夏臯立",
-      "description": "金德，經日之甲、經月之午七、經星之甲一百八十二、經辰之子二千一百七十三、癸酉年。",
-      "color": "#D4AF37",
-      "colorEnd": "#B8860B",
-      "textColor": "#ffffff",
-      "yun": 182,
-      "shi": 2173,
-      "sui": 65170,
-      "badge": "臯"
     },
     {
       "id": "xia-gao-li",

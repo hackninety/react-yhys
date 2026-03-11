@@ -1,5 +1,7 @@
-import { useState, useCallback, useMemo } from 'react'
+import { useState, useCallback, useMemo, useEffect } from 'react'
 import Calendar from './components/Calendar'
+import Maintenance from './components/Maintenance'
+import { checkBackendHealth } from './api/client'
 import { type ZoomLevel, type ZoomPosition, yearIndexToPosition } from './utils/calendar'
 import { getTermStartDate } from './utils/solarTerms'
 import './App.css'
@@ -8,26 +10,29 @@ import './App.css'
 function findCurrentYearIndex(): number {
   const now = new Date()
   const gregorianYear = now.getFullYear()
-  
+
   // 获取今年冬至日期（节气索引23=冬至）
   const dongzhiThisYear = getTermStartDate(gregorianYear, 23)
-  
+
   // 判断今天是否在冬至之后
   const todayDate = new Date(gregorianYear, now.getMonth(), now.getDate())
   const isAfterDongzhi = todayDate.getTime() >= dongzhiThisYear.getTime()
-  
+
   // 皇极年份：如果在冬至之后，皇极年对应下一年
   const huangjiGregorianYear = isAfterDongzhi ? gregorianYear + 1 : gregorianYear
   const huangjiSui = huangjiGregorianYear + 67017 // gregorianYearToSui offset
-  
+
   return huangjiSui - 1 // sui 是 1-based，yearIndex 是 0-based
 }
 
 function App() {
+  const [isMaintenance, setIsMaintenance] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
+
   // 初始化定位到"今年"的岁（年）级别
   const initialYearIndex = useMemo(() => findCurrentYearIndex(), [])
   const initialPosition = useMemo(() => yearIndexToPosition(initialYearIndex, 'nian'), [initialYearIndex])
-  
+
   const [yearIndex, setYearIndex] = useState(initialYearIndex)
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>('nian')
   const [position, setPosition] = useState<ZoomPosition>(initialPosition)
@@ -36,6 +41,30 @@ function App() {
     setZoomLevel(level)
     setPosition(newPosition)
   }, [])
+
+  // Check backend health on mount
+  useEffect(() => {
+    const init = async () => {
+      const healthy = await checkBackendHealth()
+      if (!healthy) {
+        setIsMaintenance(true)
+      }
+      setIsLoading(false)
+    }
+    init()
+  }, [])
+
+  if (isLoading) {
+    return (
+      <div className="app" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+        <p>Loading...</p>
+      </div>
+    )
+  }
+
+  if (isMaintenance) {
+    return <Maintenance />
+  }
 
   return (
     <div className="app">

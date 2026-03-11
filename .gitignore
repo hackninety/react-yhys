@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+server/node_modules/
 .pnpm-store/
 
 # Build output
@@ -43,3 +44,6 @@ coverage/
 *.tgz
 *.tar.gz
 
+
+# Deployment scripts
+deploy_r2.sh

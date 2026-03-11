@@ -178,7 +178,7 @@ pnpm install
 # 启动开发服务器
 pnpm dev
 
-# 访问 http://localhost:5173
+# 访问 http://localhost:5174
 ```
 
 ---

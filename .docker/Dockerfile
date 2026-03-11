@@ -1,21 +1,20 @@
-# 使用 Node.js 20 LTS 作为基础镜像
-FROM node:20-alpine
+# Backend Service (Node 18 + Debian)
+FROM node:18-bookworm
 
-# 设置工作目录
-WORKDIR /app
+# Set working directory to /app/server
+WORKDIR /app/server
 
-# 安装 pnpm（更快的包管理器）
-RUN corepack enable && corepack prepare pnpm@latest --activate
+# Copy backend package files
+COPY server/package.json ./
 
-# 复制 package 文件并安装依赖
-COPY package.json pnpm-lock.yaml* ./
-RUN pnpm install --frozen-lockfile || pnpm install
+# Install dependencies
+RUN npm install
 
-# 复制源代码
-COPY . .
+# Copy backend source code
+COPY server/ .
 
-# 暴露开发服务器端口
-EXPOSE 5173
+# Expose API port
+EXPOSE 3000
 
-# 启动脚本：确保 node_modules 存在后再启动
-CMD ["sh", "-c", "pnpm install && pnpm dev --host 0.0.0.0"]
+# Start command
+CMD ["npm", "start"]

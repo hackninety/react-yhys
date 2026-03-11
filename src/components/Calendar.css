@@ -485,13 +485,15 @@
 .zoom-card-hexagram {
   position: absolute;
   bottom: 0.5rem;
-  right: 0.75rem;
+  right: 0.5rem;
+  left: 0.5rem;
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.25rem;
   font-size: 0.85rem;
   color: #CD853F;
-  opacity: 0.8;
+  opacity: 0.9;
 }
 
 .zoom-card-hexagram .hexagram-symbol {
@@ -501,6 +503,33 @@
 .zoom-card-hexagram .hexagram-name {
   font-size: 0.75rem;
   color: var(--color-text-dim);
+}
+
+/* 变卦来源显示 */
+.zoom-card-hexagram .hexagram-source {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  font-size: 0.7rem;
+  background: rgba(0, 0, 0, 0.3);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+.zoom-card-hexagram .master-hexagram {
+  color: #8B7355;
+  opacity: 0.85;
+}
+
+.zoom-card-hexagram .hexagram-arrow {
+  color: #666;
+  font-size: 0.65rem;
+  margin: 0 0.1rem;
+}
+
+.zoom-card-hexagram .yun-hexagram {
+  color: #CD853F;
+  font-weight: 500;
 }
 
 /* 会级视图节气显示 */
@@ -581,15 +610,66 @@
   border: 1px solid rgba(220, 20, 60, 0.3);
 }
 
-/* 今年标签（辰级视图） */
+/* 今年标签（会级视图zoom-card） - 火德红色徽章 */
 .today-badge {
   font-size: 0.65rem;
-  color: #FFD700;
-  background: rgba(255, 215, 0, 0.15);
+  color: #fff;
+  background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
   padding: 0.1rem 0.4rem;
   border-radius: 0.2rem;
   margin-left: auto;
-  border: 1px solid rgba(255, 215, 0, 0.4);
+  border: 1px solid rgba(220, 20, 60, 0.6);
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(220, 20, 60, 0.3);
+}
+
+/* 今年标签（岁级nian-cell） - 与节气样式完全一致 */
+.nian-cell.current-year {
+  justify-content: space-evenly;
+}
+
+.nian-cell.current-year .day-number {
+  display: block;
+  font-size: 0.7rem;
+  opacity: 0.8;
+}
+
+.nian-cell .today-badge {
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #DC143C;
+  background: none;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin-left: 0;
+  white-space: nowrap;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+/* 当前运格子（元级视图中的运格） */
+.yun-cell.current-yun {
+  border: 2px solid #DC143C !important;
+  background: linear-gradient(135deg, rgba(220, 20, 60, 0.15) 0%, rgba(220, 20, 60, 0.05) 100%) !important;
+  box-shadow: 0 0 12px rgba(220, 20, 60, 0.3);
+  position: relative;
+}
+
+.current-yun-badge {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  font-size: 0.55rem;
+  color: #fff;
+  background: linear-gradient(135deg, #DC143C 0%, #B22222 100%);
+  padding: 0.1rem 0.3rem;
+  border-radius: 0.2rem;
+  font-weight: 600;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  letter-spacing: 0.02em;
 }
 
 /* 今年公历年份 */
