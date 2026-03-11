@@ -24,148 +24,50 @@
 
 ---
 
-## 🚀 生产环境部署（宝塔面板）
+## 🔮 卦象算法 (Hexagram Algorithm)
 
-### 1. 环境要求
+项目严格遵循《皇极经世》“以大统小”的层级派生逻辑：
 
-| 组件 | 版本 |
-|------|------|
-| Node.js | 22.21.1 (LTS) |
-| pnpm | 10+ |
-| Nginx | 1.18+ |
+- **元/会 (辟卦)**：固定对应十二消息卦（如子会=复，丑会=临）。
+- **运卦 (会统运)**：每会30运分配5个主卦，每组6运通过主卦变爻（初至上）产生值运卦。
+- **世卦 (运统世)**：每2世为一个“甲子世”，由所属运卦根据甲子世顺位变爻（初至上）派生。
+- **岁卦 (世统年)**：由所属世卦根据当年在60甲子中的偏移量变爻派生，并具备“四正卦”避让机制。
+- **月/日卦**：基于干支（月建/日干支）索引映射先天六十卦序列，遵循“日甲月子，合乎为复”的准则。
 
-### 2. 首次部署
+详细原理请参阅：[起卦算法原理文档](docs/起卦算法原理.md)
 
-```bash
-# 1. 克隆代码到服务器
-cd /opt/git
-git clone https://github.com/your-repo/yhys.git
-cd yhys
+---
 
-# 2. 安装依赖
-pnpm install
+## 🚀 生产环境部署 (Cloudflare Pages)
 
-# 3. 构建生产版本
-pnpm build
+本项目推荐部署于 **Cloudflare Pages**，实现自动化构建与全球加速。
 
-# 4. 同步到网站目录
-rsync -avz --delete dist/ /www/wwwroot/yhys.0x7c.cc/
-```
+### 1. 自动化部署 (推荐)
 
-### 3. 宝塔面板配置
+1. 将代码推送至 GitHub/GitLab。
+2. 在 [Cloudflare Dashboard](https://dash.cloudflare.com/) 中进入 **Workers & Pages**。
+3. 点击 **Create application** -> **Pages** -> **Connect to Git**。
+4. 选择本项目仓库，配置如下构建设置：
+   - **Framework preset**: `Vite` (或选择 `None`)
+   - **Build command**: `pnpm build`
+   - **Build output directory**: `dist`
+5. 在 **Environment variables** 中添加：
+   - `NODE_VERSION`: `22` (建议与开发环境一致)
+6. 点击 **Save and Deploy**。
 
-#### 3.1 创建网站
-
-1. 登录宝塔面板
-2. 网站 → 添加站点
-3. 配置：
-   - 域名：`yhys.0x7c.cc`
-   - 根目录：`/www/wwwroot/yhys.0x7c.cc`
-   - PHP版本：纯静态
-   - 勾选：创建FTP、创建数据库 都不需要
-
-#### 3.2 配置 Nginx
-
-点击网站 → 设置 → 配置文件，添加以下配置：
-
-```nginx
-server {
-    listen 80;
-    server_name yhys.0x7c.cc;
-    
-    root /www/wwwroot/yhys.0x7c.cc;
-    index index.html;
-    
-    # Gzip 压缩
-    gzip on;
-    gzip_vary on;
-    gzip_comp_level 6;
-    gzip_types text/plain text/css application/json application/javascript text/xml application/xml image/svg+xml;
-    
-    # 安全头
-    add_header X-Frame-Options "SAMEORIGIN" always;
-    add_header X-Content-Type-Options "nosniff" always;
-    
-    # 静态资源缓存（Vite 构建带 hash，可长期缓存）
-    location ~* \.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-        access_log off;
-    }
-    
-    # SPA 路由支持（所有路径都返回 index.html）
-    location / {
-        try_files $uri $uri/ /index.html;
-    }
-    
-    # 健康检查
-    location /health {
-        access_log off;
-        return 200 "OK\n";
-    }
-    
-    # 禁止访问隐藏文件
-    location ~ /\. {
-        deny all;
-    }
-    
-    access_log /www/wwwlogs/yhys.0x7c.cc.log;
-    error_log /www/wwwlogs/yhys.0x7c.cc.error.log;
-}
-```
-
-#### 3.3 配置 SSL（可选）
-
-1. 网站 → 设置 → SSL
-2. 选择 Let's Encrypt 或上传证书
-3. 开启强制 HTTPS
-
-### 4. 代码更新
+### 2. 手动部署 (Wrangler CLI)
 
 ```bash
-# 进入代码目录
-cd /opt/git/yhys
+# 安装 Wrangler
+npm install -g wrangler
 
-# 拉取最新代码
-git pull
-
-# 安装依赖（如有更新）
-pnpm install
-
-# 重新构建
+# 构建项目
 pnpm build
 
-# 同步到网站目录
-rsync -avz --delete dist/ /www/wwwroot/yhys.0x7c.cc/
+# 上传部署
+wrangler pages deploy dist
 ```
 
-> 💡 **提示**：纯静态网站无需重启任何服务，同步完成即生效。
-
-#### 一键更新脚本（可选）
-
-创建 `/opt/git/yhys/deploy.sh`：
-
-```bash
-#!/bin/bash
-set -e
-
-cd /opt/git/yhys
-echo "📥 拉取最新代码..."
-git pull
-
-echo "📦 安装依赖..."
-pnpm install
-
-echo "🔨 构建生产版本..."
-pnpm build
-
-echo "🚀 同步到网站目录..."
-rsync -avz --delete dist/ /www/wwwroot/yhys.0x7c.cc/
-
-echo "✅ 部署完成！"
-```
-
-使用：`bash /opt/git/yhys/deploy.sh`
 
 ---
 
