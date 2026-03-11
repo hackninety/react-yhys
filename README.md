@@ -171,31 +171,14 @@ echo "✅ 部署完成！"
 
 ## 💻 本地开发
 
-本项目包含前端页面与后端 API，建议同时启动以便获得完整体验。
-
-### 1. 启动前端
-
 ```bash
-# 在项目根目录下，安装依赖
-pnpm install
-
-# 启动 Vite 开发服务器
-pnpm dev
-# 默认访问地址: http://localhost:5173 
-```
-
-### 2. 启动后端
-
-```bash
-# 切换到后端目录
-cd server
-
 # 安装依赖
 pnpm install
 
 # 启动开发服务器
 pnpm dev
-# 默认会在 3001 端口起动
+
+# 访问 http://localhost:5173
 ```
 
 ---

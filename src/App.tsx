@@ -1,7 +1,5 @@
-import { useState, useCallback, useMemo, useEffect } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import Calendar from './components/Calendar'
-import Maintenance from './components/Maintenance'
-import { checkBackendHealth } from './api/client'
 import { type ZoomLevel, type ZoomPosition, yearIndexToPosition } from './utils/calendar'
 import { getTermStartDate } from './utils/solarTerms'
 import './App.css'
@@ -26,9 +24,6 @@ function findCurrentYearIndex(): number {
 }
 
 function App() {
-  const [isMaintenance, setIsMaintenance] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-
   // 初始化定位到"今年"的岁（年）级别
   const initialYearIndex = useMemo(() => findCurrentYearIndex(), [])
   const initialPosition = useMemo(() => yearIndexToPosition(initialYearIndex, 'nian'), [initialYearIndex])
@@ -41,30 +36,6 @@ function App() {
     setZoomLevel(level)
     setPosition(newPosition)
   }, [])
-
-  // Check backend health on mount
-  useEffect(() => {
-    const init = async () => {
-      const healthy = await checkBackendHealth()
-      if (!healthy) {
-        setIsMaintenance(true)
-      }
-      setIsLoading(false)
-    }
-    init()
-  }, [])
-
-  if (isLoading) {
-    return (
-      <div className="app" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-        <p>Loading...</p>
-      </div>
-    )
-  }
-
-  if (isMaintenance) {
-    return <Maintenance />
-  }
 
   return (
     <div className="app">
