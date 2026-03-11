@@ -4,12 +4,13 @@
  * 同时对比自己算法版和插件版的八字
  */
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { getDateDetail, type BaziPillar } from '../utils/lunar'
 import { getYearGanZhi, getMonthGanZhi, getHourGanZhi, getGanZhi, getHuangjiMonthGanZhi } from '../utils/ganzhi'
 import { getYearLv, getMonthLv, getDayLv, getHourLvByDate } from '../utils/lvlv'
 import { getSolarTerm } from '../utils/solarTerms'
 import { getYearJiazi, YEARS_PER_SHI, SHIS_PER_YUN, YUNS_PER_HUI } from '../utils/calendar'
+import { playLvlvTone, playFourPillarsLv, stopLvlvAudio } from '../utils/lvlvAudio'
 import {
   getHuiHexagram,
   getYunHexagramDetailByGlobal,
@@ -135,6 +136,22 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
   const [selectedLvlv, setSelectedLvlv] = useState<LvLv | null>(null)
   const [selectedLvlvPillar, setSelectedLvlvPillar] = useState<string | null>(null)
   
+  // 播放状态
+  const [playingPillar, setPlayingPillar] = useState<string | null>(null)
+  const [isPlayingAll, setIsPlayingAll] = useState(false)
+  
+  // 停止播放并清理状态
+  const stopAllAudio = () => {
+    stopLvlvAudio()
+    setPlayingPillar(null)
+    setIsPlayingAll(false)
+  }
+
+  // 组件卸载时释放音频资源
+  useEffect(() => {
+    return () => stopAllAudio()
+  }, [])
+
   // 获取 lunisolar 的完整日期详情
   const detail = useMemo(() => getDateDetail(date), [date])
   
@@ -323,15 +340,37 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
           
           {/* 律吕 */}
           <section className="section lvlv-section">
-            <h3>声音律吕<span className="section-subtitle">黄畿声音系统</span></h3>
+            <div className="lvlv-header-row">
+              <h3>声音律吕<span className="section-subtitle">黄畿声音系统</span></h3>
+              <button 
+                className={`lvlv-play-all-btn ${isPlayingAll ? 'playing' : ''}`}
+                onClick={async () => {
+                  if (isPlayingAll) {
+                    stopAllAudio()
+                  } else {
+                    setIsPlayingAll(true)
+                    try {
+                      await playFourPillarsLv([lvlv.yearLv.index, lvlv.monthLv.index, lvlv.dayLv.index, lvlv.hourLv.index])
+                    } finally {
+                      setIsPlayingAll(false)
+                    }
+                  }
+                }}
+                title="按年-月-日-时顺序演奏"
+              >
+                {isPlayingAll ? '⏹ 停止' : '▶ 演奏四柱'}
+              </button>
+            </div>
+            
             <div className="lvlv-grid">
               {(['年', '月', '日', '时'] as const).map((pillar) => {
                 const lv = pillar === '年' ? lvlv.yearLv : pillar === '月' ? lvlv.monthLv : pillar === '日' ? lvlv.dayLv : lvlv.hourLv
                 const isSelected = selectedLvlv?.name === lv.name && selectedLvlvPillar === pillar
+                const isPlaying = playingPillar === pillar
                 return (
                   <div
                     key={pillar}
-                    className={`lvlv-item lvlv-clickable ${lv.type === '律' ? 'lv-yang' : 'lv-yin'} ${isSelected ? 'lv-active' : ''}`}
+                    className={`lvlv-item lvlv-clickable ${lv.type === '律' ? 'lv-yang' : 'lv-yin'} ${isSelected ? 'lv-active' : ''} ${isPlaying ? 'is-playing' : ''}`}
                     onClick={() => {
                       if (isSelected) {
                         setSelectedLvlv(null)
@@ -342,7 +381,27 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
                       }
                     }}
                   >
-                    <span className="lvlv-label">{pillar}律</span>
+                    <div className="lvlv-item-header">
+                      <span className="lvlv-label">{pillar}律</span>
+                      <button 
+                        className="lvlv-play-single"
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          if (isPlaying) {
+                            stopAllAudio()
+                          } else {
+                            stopAllAudio() // 停掉其他
+                            setPlayingPillar(pillar)
+                            playLvlvTone(lv.index).finally(() => {
+                              setPlayingPillar(current => current === pillar ? null : current)
+                            })
+                          }
+                        }}
+                        title={`聆听${lv.name}音高`}
+                      >
+                        {isPlaying ? '■' : '♪'}
+                      </button>
+                    </div>
                     <span className="lvlv-name">{lv.name}</span>
                     <span className="lvlv-pinyin">{lv.pinyin}</span>
                     <span className={`lvlv-type-badge ${lv.type === '律' ? 'yang' : 'yin'}`}>{lv.type}</span>

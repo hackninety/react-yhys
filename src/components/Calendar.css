@@ -78,7 +78,37 @@
 .bazi-pillar {
   color: var(--color-secondary);
   font-weight: 600;
-  font-size: 0.9rem;
+  font-family: monospace;
+}
+
+.daily-lvlv-play-btn {
+  background: none;
+  border: none;
+  color: #64748b;
+  font-size: 0.8rem;
+  cursor: pointer;
+  padding: 0 4px;
+  margin-left: 4px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.daily-lvlv-play-btn:hover {
+  color: #d4af37;
+  transform: scale(1.1);
+}
+
+.daily-lvlv-play-btn.playing {
+  color: #ef4444;
+  animation: bounceNote 0.8s infinite alternate;
+}
+
+@keyframes bounceNote {
+  from { transform: translateY(0); }
+  to { transform: translateY(-3px); }
 }
 
 .xiali-year {

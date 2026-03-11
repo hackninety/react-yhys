@@ -1,4 +1,4 @@
-import { useMemo, useCallback, useState } from 'react'
+import { useState, useMemo, useCallback, useEffect } from 'react'
 import {
   buildYear,
   buildYuan,
@@ -54,9 +54,10 @@ import {
 } from '../data/hexagrams64'
 import { getSolarTerm, getTermStartDate } from '../utils/solarTerms'
 import { getGanZhi, getYearGanZhi, getMonthGanZhi, getHourGanZhi, getHuangjiMonthGanZhi, getHuangjiMonthHexagram } from '../utils/ganzhi'
-import { getYearLv, getMonthLv, getDayLv, getHourLvByDate } from '../utils/lvlv'
 import { getLunarDateString } from '../utils/lunar'
+import { getDayLv, getHourLvByDate, getMonthLv, getYearLv } from '../utils/lvlv'
 import { DateDetailModal } from './DateDetailModal'
+import { playFourPillarsLv, stopLvlvAudio } from '../utils/lvlvAudio'
 import './Calendar.css'
 
 interface CalendarProps {
@@ -80,6 +81,14 @@ export default function Calendar({
     huangjiYear: number
   } | null>(null)
   
+  // 主界面律吕播放状态
+  const [isPlayingDailyLv, setIsPlayingDailyLv] = useState(false)
+  
+  // 组件卸载时释放音频资源
+  useEffect(() => {
+    return () => stopLvlvAudio()
+  }, [])
+
   // 获取今日皇极经世日期信息
   const todayInfo = useMemo(() => {
     const now = new Date()
@@ -427,6 +436,25 @@ export default function Calendar({
           <span className="lvlv-pillar hour-lv" title={`时律：${todayInfo.hourLv.type}·${todayInfo.hourLv.pinyin}`}>
             {todayInfo.hourLv.name}
           </span>
+          <button 
+            className={`daily-lvlv-play-btn ${isPlayingDailyLv ? 'playing' : ''}`}
+            onClick={async () => {
+              if (isPlayingDailyLv) {
+                stopLvlvAudio()
+                setIsPlayingDailyLv(false)
+              } else {
+                setIsPlayingDailyLv(true)
+                try {
+                  await playFourPillarsLv([todayInfo.yearLv.index, todayInfo.monthLv.index, todayInfo.dayLv.index, todayInfo.hourLv.index])
+                } finally {
+                  setIsPlayingDailyLv(false)
+                }
+              }
+            }}
+            title="聆听今日律吕"
+          >
+            {isPlayingDailyLv ? '■' : '▶'}
+          </button>
         </span>
         <span className="xiali-ref">
           <span className="xiali-year">（夏历：{todayInfo.yearGanZhi}年 {getMonthGanZhi(todayInfo.date)}月 {todayInfo.dayGanZhi}日 {todayInfo.hourGanZhi}时）</span>
