@@ -307,6 +307,18 @@
 }
 
 /* 律吕区域 */
+.lvlv-section h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.section-subtitle {
+  font-size: 0.7rem;
+  color: #64748b;
+  font-weight: 400;
+}
+
 .lvlv-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -321,6 +333,52 @@
   display: flex;
   flex-direction: column;
   gap: 4px;
+  position: relative;
+}
+
+.lvlv-clickable {
+  cursor: pointer;
+  transition: all 0.25s ease;
+  border: 1px solid transparent;
+}
+
+.lvlv-clickable:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.lvlv-clickable.lv-yang {
+  border-color: rgba(212, 175, 55, 0.2);
+}
+
+.lvlv-clickable.lv-yang:hover {
+  border-color: rgba(212, 175, 55, 0.5);
+  background: rgba(212, 175, 55, 0.08);
+}
+
+.lvlv-clickable.lv-yin {
+  border-color: rgba(167, 139, 250, 0.2);
+}
+
+.lvlv-clickable.lv-yin:hover {
+  border-color: rgba(167, 139, 250, 0.5);
+  background: rgba(167, 139, 250, 0.08);
+}
+
+.lvlv-clickable.lv-active {
+  transform: translateY(-2px);
+}
+
+.lvlv-clickable.lv-active.lv-yang {
+  border-color: rgba(212, 175, 55, 0.7);
+  background: rgba(212, 175, 55, 0.12);
+  box-shadow: 0 4px 16px rgba(212, 175, 55, 0.2);
+}
+
+.lvlv-clickable.lv-active.lv-yin {
+  border-color: rgba(167, 139, 250, 0.7);
+  background: rgba(167, 139, 250, 0.12);
+  box-shadow: 0 4px 16px rgba(167, 139, 250, 0.2);
 }
 
 .lvlv-label {
@@ -330,13 +388,154 @@
 
 .lvlv-name {
   font-size: 1.2rem;
-  color: #a78bfa;
   font-weight: bold;
+}
+
+.lv-yang .lvlv-name {
+  color: #d4af37;
+}
+
+.lv-yin .lvlv-name {
+  color: #a78bfa;
+}
+
+.lvlv-pinyin {
+  font-size: 0.65rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.lvlv-type-badge {
+  font-size: 0.65rem;
+  padding: 1px 8px;
+  border-radius: 10px;
+  display: inline-block;
+  margin: 2px auto 0;
+  width: fit-content;
+}
+
+.lvlv-type-badge.yang {
+  background: rgba(212, 175, 55, 0.15);
+  color: #d4af37;
+}
+
+.lvlv-type-badge.yin {
+  background: rgba(167, 139, 250, 0.15);
+  color: #a78bfa;
 }
 
 .lvlv-type {
   font-size: 0.75rem;
   color: #94a3b8;
+}
+
+/* 律吕详情弹窗 */
+.lvlv-detail-popup {
+  margin-top: 12px;
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 10px;
+  padding: 16px;
+  animation: fadeSlideIn 0.2s ease;
+}
+
+@keyframes fadeSlideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.lvlv-detail-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+  position: relative;
+}
+
+.lvlv-detail-badge {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+.lvlv-detail-badge.yang {
+  background: rgba(212, 175, 55, 0.2);
+  color: #d4af37;
+}
+
+.lvlv-detail-badge.yin {
+  background: rgba(167, 139, 250, 0.2);
+  color: #a78bfa;
+}
+
+.lvlv-detail-title {
+  font-size: 1.3rem;
+  font-weight: bold;
+  color: #e2e8f0;
+}
+
+.lvlv-detail-pinyin {
+  font-size: 0.85rem;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+.lvlv-detail-pillar {
+  font-size: 0.7rem;
+  color: #64748b;
+  margin-left: auto;
+}
+
+.lvlv-detail-close {
+  background: none;
+  border: none;
+  color: #64748b;
+  cursor: pointer;
+  font-size: 1rem;
+  padding: 2px 6px;
+  border-radius: 4px;
+  transition: all 0.15s;
+}
+
+.lvlv-detail-close:hover {
+  color: #e2e8f0;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.lvlv-detail-desc {
+  font-size: 0.9rem;
+  color: #cbd5e1;
+  margin: 6px 0;
+  line-height: 1.5;
+}
+
+.lvlv-detail-origin {
+  font-size: 0.8rem;
+  color: #94a3b8;
+  border-left: 3px solid rgba(212, 175, 55, 0.4);
+  padding: 8px 12px;
+  margin: 10px 0;
+  background: rgba(212, 175, 55, 0.04);
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.lvlv-detail-relation {
+  font-size: 0.8rem;
+  color: #64748b;
+  margin: 6px 0 0;
+  line-height: 1.5;
+}
+
+.lvlv-footer-note {
+  font-size: 0.7rem;
+  color: #475569;
+  text-align: center;
+  margin-top: 12px;
+  font-style: italic;
 }
 
 /* 节气区域 */

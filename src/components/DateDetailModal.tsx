@@ -4,7 +4,7 @@
  * 同时对比自己算法版和插件版的八字
  */
 
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import { getDateDetail, type BaziPillar } from '../utils/lunar'
 import { getYearGanZhi, getMonthGanZhi, getHourGanZhi, getGanZhi, getHuangjiMonthGanZhi } from '../utils/ganzhi'
 import { getYearLv, getMonthLv, getDayLv, getHourLvByDate } from '../utils/lvlv'
@@ -19,7 +19,72 @@ import {
   getRiHexagramByDate,
   getHexagram64,
 } from '../data/hexagrams64'
+import type { LvLv } from '../utils/lvlv'
 import './DateDetailModal.css'
+
+// 十二律吕详细说明（含黄畿原文引用）
+const LVLV_DESCRIPTIONS: Record<string, { description: string; origin: string; relation: string }> = {
+  '黄钟': {
+    description: '十二律之首，阳律。为律本，万事万物之始。',
+    origin: '黄畿《皇极经世书传》："黄钟，律之始也。声音律吕与象数卦爻互为表里。"',
+    relation: '对应地支「子」、冬至、十一月，为一阳初动之时。天干甲己合化，五正声之首。',
+  },
+  '大吕': {
+    description: '十二律第二，阴吕。助阳气萌生，阴中含阳。',
+    origin: '黄畿注："大吕者，旅也。言阴大，旅助黄钟宣气而牙物也。"',
+    relation: '对应地支「丑」、小寒/大寒、十二月。阴吕之属。',
+  },
+  '太簇': {
+    description: '十二律第三，阳律。万物簇生，阳气盛发。',
+    origin: '黄畿注："太簇者，言阳气大簇，达于上也。"',
+    relation: '对应地支「寅」、立春/雨水、正月。天干乙庚合化，五正声之二。',
+  },
+  '夹钟': {
+    description: '十二律第四，阴吕。阴夹阳而生，和煦初显。',
+    origin: '黄畿注："夹钟者，言阴夹助太簇，宣四方之气而出种物也。"',
+    relation: '对应地支「卯」、惊蛰/春分、二月。阴吕之属。',
+  },
+  '姑洗': {
+    description: '十二律第五，阳律。万物洁净，阳气清明。',
+    origin: '黄畿注："姑洗者，言万物洗生。"',
+    relation: '对应地支「辰」、清明/谷雨、三月。天干丙辛合化，五正声之三。',
+  },
+  '仲吕': {
+    description: '十二律第六，阴吕。阴居中位，助长万物。',
+    origin: '黄畿注："仲吕者，言阴气居中，助姑洗宣气，以养物也。"',
+    relation: '对应地支「巳」、立夏/小满、四月。阴吕之属。',
+  },
+  '蕤宾': {
+    description: '十二律第七，阳律。阳气极盛，继而宾服于阴。',
+    origin: '黄畿注："蕤宾者，言阳始导阴气，使继养物也。"',
+    relation: '对应地支「午」、芒种/夏至、五月。天干丁壬合化，五正声之四。',
+  },
+  '林钟': {
+    description: '十二律第八，阴吕。万物茂盛如林，阴气渐长。',
+    origin: '黄畿注："林钟者，言万物就死，气林林然。"',
+    relation: '对应地支「未」、小暑/大暑、六月。阴吕之属。',
+  },
+  '夷则': {
+    description: '十二律第九，阳律。万物当割，法则明定。',
+    origin: '黄畿注："夷则者，言阳气之正法度，而使阴气夷当伤之物也。"',
+    relation: '对应地支「申」、立秋/处暑、七月。天干戊癸合化，五正声之五。',
+  },
+  '南吕': {
+    description: '十二律第十，阴吕。阳气向南，阴任其职。',
+    origin: '黄畿注："南吕者，言阴气之旅助夷则，任成万物也。"',
+    relation: '对应地支「酉」、白露/秋分、八月。阴吕之属。',
+  },
+  '无射': {
+    description: '十二律第十一，阳律。阳气收藏，万物成实。',
+    origin: '黄畿注："无射者，阳气上升，阴气收藏，终而复始，无厌已也。" 注：无射不参天干者，五声之正也。',
+    relation: '对应地支「戌」、寒露/霜降、九月。六律之末，不入天干五正声对应。',
+  },
+  '应钟': {
+    description: '十二律第十二，阴吕。阴气应阳而终，闭藏万物。',
+    origin: '黄畿注："应钟者，言阴气应无射，该藏万物而杂阳阁种也。"',
+    relation: '对应地支「亥」、立冬/小雪、十月。阴吕之属。',
+  },
+}
 
 interface DateDetailModalProps {
   date: Date
@@ -34,6 +99,14 @@ const WUXING_COLORS: Record<string, string> = {
   '土': '#eab308',  // 黄色
   '金': '#f8fafc',  // 白色（用浅灰表示）
   '水': '#3b82f6',  // 蓝色
+}
+
+// 律吕柱标签对应
+const LV_PILLAR_LABELS: Record<string, string> = {
+  '年': '年律 · 天干合化五正声',
+  '月': '月律 · 地支配十二律吕',
+  '日': '日律 · 天干合化五正声',
+  '时': '时律 · 地支配十二律吕',
 }
 
 // 渲染单个八字柱
@@ -58,6 +131,10 @@ function BaziPillarDisplay({ pillar, label }: { pillar: BaziPillar; label: strin
 }
 
 export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalProps) {
+  // 律吕详情弹窗状态
+  const [selectedLvlv, setSelectedLvlv] = useState<LvLv | null>(null)
+  const [selectedLvlvPillar, setSelectedLvlvPillar] = useState<string | null>(null)
+  
   // 获取 lunisolar 的完整日期详情
   const detail = useMemo(() => getDateDetail(date), [date])
   
@@ -246,29 +323,51 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
           
           {/* 律吕 */}
           <section className="section lvlv-section">
-            <h3>律吕</h3>
+            <h3>声音律吕<span className="section-subtitle">黄畿声音系统</span></h3>
             <div className="lvlv-grid">
-              <div className="lvlv-item">
-                <span className="lvlv-label">年律</span>
-                <span className="lvlv-name">{lvlv.yearLv.name}</span>
-                <span className="lvlv-type">{lvlv.yearLv.type}</span>
-              </div>
-              <div className="lvlv-item">
-                <span className="lvlv-label">月律</span>
-                <span className="lvlv-name">{lvlv.monthLv.name}</span>
-                <span className="lvlv-type">{lvlv.monthLv.type}</span>
-              </div>
-              <div className="lvlv-item">
-                <span className="lvlv-label">日律</span>
-                <span className="lvlv-name">{lvlv.dayLv.name}</span>
-                <span className="lvlv-type">{lvlv.dayLv.type}</span>
-              </div>
-              <div className="lvlv-item">
-                <span className="lvlv-label">时律</span>
-                <span className="lvlv-name">{lvlv.hourLv.name}</span>
-                <span className="lvlv-type">{lvlv.hourLv.type}</span>
-              </div>
+              {(['年', '月', '日', '时'] as const).map((pillar) => {
+                const lv = pillar === '年' ? lvlv.yearLv : pillar === '月' ? lvlv.monthLv : pillar === '日' ? lvlv.dayLv : lvlv.hourLv
+                const isSelected = selectedLvlv?.name === lv.name && selectedLvlvPillar === pillar
+                return (
+                  <div
+                    key={pillar}
+                    className={`lvlv-item lvlv-clickable ${lv.type === '律' ? 'lv-yang' : 'lv-yin'} ${isSelected ? 'lv-active' : ''}`}
+                    onClick={() => {
+                      if (isSelected) {
+                        setSelectedLvlv(null)
+                        setSelectedLvlvPillar(null)
+                      } else {
+                        setSelectedLvlv(lv)
+                        setSelectedLvlvPillar(pillar)
+                      }
+                    }}
+                  >
+                    <span className="lvlv-label">{pillar}律</span>
+                    <span className="lvlv-name">{lv.name}</span>
+                    <span className="lvlv-pinyin">{lv.pinyin}</span>
+                    <span className={`lvlv-type-badge ${lv.type === '律' ? 'yang' : 'yin'}`}>{lv.type}</span>
+                  </div>
+                )
+              })}
             </div>
+            {/* 律吕详情弹窗 */}
+            {selectedLvlv && selectedLvlvPillar && LVLV_DESCRIPTIONS[selectedLvlv.name] && (
+              <div className="lvlv-detail-popup">
+                <div className="lvlv-detail-header">
+                  <span className={`lvlv-detail-badge ${selectedLvlv.type === '律' ? 'yang' : 'yin'}`}>
+                    {selectedLvlv.type === '律' ? '阳律' : '阴吕'}
+                  </span>
+                  <span className="lvlv-detail-title">{selectedLvlv.name}</span>
+                  <span className="lvlv-detail-pinyin">{selectedLvlv.pinyin}</span>
+                  <span className="lvlv-detail-pillar">{LV_PILLAR_LABELS[selectedLvlvPillar]}</span>
+                  <button className="lvlv-detail-close" onClick={() => { setSelectedLvlv(null); setSelectedLvlvPillar(null) }}>✕</button>
+                </div>
+                <p className="lvlv-detail-desc">{LVLV_DESCRIPTIONS[selectedLvlv.name].description}</p>
+                <blockquote className="lvlv-detail-origin">{LVLV_DESCRIPTIONS[selectedLvlv.name].origin}</blockquote>
+                <p className="lvlv-detail-relation">{LVLV_DESCRIPTIONS[selectedLvlv.name].relation}</p>
+              </div>
+            )}
+            <p className="lvlv-footer-note">黄畿《皇极经世书传》：&ldquo;声音律吕与象数卦爻互为表里&rdquo;</p>
           </section>
           
           {/* 节气信息 */}
