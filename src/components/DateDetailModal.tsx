@@ -20,7 +20,7 @@ import {
   getSuiHexagram,
   getYueHexagramByHuangji,
   getRiHexagramByDate,
-  getShiChenHexagramByDate,
+  getShiChenHexagramDetail,
   getHexagram64,
   type Hexagram64, // Assuming Hexagram64 is a type based on the instruction's context
 } from '../data/hexagrams64'
@@ -264,7 +264,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     const riHex = getRiHexagramByDate(date)
 
     // 时卦 (按当前传入的Date时间的时辰)
-    const shiChenHex = getShiChenHexagramByDate(date)
+    const shiChenDetail = getShiChenHexagramDetail(date)
 
     return [
       { level: '元（日）', name: '乾', hex: yuanHex, note: '一元统领' },
@@ -274,7 +274,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
       { level: '岁（年）', name: `第${huangjiYear}年`, hex: suiHex, note: '世卦爻变' },
       { level: '月', name: `第${huangjiMonth + 1}月`, hex: yueHex, note: '先天60卦序' },
       { level: '日', name: '', hex: riHex, note: '先天60卦序' },
-      { level: '时', name: '当前时辰', hex: shiChenHex, note: '十二消息卦' },
+      { level: '时', name: `${shiChenDetail.branchName}时`, hex: shiChenDetail.shiChenHexagram, note: '十二消息卦' },
     ]
   }, [date, huangjiYear])
   
