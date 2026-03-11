@@ -25,7 +25,7 @@ import {
   type Hexagram64, // Assuming Hexagram64 is a type based on the instruction's context
 } from '../data/hexagrams64'
 import { HEXAGRAM_INTERPRETATIONS } from '../data/hexagramInterpretations'
-import { XiantianCircle } from './XiantianCircle'
+
 import type { LvLv } from '../utils/lvlv'
 import './DateDetailModal.css'
 
@@ -150,9 +150,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
   
   // 完整版声音唱和矩阵状态
   const [showChangheMatrix, setShowChangheMatrix] = useState(false)
-  
-  // 先天六十四卦圆图状态
-  const [showXiantianCircle, setShowXiantianCircle] = useState(false)
+
 
   // 播放状态
   const [playingPillar, setPlayingPillar] = useState<string | null>(null)
@@ -415,37 +413,6 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
                 ) : (
                   <p className="hexagram-xiangci">暂无解读数据</p>
                 )}
-              </div>
-            )}
-            
-            {/* 先天六十四卦圆图入口 */}
-            <div className="matrix-action-row" style={{ marginTop: '16px' }}>
-              <button 
-                className="matrix-action-btn"
-                onClick={() => setShowXiantianCircle(true)}
-              >
-                <span>📐 查看先天六十四卦圆图</span>
-              </button>
-            </div>
-            
-            {/* 全屏先天圆图展示 */}
-            {showXiantianCircle && (
-              <div className="matrix-modal-overlay" onClick={() => setShowXiantianCircle(false)}>
-                <div className="matrix-modal-content" onClick={e => e.stopPropagation()}>
-                  <button className="matrix-modal-close" onClick={() => setShowXiantianCircle(false)}>×</button>
-                  <div className="matrix-modal-header">
-                    <h2>伏羲先天六十四卦方位图</h2>
-                    <p className="matrix-modal-subtitle">邵雍《皇极经世书》象数推演核心</p>
-                  </div>
-                  <XiantianCircle 
-                    highlightBinary={hexagramChain.find(h => h.level === '岁（年）')?.hex.binary}
-                    onHexagramClick={(hex) => {
-                       const interpretation = HEXAGRAM_INTERPRETATIONS[hex.name]
-                       setSelectedHexagram({ level: '图谱点查', hex, interpretation })
-                       setShowXiantianCircle(false) // 点击后关闭圆图回到详情弹窗查看具体象辞
-                    }}
-                  />
-                </div>
               </div>
             )}
             
