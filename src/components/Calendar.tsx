@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from 'react'
+import { useState, useMemo, useCallback, useEffect, useSyncExternalStore } from 'react'
 import {
   buildYear,
   buildYuan,
@@ -58,6 +58,8 @@ import { getLunarDateString } from '../utils/lunar'
 import { getDayLv, getHourLvByDate, getMonthLv, getYearLv } from '../utils/lvlv'
 import { DateDetailModal } from './DateDetailModal'
 import { playFourPillarsLv, stopLvlvAudio } from '../utils/lvlvAudio'
+import { AlgorithmSwitch } from './AlgorithmSwitch'
+import { subscribeAlgorithm, getAlgorithmSnapshot } from '../algorithms/registry'
 import './Calendar.css'
 
 interface CalendarProps {
@@ -83,6 +85,9 @@ export default function Calendar({
   
   // 主界面律吕播放状态
   const [isPlayingDailyLv, setIsPlayingDailyLv] = useState(false)
+  
+  // 订阅算法状态变化以触发重渲染
+  useSyncExternalStore(subscribeAlgorithm, getAlgorithmSnapshot)
   
   // 组件卸载时释放音频资源
   useEffect(() => {
@@ -402,7 +407,10 @@ export default function Calendar({
     <div className="calendar">
       {/* 头部 */}
       <header className="calendar-header">
-        <h1 className="calendar-title">皇极经世历</h1>
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <h1 className="calendar-title">皇极经世历</h1>
+          <AlgorithmSwitch />
+        </div>
         <p className="calendar-position">{getTitle()}</p>
         <p className="calendar-cycle">{getSubtitle()}</p>
       </header>

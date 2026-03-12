@@ -9,6 +9,7 @@
  * 例如：乾卦 = 111111 = 63, 坤卦 = 000000 = 0
  */
 import { getTermStartDate } from '../utils/solarTerms'
+import { getCurrentAlgorithm } from '../algorithms/registry'
 
 export interface Hexagram64 {
   binary: number      // 6位二进制值 (0-63)
@@ -313,7 +314,7 @@ const XIANTIAN_64_SEQUENCE_FOR_YUN = [
  * 戌会(10): 蹇 → 艮 → 谦 → 否 → 萃 （索引20-24）
  * 亥会(11): 晋 → 豫 → 观 → 比 → 剥 （索引25-29）
  */
-const XIANTIAN_60_SEQUENCE_FOR_YUN = XIANTIAN_64_SEQUENCE_FOR_YUN.filter(
+export const XIANTIAN_60_SEQUENCE_FOR_YUN = XIANTIAN_64_SEQUENCE_FOR_YUN.filter(
   binary => !FOUR_PRINCIPAL_HEXAGRAMS.includes(binary)
 )
 
@@ -385,29 +386,7 @@ const XIANTIAN_60_SEQUENCE_FOR_YUN = XIANTIAN_64_SEQUENCE_FOR_YUN.filter(
  * @returns 运卦信息
  */
 export function getYunHexagram(huiIndex: number, yunInHui: number): Hexagram64 {
-  // 子会从复卦开始（索引30），每会5个主卦
-  // 计算该会在60卦序中的起始位置
-  // huiIndex=0(子) → 30, huiIndex=6(午) → 0
-  const huiStartIndex = ((huiIndex % 12) * 5 + 30) % 60
-  
-  // 每主卦管辖6运，计算该运对应的主卦在会内的位置（0-4）
-  const masterHexagramIndexInHui = Math.floor((yunInHui % 30) / 6)
-  
-  // 计算在60卦序中的全局索引
-  const globalIndex = (huiStartIndex + masterHexagramIndexInHui) % 60
-  
-  // 获取主卦的二进制值
-  const masterBinary = XIANTIAN_60_SEQUENCE_FOR_YUN[globalIndex]
-  
-  // 计算该运在主卦组内的位置（0-5，对应变初爻到上爻）
-  const yunInGroup = yunInHui % 6
-  
-  // 对主卦变动第(yunInGroup+1)爻，产生该运的值运卦
-  // yunInGroup=0 → 变初爻，yunInGroup=5 → 变上爻
-  const yaoToChange = yunInGroup + 1 // 1-6
-  const yunBinary = changeYao(masterBinary, yaoToChange)
-  
-  return getHexagram64(yunBinary)
+  return getCurrentAlgorithm().getYunHexagram(huiIndex, yunInHui)
 }
 
 /**
@@ -445,7 +424,7 @@ export function getYunHexagramDetailByGlobal(globalYunNumber: number): YunHexagr
   // 计算运在会内的序号
   const yunInHui = (globalYunNumber - 1) % 30
   
-  // 计算该会在60卦序中的起始位置
+  // 计算该会在60卦序中的起始位置（主卦/变爻是先天图结构元数据，与算法无关）
   const huiStartIndex = ((huiIndex % 12) * 5 + 30) % 60
   
   // 每主卦管辖6运，计算该运对应的主卦在会内的位置（0-4）
@@ -464,9 +443,8 @@ export function getYunHexagramDetailByGlobal(globalYunNumber: number): YunHexagr
   const yaoNames = ['初', '二', '三', '四', '五', '上']
   const yaoName = yaoNames[yunInGroup]
   
-  // 计算运卦
-  const yunBinary = changeYao(masterBinary, yaoChanged)
-  const yunHexagram = getHexagram64(yunBinary)
+  // 运卦通过分发获取（确保切换算法时运卦结果正确）
+  const yunHexagram = getYunHexagram(huiIndex, yunInHui)
   
   return {
     yunHexagram,
@@ -501,21 +479,7 @@ export function getHuiHexagram(huiIndex: number): Hexagram64 {
  * @returns 世卦信息
  */
 export function getShiHexagram(huiIndex: number, yunInHui: number, shiInYun: number): Hexagram64 {
-  // 获取该运的运卦
-  const yunHexagram = getYunHexagram(huiIndex, yunInHui)
-  
-  // 计算这是该运内的第几个"甲子世"（每2世为一单位，范围0-5）
-  const jiaziShiIndex = Math.floor(shiInYun / 2)
-  
-  // 变动对应的爻（1-6，依次为初爻到上爻）
-  // 注意：世卦层面不做四正卦避让，四正卦可以合法出现为世卦
-  // 四正卦避让仅在岁卦（getSuiHexagram）层面执行
-  const yaoToChange = jiaziShiIndex + 1
-  
-  // 世卦 = 运卦变爻
-  const shiBinary = changeYao(yunHexagram.binary, yaoToChange)
-  
-  return getHexagram64(shiBinary)
+  return getCurrentAlgorithm().getShiHexagram(huiIndex, yunInHui, shiInYun)
 }
 
 /**
@@ -570,25 +534,7 @@ const XIANTIAN_60_SEQUENCE = XIANTIAN_60_SEQUENCE_FOR_YUN
  * @returns 岁卦信息
  */
 export function getSuiHexagram(gregorianYear: number): Hexagram64 {
-  const huangjiSui = gregorianYear + 67017
-  const shiHexagram = getShiHexagramByYear(huangjiSui)
-
-  // 六十甲子偏移（0-59），以1984甲子年为锚点
-  let ganzhiOffset = (gregorianYear - 1984) % 60
-  if (ganzhiOffset < 0) ganzhiOffset += 60
-
-  // 预计算所有有效变爻结果（剔除四正卦）
-  const validSuiBinaries: number[] = []
-  for (let i = 1; i <= 6; i++) {
-    const candidate = changeYao(shiHexagram.binary, i)
-    if (!isFourPrincipalHexagram(candidate)) {
-      validSuiBinaries.push(candidate)
-    }
-  }
-
-  // 用取模确保序列平滑流转，连续年份绝不重复
-  const suiBinary = validSuiBinaries[ganzhiOffset % validSuiBinaries.length]
-  return getHexagram64(suiBinary)
+  return getCurrentAlgorithm().getSuiHexagram(gregorianYear)
 }
 
 /**

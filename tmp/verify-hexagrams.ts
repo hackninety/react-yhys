@@ -21,10 +21,18 @@ import {
   isFourPrincipalHexagram,
   TWELVE_SOVEREIGN_HEXAGRAMS,
 } from '../src/data/hexagrams64'
+import { getYearLv, getMonthLv, getDayLv, getHourLv, TWELVE_LVLV } from '../src/utils/lvlv'
+import { TEN_TIAN_SHENG, TWELVE_DI_YIN, getTianSheng, getDiYin } from '../src/utils/changhe'
+import { switchAlgorithm } from '../src/algorithms/registry'
 
 // ============================================================
 // 工具：彩色输出
 // ============================================================
+export function runSuite(algoName: '黄畿' | '祝泌'): number {
+  switchAlgorithm(algoName)
+  console.log(`\n\n\n${'#'.repeat(80)}`)
+  console.log(`### 当前测试算法: ${algoName} ###`)
+  console.log(`${'#'.repeat(80)}\n`)
 let passCount = 0
 let failCount = 0
 let warnCount = 0
@@ -119,23 +127,28 @@ if (yunPassCount === 30) pass(`午会30运全部正确 (${yunPassCount}/30)`)
 section('三、当前时段运卦验证（1744-2103 → 运192）')
 
 const yun192 = getYunHexagramByGlobal(192)
-if (yun192.name === '姤') {
-  pass(`运192（1744-2103）= ${yun192.name} ${yun192.unicode}  ← 各家共识✓`)
+if (algoName === '黄畿') {
+  if (yun192.name === '姤') {
+    pass(`运192（1744-2103）= ${yun192.name} ${yun192.unicode}  ← 各家共识✓`)
+  } else {
+    fail(`运192：期望 姤，实际 ${yun192.name}`)
+  }
 } else {
-  fail(`运192：期望 姤，实际 ${yun192.name}`)
+  warn(`祝泌独立体系下，运192由挂一图转换为 = ${yun192.name} ${yun192.unicode}`)
 }
 
 const yun192detail = getYunHexagramDetailByGlobal(192)
-if (yun192detail.masterHexagram.name === '大过' && yun192detail.yaoChanged === 6) {
-  pass(`运192由 ${yun192detail.masterHexagram.name} 变${yun192detail.yaoName}爻得 ← 正确`)
-} else {
-  fail(`运192推演来源：期望 大过变上爻，实际 ${yun192detail.masterHexagram.name}变${yun192detail.yaoName}爻`)
+if (algoName === '黄畿') {
+  if (yun192detail.masterHexagram.name === '大过' && yun192detail.yaoChanged === 6) {
+    pass(`运192由 ${yun192detail.masterHexagram.name} 变${yun192detail.yaoName}爻得 ← 正确`)
+  } else {
+    fail(`运192推演来源：期望 大过变上爻，实际 ${yun192detail.masterHexagram.name}变${yun192detail.yaoName}爻`)
+  }
 }
 
 // ============================================================
 // 四、世卦验证 — 当前所处的世（1984-2043）
-//     各家共识：世卦 = 鼎（火风鼎）
-//     由姤（运192）变五爻得
+//     黄畿各家共识：世卦 = 鼎（火风鼎）
 // ============================================================
 section('四、当前时段世卦验证（1984-2043 → 鼎）')
 
@@ -146,10 +159,15 @@ const shi2026 = Math.ceil(huangji2026 / 30)
 console.log(`  📊 2026年皇极年份: ${huangji2026}, 世编号: ${shi2026}`)
 
 const shiHex = getShiHexagramByYear(huangji2026)
-if (shiHex.name === '鼎') {
-  pass(`2026年世卦 = ${shiHex.name} ${shiHex.unicode} (火风鼎) ← 各家共识✓`)
+if (algoName === '黄畿') {
+  if (shiHex.name === '鼎') {
+    pass(`2026年世卦 = ${shiHex.name} ${shiHex.unicode} (火风鼎) ← 各家共识✓`)
+  } else {
+    fail(`2026年世卦：期望 鼎，实际 ${shiHex.name}`)
+  }
 } else {
-  fail(`2026年世卦：期望 鼎，实际 ${shiHex.name}`)
+  // 祝泌世卦由贞悔合体得出，非鼎
+  warn(`祝泌2026年世卦独立体系推演为 = ${shiHex.name} ${shiHex.unicode}`)
 }
 
 // 验证世卦由运卦姤变五爻得来
@@ -181,12 +199,18 @@ section('五、岁卦（值年卦）验证 — 2026年')
 const sui2026 = getSuiHexagram(2026)
 console.log(`  📊 2026年岁卦 = ${sui2026.name} ${sui2026.unicode}`)
 
-if (sui2026.name === '大有') {
-  pass(`2026年岁卦 = 大有 ← 黄畿爻变法（鼎变初爻）✓`)
-} else if (sui2026.name === '同人') {
-  warn(`2026年岁卦 = 同人 ← 这是祝泌平推法的结果，非黄畿爻变法`)
+if (algoName === '黄畿') {
+  if (sui2026.name === '大有') {
+    pass(`2026年岁卦 = 大有 ← 黄畿爻变法（鼎变初爻）✓`)
+  } else {
+    fail(`2026年（黄畿）岁卦：期望 大有，实际 ${sui2026.name}`)
+  }
 } else {
-  fail(`2026年岁卦：期望 大有(黄畿) 或 同人(祝泌)，实际 ${sui2026.name}`)
+  if (sui2026.name === '同人') {
+    pass(`2026年岁卦 = 同人 ← 祝泌平推法精确命中！`)
+  } else {
+    fail(`2026年（祝泌）岁卦：期望 同人，实际 ${sui2026.name}`)
+  }
 }
 
 // 手动验证：鼎(101110)变初爻→大有(101111)，变初爻后不是四正卦
@@ -435,11 +459,13 @@ for (const check of historicalChecks) {
     (check.expectedShi ? (shiHex.name === check.expectedShi ? ' ✓' : ` ← 期望${check.expectedShi} ✗`) : ''))
   console.log(`     岁卦 = ${suiHex.name} ${suiHex.unicode}`)
 
-  if (check.expectedYun && yunHex.name !== check.expectedYun) {
-    fail(`${check.year}年运卦不匹配`)
-  }
-  if (check.expectedShi && shiHex.name !== check.expectedShi) {
-    fail(`${check.year}年世卦不匹配`)
+  if (algoName === '黄畿') {
+    if (check.expectedYun && yunHex.name !== check.expectedYun) {
+      fail(`${check.year}年运卦不匹配`)
+    }
+    if (check.expectedShi && shiHex.name !== check.expectedShi) {
+      fail(`${check.year}年世卦不匹配`)
+    }
   }
 }
 
@@ -463,8 +489,6 @@ for (let g = 0; g < 5; g++) {
 // 十四、律吕验证 — 黄畿声音系统
 // ============================================================
 section('十四、律吕验证 — 黄畿声音系统')
-
-import { getYearLv, getMonthLv, getDayLv, getHourLv, TWELVE_LVLV } from '../src/utils/lvlv'
 
 // 14.1 十二律吕完整性
 if (TWELVE_LVLV.length === 12) {
@@ -577,8 +601,6 @@ console.log(`\n${'='.repeat(60)}`)
 console.log(`15. 声音唱和数据与映射验证`)
 console.log('='.repeat(60))
 
-import { TEN_TIAN_SHENG, TWELVE_DI_YIN, getTianSheng, getDiYin } from '../src/utils/changhe'
-
 // 1. 验证天声数组长度与提取
 if (TEN_TIAN_SHENG.length === 10) {
   pass(`天声数组长度正确: 10`)
@@ -626,5 +648,17 @@ if (failCount === 0) {
   console.log(`\n  ⚠️  有 ${failCount} 项验证未通过，需要进一步排查。`)
 }
 
-process.exit(failCount > 0 ? 1 : 0)
+  return failCount
+}
+
+const failHuangji = runSuite('黄畿')
+const failZhubi = runSuite('祝泌')
+
+if (failHuangji > 0 || failZhubi > 0) {
+  console.log(`\n❌ 双算法验证失败！（黄畿: ${failHuangji} 处，祝泌: ${failZhubi} 处）`)
+  process.exit(1)
+} else {
+  console.log('\n🎉 双算法全部验证通过！项目实现终极进化！')
+  process.exit(0)
+}
 
