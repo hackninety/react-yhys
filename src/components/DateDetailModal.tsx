@@ -606,7 +606,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
               <h3>节气</h3>
               <div className="term-info">
                 <span className="term-name">{solarTermInfo.termName}</span>
-                <span className="term-day">（{solarTermInfo.dayInTerm === 0 ? '当日' : `第${solarTermInfo.dayInTerm + 1}天`}）</span>
+                <span className="term-day">（{solarTermInfo.dayInTerm === 1 ? '当日' : `第${solarTermInfo.dayInTerm}天`}）</span>
               </div>
             </section>
           )}
