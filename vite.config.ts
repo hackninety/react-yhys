@@ -11,12 +11,12 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0',
-    port: 6666,
+    port: 6611,
     // HMR 配置：确保 Docker 环境下 WebSocket 连接正常
     hmr: {
       host: 'localhost',
-      port: 6666,
-      clientPort: 6666,
+      port: 6611,
+      clientPort: 6611,
     },
     watch: {
       // Docker 环境下需要启用轮询模式以检测文件变化
