@@ -24,22 +24,7 @@
   border-color: rgba(148, 163, 184, 0.4);
 }
 
-.algorithm-toggle-slider {
-  display: flex;
-  align-items: center;
-  position: absolute;
-  top: 2px;
-  left: 2px;
-  height: 26px;
-  width: 172px; /* 86px * 2 */
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.algorithm-toggle-slider.switched {
-  transform: translateX(-43px); /* 移动一半 */
-}
-
-/* Pseudo-element for the active pill background */
+/* The sliding pill highlight */
 .algorithm-toggle-btn::before {
   content: '';
   position: absolute;
@@ -53,31 +38,38 @@
   z-index: 1;
 }
 
-.algorithm-toggle-slider.switched ~ ::before, /* In case DOM changes */
+/* Move pill to the right when switched */
 .algorithm-toggle-btn:has(.switched)::before {
   transform: translateX(43px);
 }
 
+/* Text labels container — stays in place, no translateX */
+.algorithm-toggle-slider {
+  display: flex;
+  align-items: center;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  height: 26px;
+  width: 86px;
+}
+
+/* Each label takes half the width, stays stationary */
 .algorithm-text {
   width: 43px;
   text-align: center;
   font-weight: 500;
   z-index: 2;
   transition: color 0.3s ease;
-}
-
-/* Base colors */
-.algorithm-text.huangji {
-  color: #94a3b8;
-}
-.algorithm-text.zhubi {
   color: #94a3b8;
 }
 
-/* Active colors */
+/* Active text highlight — default: 黄畿 is active */
 .algorithm-toggle-btn:not(:has(.switched)) .algorithm-text.huangji {
   color: #e2e8f0;
 }
+
+/* Active text highlight — switched: 祝泌 is active */
 .algorithm-toggle-btn:has(.switched) .algorithm-text.zhubi {
   color: #e2e8f0;
 }

@@ -735,6 +735,13 @@
   margin-top: 20px;
 }
 
+.changhe-section h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 0;
+}
+
 .changhe-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);

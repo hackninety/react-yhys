@@ -268,7 +268,13 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     // 时卦 (按当前传入的Date时间的时辰)
     const shiChenDetail = getShiChenHexagramDetail(date)
 
-    return [
+    // 判断是否是今天
+    const now = new Date()
+    const isToday = date.getFullYear() === now.getFullYear() &&
+      date.getMonth() === now.getMonth() &&
+      date.getDate() === now.getDate()
+
+    const chain = [
       { level: '元（日）', name: '乾', hex: yuanHex, note: '一元统领' },
       { level: '会（月）', name: `第${huiIndex + 1}会`, hex: huiHex, note: '辟卦（消息卦）' },
       { level: '运（星）', name: `第${globalYunNumber}运`, hex: yunDetail.yunHexagram, note: `${yunDetail.masterHexagram.name}→${yunDetail.yaoName}爻变` },
@@ -276,8 +282,14 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
       { level: '岁（年）', name: `第${huangjiYear}年`, hex: suiHex, note: '世卦爻变' },
       { level: '月', name: `第${huangjiMonth + 1}月`, hex: yueHex, note: '先天60卦序' },
       { level: '日', name: '', hex: riHex, note: '先天60卦序' },
-      { level: '时', name: `${shiChenDetail.branchName}时`, hex: shiChenDetail.shiChenHexagram, note: '十二消息卦' },
     ]
+
+    // 只在今天时显示时卦
+    if (isToday) {
+      chain.push({ level: '时', name: `${shiChenDetail.branchName}时`, hex: shiChenDetail.shiChenHexagram, note: '十二消息卦' })
+    }
+
+    return chain
   }, [date, huangjiYear])
   
   
