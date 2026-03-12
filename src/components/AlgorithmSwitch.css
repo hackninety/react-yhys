@@ -73,3 +73,31 @@
 .algorithm-toggle-btn:has(.switched) .algorithm-text.zhubi {
   color: #e2e8f0;
 }
+
+/* AI 分析按钮 */
+.ai-analysis-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: rgba(212, 175, 55, 0.1);
+  border: 1px solid rgba(212, 175, 55, 0.3);
+  border-radius: 16px;
+  color: rgba(212, 175, 55, 0.9);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.ai-analysis-btn:hover {
+  background: rgba(212, 175, 55, 0.2);
+  border-color: rgba(212, 175, 55, 0.5);
+  color: #FFD700;
+  box-shadow: 0 0 8px rgba(212, 175, 55, 0.2);
+}
+
+.ai-analysis-icon {
+  font-size: 14px;
+}
