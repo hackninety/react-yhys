@@ -514,6 +514,27 @@
   color: #a78bfa;
 }
 
+/* 按柱位着色（与顶部栏 lvlv-pillar 颜色统一） */
+.lv-pillar-year .lvlv-name { color: #FF6B6B; }
+.lv-pillar-month .lvlv-name { color: #4ECDC4; }
+.lv-pillar-day .lvlv-name { color: #FFE66D; }
+.lv-pillar-hour .lvlv-name { color: #C792EA; }
+
+.lv-pillar-year.lvlv-clickable { border-color: rgba(255, 107, 107, 0.2); }
+.lv-pillar-month.lvlv-clickable { border-color: rgba(78, 205, 196, 0.2); }
+.lv-pillar-day.lvlv-clickable { border-color: rgba(255, 230, 109, 0.2); }
+.lv-pillar-hour.lvlv-clickable { border-color: rgba(199, 146, 234, 0.2); }
+
+.lv-pillar-year.lvlv-clickable:hover { border-color: rgba(255, 107, 107, 0.5); background: rgba(255, 107, 107, 0.08); }
+.lv-pillar-month.lvlv-clickable:hover { border-color: rgba(78, 205, 196, 0.5); background: rgba(78, 205, 196, 0.08); }
+.lv-pillar-day.lvlv-clickable:hover { border-color: rgba(255, 230, 109, 0.5); background: rgba(255, 230, 109, 0.08); }
+.lv-pillar-hour.lvlv-clickable:hover { border-color: rgba(199, 146, 234, 0.5); background: rgba(199, 146, 234, 0.08); }
+
+.lv-pillar-year.lv-active { border-color: rgba(255, 107, 107, 0.7); background: rgba(255, 107, 107, 0.12); box-shadow: 0 4px 16px rgba(255, 107, 107, 0.2); }
+.lv-pillar-month.lv-active { border-color: rgba(78, 205, 196, 0.7); background: rgba(78, 205, 196, 0.12); box-shadow: 0 4px 16px rgba(78, 205, 196, 0.2); }
+.lv-pillar-day.lv-active { border-color: rgba(255, 230, 109, 0.7); background: rgba(255, 230, 109, 0.12); box-shadow: 0 4px 16px rgba(255, 230, 109, 0.2); }
+.lv-pillar-hour.lv-active { border-color: rgba(199, 146, 234, 0.7); background: rgba(199, 146, 234, 0.12); box-shadow: 0 4px 16px rgba(199, 146, 234, 0.2); }
+
 .lvlv-pinyin {
   font-size: 0.65rem;
   color: #94a3b8;

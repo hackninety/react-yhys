@@ -212,7 +212,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     const yearLv = getYearLv(yearGanZhi[0])  // 年律按年干
     const monthLv = getMonthLv(monthBranchIndex >= 0 ? monthBranchIndex : 0)  // 月律按月支
     const dayLv = getDayLv(dayGanZhi[0])  // 日律按日干
-    const hourLv = getHourLvByDate(date)  // 时律按时支
+    const hourLv = getHourLvByDate(new Date())  // 时律按当前实时时辰（与顶部栏一致）
     return { yearLv, monthLv, dayLv, hourLv }
   }, [date])
 
@@ -451,7 +451,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
                 return (
                   <div
                     key={pillar}
-                    className={`lvlv-item lvlv-clickable ${lv.type === '律' ? 'lv-yang' : 'lv-yin'} ${isSelected ? 'lv-active' : ''} ${isPlaying ? 'is-playing' : ''}`}
+                    className={`lvlv-item lvlv-clickable lv-pillar-${pillar === '年' ? 'year' : pillar === '月' ? 'month' : pillar === '日' ? 'day' : 'hour'} ${lv.type === '律' ? 'lv-yang' : 'lv-yin'} ${isSelected ? 'lv-active' : ''} ${isPlaying ? 'is-playing' : ''}`}
                     onClick={() => {
                       if (isSelected) {
                         setSelectedLvlv(null)

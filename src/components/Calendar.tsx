@@ -407,7 +407,7 @@ export default function Calendar({
     <div className="calendar">
       {/* 头部 */}
       <header className="calendar-header">
-        <div style={{ display: 'flex', alignItems: 'center' }}>
+        <div className="calendar-header-top">
           <h1 className="calendar-title">皇极经世历</h1>
           <AlgorithmSwitch />
         </div>
@@ -631,17 +631,30 @@ export default function Calendar({
                       <span className="month-number">第{globalShiNumber}世</span>
                       {shi.index === KAIWU_INDEX && <span className="kaiwu-badge">开物</span>}
                       {shi.index === BIWU_INDEX && <span className="biwu-badge">闭物</span>}
-                      {specialDatesForShi.map((sd, i) => (
-                        sd.badge ? (
-                          <span 
-                            key={i}
-                            className={`special-shi-badge ${specialDatesForShi.length > 1 ? 'multi-badge' : ''}`} 
+                      {(() => {
+                        // 按 badge 文本 GROUP BY 去重
+                        const badgeGroups = new Map<string, { sd: typeof specialDatesForShi[0], count: number, names: string[] }>()
+                        for (const sd of specialDatesForShi) {
+                          if (!sd.badge) continue
+                          const existing = badgeGroups.get(sd.badge)
+                          if (existing) {
+                            existing.count++
+                            existing.names.push(sd.name)
+                          } else {
+                            badgeGroups.set(sd.badge, { sd, count: 1, names: [sd.name] })
+                          }
+                        }
+                        return Array.from(badgeGroups.entries()).map(([badge, { sd, count, names }]) => (
+                          <span
+                            key={badge}
+                            className={`special-shi-badge ${badgeGroups.size > 1 ? 'multi-badge' : ''}`}
                             style={getSpecialDateBadgeStyle(sd)}
+                            title={names.join('、')}
                           >
-                            {sd.badge}
+                            {badge}{count > 1 ? ` ×${count}` : ''}
                           </span>
-                        ) : null
-                      ))}
+                        ))
+                      })()}
                     </h3>
                     
                     <div className="days-grid nians-grid" onClick={(e) => e.stopPropagation()}>

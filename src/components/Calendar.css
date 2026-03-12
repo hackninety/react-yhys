@@ -14,14 +14,38 @@
   border: 1px solid var(--color-border);
 }
 
+.calendar-header-top {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0 16px;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
 .calendar-title {
   font-family: var(--font-display);
   font-size: 3rem;
   font-weight: 400;
   color: var(--color-primary);
   letter-spacing: 0.5rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0;
   text-shadow: 0 0 40px rgba(212, 175, 55, 0.3);
+}
+
+@media (max-width: 480px) {
+  .calendar-header {
+    padding: 1.5rem 1rem;
+  }
+  .calendar-header-top {
+    flex-direction: column;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  .calendar-title {
+    font-size: 2rem;
+    margin-bottom: 0;
+  }
 }
 
 .calendar-position {
@@ -669,9 +693,13 @@
   box-shadow: 0 1px 3px rgba(220, 20, 60, 0.3);
 }
 
-/* 今年标签（岁级nian-cell） - 与节气样式完全一致 */
+/* 今年标签（岁级nian-cell） - 与 .day-cell.today 一致的高亮框 */
 .nian-cell.current-year {
   justify-content: space-evenly;
+  background: rgba(220, 20, 60, 0.15);
+  border: 1px solid #DC143C;
+  box-shadow: 0 0 8px rgba(220, 20, 60, 0.2);
+  z-index: 1;
 }
 
 .nian-cell.current-year .day-number {
