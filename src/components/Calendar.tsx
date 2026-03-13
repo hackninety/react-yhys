@@ -510,15 +510,13 @@ export default function Calendar({
             return (
               <div 
                 key={hui.index} 
-                className={`month-card hui-card ${hui.index === KAIWU_INDEX ? 'kaiwu' : ''} ${hui.index === BIWU_INDEX ? 'biwu' : ''}`}
+                className={`month-card hui-card`}
                 onClick={() => handleZoomIn(hui.index)}
               >
                 <h3 className="month-title">
                   月{EARTHLY_BRANCHES[hui.index]}
                   <span className="month-pinyin">{hui.branchPinyin}</span>
                   <span className="month-number">第{hui.index + 1}会</span>
-                  {hui.index === KAIWU_INDEX && <span className="kaiwu-badge">开物</span>}
-                  {hui.index === BIWU_INDEX && <span className="biwu-badge">闭物</span>}
                 </h3>
                 
                 <div className="days-grid yuns-grid" onClick={(e) => e.stopPropagation()}>
@@ -622,7 +620,7 @@ export default function Calendar({
                 return (
                   <div 
                     key={shi.index} 
-                    className={`month-card shi-card ${shi.index === KAIWU_INDEX ? 'kaiwu' : ''} ${shi.index === BIWU_INDEX ? 'biwu' : ''} ${mainSpecialShi ? 'special-shi' : ''}`}
+                    className={`month-card shi-card ${mainSpecialShi ? 'special-shi' : ''}`}
                     style={shiCardStyle}
                     onClick={() => handleZoomIn(shi.index)}
                   >
@@ -630,8 +628,6 @@ export default function Calendar({
                       辰{EARTHLY_BRANCHES[shi.index]}
                       <span className="month-pinyin">{shi.branchPinyin}</span>
                       <span className="month-number">第{globalShiNumber}世</span>
-                      {shi.index === KAIWU_INDEX && <span className="kaiwu-badge">开物</span>}
-                      {shi.index === BIWU_INDEX && <span className="biwu-badge">闭物</span>}
                       {(() => {
                         // 按 badge 文本 GROUP BY 去重
                         const badgeGroups = new Map<string, { sd: typeof specialDatesForShi[0], count: number, names: string[] }>()
@@ -774,14 +770,12 @@ export default function Calendar({
             return (
               <div 
                 key={month.index} 
-                className={`month-card ${month.index === KAIWU_INDEX ? 'kaiwu' : ''} ${month.index === BIWU_INDEX ? 'biwu' : ''} ${isCurrentMonth ? 'current-month' : ''}`}
+                className={`month-card ${isCurrentMonth ? 'current-month' : ''}`}
               >
                 <h3 className="month-title">
                   {monthGanZhi}月
                   <span className="month-pinyin">{month.branchPinyin}</span>
                   <span className="month-number">第{month.index + 1}月</span>
-                  {month.index === KAIWU_INDEX && <span className="kaiwu-badge">开物</span>}
-                  {month.index === BIWU_INDEX && <span className="biwu-badge">闭物</span>}
                   {isCurrentMonth && <span className="today-badge-small">今月</span>}
                 </h3>
                 
@@ -1052,9 +1046,6 @@ export default function Calendar({
                       <div className="zoom-card-term">
                         <span className={`zoom-term-name ${yunTermClass}`}>{yunTermName}</span>
                         <span className="zoom-term-start">星节气</span>
-                        {specialDate?.term && (
-                          <span className="zoom-term-special">{specialDate.name}</span>
-                        )}
                       </div>
                     )}
 
@@ -1106,13 +1097,6 @@ export default function Calendar({
 
       {/* 节气图例 */}
       <footer className="calendar-footer">
-        <div className="kaiwu-biwu-legend">
-          <p className="legend-title">开物 / 闭物</p>
-          <div className="kaiwu-biwu-info">
-            <span className="kaiwu-legend">月寅开物（惊蛰）</span>
-            <span className="biwu-legend">月戌闭物（立冬）</span>
-          </div>
-        </div>
         <div className="stems-legend">
           <p className="legend-title">十天干（日/星）</p>
           <div className="branches-grid">
