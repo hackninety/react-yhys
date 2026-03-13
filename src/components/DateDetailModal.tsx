@@ -22,8 +22,9 @@ import {
   getRiHexagramByDate,
   getShiChenHexagramDetail,
   getHexagram64,
-  type Hexagram64, // Assuming Hexagram64 is a type based on the instruction's context
+  type Hexagram64,
 } from '../data/hexagrams64'
+import { getCurrentAlgorithm } from '../algorithms/registry'
 import { HEXAGRAM_INTERPRETATIONS } from '../data/hexagramInterpretations'
 
 import type { LvLv } from '../utils/lvlv'
@@ -257,15 +258,12 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     // 岁卦
     const suiHex = getSuiHexagram(gregorianYear)
 
-    // 月卦：使用节气信息获取皇极月
+    // 获取节气信息（皇极年内天数等）
     const termInfo = getSolarTerm(date)
     const huangjiMonth = termInfo.huangji.month  // 0-11
-    const yueHex = getYueHexagramByHuangji(huangjiYear, huangjiMonth + 1)
+    const dayOfYear = termInfo.huangji.dayOfYear  // 1-360
 
-    // 日卦
-    const riHex = getRiHexagramByDate(date)
-
-    // 时卦 (按当前传入的Date时间的时辰)
+    // 时辰信息
     const shiChenDetail = getShiChenHexagramDetail(date)
 
     // 判断是否是今天
@@ -274,19 +272,47 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
       date.getMonth() === now.getMonth() &&
       date.getDate() === now.getDate()
 
+    // 根据当前算法决定月/日/时的计算方式
+    const algo = getCurrentAlgorithm()
+
     const chain = [
       { level: '元（日）', name: '乾', hex: yuanHex, note: '一元统领' },
       { level: '会（月）', name: `第${huiIndex + 1}会`, hex: huiHex, note: '辟卦（消息卦）' },
       { level: '运（星）', name: `第${globalYunNumber}运`, hex: yunDetail.yunHexagram, note: `${yunDetail.masterHexagram.name}→${yunDetail.yaoName}爻变` },
       { level: '世（辰）', name: `第${globalShiNumber}世`, hex: shiHex, note: '运卦爻变' },
-      { level: '岁（年）', name: `第${huangjiYear}年`, hex: suiHex, note: '世卦爻变' },
-      { level: '月', name: `第${huangjiMonth + 1}月`, hex: yueHex, note: '先天60卦序' },
-      { level: '日', name: '', hex: riHex, note: '先天60卦序' },
+      { level: '岁（年）', name: `第${huangjiYear}年`, hex: suiHex, note: '挨六十卦次' },
     ]
 
-    // 只在今天时显示时卦
-    if (isToday) {
-      chain.push({ level: '时', name: `${shiChenDetail.branchName}时`, hex: shiChenDetail.shiChenHexagram, note: '十二消息卦' })
+    if (algo.getYueJingHexagram && algo.getXunWeiHexagram && algo.getRiHexagram) {
+      // 黄畿算法：分形同构（一六为经，六六为纬，挨六十卦次）
+      const yueHex = algo.getYueJingHexagram(gregorianYear, dayOfYear)
+      const jingPeriod = Math.floor((dayOfYear - 1) / 60) + 1
+      chain.push({ level: '月经', name: `第${jingPeriod}经`, hex: yueHex, note: '岁卦爻变·管60天' })
+
+      const xunHex = algo.getXunWeiHexagram(gregorianYear, dayOfYear)
+      const xunInJing = Math.floor(((dayOfYear - 1) % 60) / 10) + 1
+      chain.push({ level: '旬纬', name: `第${xunInJing}纬`, hex: xunHex, note: '月经爻变·管10天' })
+
+      const riHex = algo.getRiHexagram(gregorianYear, dayOfYear)
+      chain.push({ level: '日', name: `第${dayOfYear}天`, hex: riHex, note: '挨六十卦次' })
+
+      // 时经卦：仅今天显示
+      if (isToday && algo.getShiJingHexagram) {
+        const shiJingHex = algo.getShiJingHexagram(gregorianYear, dayOfYear, shiChenDetail.branchIndex)
+        const shiJingPeriod = Math.floor(shiChenDetail.branchIndex / 2) + 1
+        chain.push({ level: '时经', name: `第${shiJingPeriod}经·${shiChenDetail.branchName}时`, hex: shiJingHex, note: '日卦爻变·管2时辰' })
+      }
+    } else {
+      // 祝泌/通用算法：先天60卦序
+      const yueHex = getYueHexagramByHuangji(huangjiYear, huangjiMonth + 1)
+      chain.push({ level: '月', name: `第${huangjiMonth + 1}月`, hex: yueHex, note: '先天60卦序' })
+
+      const riHex = getRiHexagramByDate(date)
+      chain.push({ level: '日', name: '', hex: riHex, note: '先天60卦序' })
+
+      if (isToday) {
+        chain.push({ level: '时', name: `${shiChenDetail.branchName}时`, hex: shiChenDetail.shiChenHexagram, note: '十二消息卦' })
+      }
     }
 
     return chain
@@ -388,8 +414,8 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
                     <div className="chain-symbol">{item.hex.unicode}</div>
                     <div className="chain-name">{item.hex.name}</div>
                     <div className="chain-note">{item.note}</div>
-                    {(item.level === '月' || item.level === '日') && (
-                      <div className="chain-note chain-footnote">先天60序</div>
+                    {(item.level === '月' || item.level === '日' || item.level === '月经' || item.level === '旬纬') && (
+                      <div className="chain-note chain-footnote">{item.note}</div>
                     )}
                     {i < hexagramChain.length - 1 && (
                       <div className="chain-arrow">↓</div>

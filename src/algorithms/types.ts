@@ -29,4 +29,31 @@ export interface HexagramAlgorithm {
    * @param gregorianYear 公历年份
    */
   getSuiHexagram(gregorianYear: number): Hexagram64
+
+  /**
+   * 【黄畿专用】计算月经卦（双月经卦）
+   * 年卦变爻得经卦，每卦管60天（2个月）
+   * @param gregorianYear 公历年份
+   * @param dayOfYear 皇极年内的天数（1-360，从冬至算起）
+   */
+  getYueJingHexagram?(gregorianYear: number, dayOfYear: number): Hexagram64
+
+  /**
+   * 【黄畿专用】计算旬纬卦（10天卦）
+   * 月经卦变爻得纬卦，每卦管10天（1旬）
+   */
+  getXunWeiHexagram?(gregorianYear: number, dayOfYear: number): Hexagram64
+
+  /**
+   * 【黄畿专用】计算日卦（1天卦）
+   * 从月经卦位置起，挨六十卦次，每天1卦
+   */
+  getRiHexagram?(gregorianYear: number, dayOfYear: number): Hexagram64
+
+  /**
+   * 【黄畿专用】计算时经卦（2时辰卦）
+   * 日卦变爻，每2时辰一变
+   * @param shichenIndex 时辰索引 0-11（子=0...亥=11）
+   */
+  getShiJingHexagram?(gregorianYear: number, dayOfYear: number, shichenIndex: number): Hexagram64
 }

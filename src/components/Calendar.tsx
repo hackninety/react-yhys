@@ -58,6 +58,7 @@ import { getLunarDateString } from '../utils/lunar'
 import { getDayLv, getHourLvByDate, getMonthLv, getYearLv } from '../utils/lvlv'
 import { DateDetailModal } from './DateDetailModal'
 import { playFourPillarsLv, stopLvlvAudio } from '../utils/lvlvAudio'
+import { getCurrentAlgorithm } from '../algorithms/registry'
 import { AlgorithmSwitch } from './AlgorithmSwitch'
 import { subscribeAlgorithm, getAlgorithmSnapshot } from '../algorithms/registry'
 import './Calendar.css'
@@ -761,9 +762,14 @@ export default function Calendar({
             
             // 皇极月索引 → 公历月份
             
-            // 计算流月卦象：使用皇极参数专用接口
-            // currentSui = 皇极岁号, month.index = 皇极月索引(0-11)，函数需要(1-12)
-            const yueHexagram = getYueHexagramByHuangji(currentSui, month.index + 1)
+            // 计算流月卦象：根据当前算法决定
+            const algo = getCurrentAlgorithm()
+            // 黄畿算法：月经卦（岁卦变爻，每60天=2个月共享1卦）
+            // 祝泌/通用：先天60卦序月卦（每月1卦）
+            const dayOfYearForMonth = month.index * 30 + 1  // 该月第1天在皇极年内的天数
+            const yueHexagram = algo.getYueJingHexagram
+              ? algo.getYueJingHexagram(currentGregorianYear, dayOfYearForMonth)
+              : getYueHexagramByHuangji(currentSui, month.index + 1)
             
             return (
               <div 
@@ -899,7 +905,7 @@ export default function Calendar({
                 
                 <div className="hui-info">
                   <span className="hui-years">第{month.index + 1}月</span>
-                  <span className="hui-terms hui-hexagram" title={`月卦：${yueHexagram.name}`}>
+                  <span className="hui-terms hui-hexagram" title={`${algo.getYueJingHexagram ? '月经' : '月'}卦：${yueHexagram.name}${algo.getYueJingHexagram ? `（第${Math.floor(month.index / 2) + 1}经·管60天）` : ''}`}>
                     <span className="hexagram-symbol" style={{ fontSize: '1.2em', marginRight: '4px' }}>{yueHexagram.unicode}</span>
                     <span className="hexagram-name">{yueHexagram.name}</span>
                   </span>

@@ -76,6 +76,41 @@
   flex: 1;
 }
 
+.ai-mode-switch {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1rem;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.ai-mode-btn {
+  flex: 1;
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: none;
+  color: #94a3b8;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ai-mode-btn:first-child {
+  border-right: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.ai-mode-btn.active {
+  background: rgba(212, 175, 55, 0.15);
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+.ai-mode-btn:hover:not(.active) {
+  background: rgba(255, 255, 255, 0.03);
+  color: #cbd5e1;
+}
+
 .ai-error-msg {
   background: rgba(239, 68, 68, 0.12);
   border: 1px solid rgba(239, 68, 68, 0.3);

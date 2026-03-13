@@ -3,11 +3,14 @@ import {
   getShiHexagramByYear,
   getSuiHexagram,
   getYunHexagramByGlobal,
+  getYunHexagramDetailByGlobal,
   getHuiHexagram
 } from '../data/hexagrams64'
 import {
   gregorianYearToSui,
-  getYearJiazi
+  getYearJiazi,
+  getStem,
+  EARTHLY_BRANCHES
 } from '../utils/calendar'
 import './AIAnalysisModal.css'
 
@@ -17,9 +20,14 @@ interface AIAnalysisModalProps {
   algorithmName: string
 }
 
+type AnalysisMode = 'sui' | 'xing'
+
 export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisModalProps) {
+  const [mode, setMode] = useState<AnalysisMode>('sui')
   const [startYearStr, setStartYearStr] = useState('1984')
   const [endYearStr, setEndYearStr] = useState('2043')
+  const [startStarStr, setStartStarStr] = useState('181')
+  const [endStarStr, setEndStarStr] = useState('192')
   const [resultJson, setResultJson] = useState('')
   const [isCopied, setIsCopied] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
@@ -39,7 +47,7 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
 
   if (!isOpen) return null
 
-  const handleGenerate = () => {
+  const handleGenerateSui = () => {
     const startYear = parseInt(startYearStr, 10)
     const endYear = parseInt(endYearStr, 10)
 
@@ -116,7 +124,7 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
           currentYunSet.set(globalYunNumber, {
             index: globalYunNumber - 1,
             name: `第${globalYunNumber}运`,
-            hexagram: `${yunHex.unicode}${yunHex.name}` // 此处简化为只展示运卦
+            hexagram: `${yunHex.unicode}${yunHex.name}`
           })
         }
 
@@ -154,6 +162,101 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
     }
   }
 
+  const handleGenerateXing = () => {
+    const startStar = parseInt(startStarStr, 10)
+    const endStar = parseInt(endStarStr, 10)
+
+    if (isNaN(startStar) || isNaN(endStar)) {
+      setErrorMsg('请输入有效的星编号')
+      return
+    }
+    if (startStar > endStar) {
+      setErrorMsg('起始星号不能大于结束星号')
+      return
+    }
+    if (startStar < 1 || endStar > 4320) {
+      setErrorMsg('星编号范围为 1-4320')
+      return
+    }
+    if (endStar - startStar > 360) {
+      setErrorMsg('星级范围不宜超过360')
+      return
+    }
+    setErrorMsg('')
+
+    try {
+      const starsData = []
+
+      for (let s = startStar; s <= endStar; s++) {
+        const detail = getYunHexagramDetailByGlobal(s)
+        const stem = getStem(s - 1)
+
+        // 会信息
+        const huiIndex = Math.floor((s - 1) / 30) % 12
+        const huiBranch = EARTHLY_BRANCHES[huiIndex]
+        const huiHex = getHuiHexagram(huiIndex)
+
+        // 元信息
+        const yuanIndex = Math.floor((s - 1) / 360)
+
+        starsData.push({
+          starNumber: s,
+          starName: `星${stem}${s}`,
+          masterHexagram: {
+            name: detail.masterHexagram.name,
+            unicode: detail.masterHexagram.unicode,
+            binary: detail.masterHexagram.binary
+          },
+          yunHexagram: {
+            name: detail.yunHexagram.name,
+            unicode: detail.yunHexagram.unicode,
+            binary: detail.yunHexagram.binary
+          },
+          yaoChanged: detail.yaoChanged,
+          yaoName: `${detail.yaoName}爻变`,
+          chain: `${detail.masterHexagram.unicode}${detail.masterHexagram.name}→${detail.yunHexagram.unicode}${detail.yunHexagram.name}`,
+          parentHui: {
+            index: huiIndex,
+            name: `${huiBranch}会`,
+            hexagram: `${huiHex.unicode}${huiHex.name}`
+          },
+          yuan: yuanIndex + 1
+        })
+      }
+
+      // 提取涉及的独立会信息
+      const huiSet = new Map()
+      for (const star of starsData) {
+        if (!huiSet.has(star.parentHui.index)) {
+          huiSet.set(star.parentHui.index, star.parentHui)
+        }
+      }
+
+      const result = {
+        type: '星级卦象',
+        range: `星${getStem(startStar - 1)}${startStar} - 星${getStem(endStar - 1)}${endStar}`,
+        context: {
+          hui_list: Array.from(huiSet.values()),
+          description: '每星（运）由主卦变一爻而来，主卦来自其所在会的先天60卦序'
+        },
+        stars: starsData
+      }
+
+      setResultJson(JSON.stringify(result, null, 2))
+      setIsCopied(false)
+    } catch (err: any) {
+      setErrorMsg(`生成出错: ${err.message}`)
+    }
+  }
+
+  const handleGenerate = () => {
+    if (mode === 'sui') {
+      handleGenerateSui()
+    } else {
+      handleGenerateXing()
+    }
+  }
+
   const handleCopy = async () => {
     if (!resultJson) return
     try {
@@ -176,29 +279,72 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
         </div>
 
         <div className="ai-modal-body">
+          {/* 模式切换 */}
+          <div className="ai-mode-switch">
+            <button 
+              className={`ai-mode-btn ${mode === 'sui' ? 'active' : ''}`}
+              onClick={() => { setMode('sui'); setResultJson(''); setErrorMsg('') }}
+            >
+              岁级卦象
+            </button>
+            <button 
+              className={`ai-mode-btn ${mode === 'xing' ? 'active' : ''}`}
+              onClick={() => { setMode('xing'); setResultJson(''); setErrorMsg('') }}
+            >
+              星级卦象
+            </button>
+          </div>
+
           {errorMsg && (
             <div className="ai-error-msg">{errorMsg}</div>
           )}
 
           <div className="ai-modal-form">
-            <div className="ai-form-group">
-              <label>起始年份（公历）</label>
-              <input 
-                type="number" 
-                className="ai-form-input" 
-                value={startYearStr}
-                onChange={e => setStartYearStr(e.target.value)}
-              />
-            </div>
-            <div className="ai-form-group">
-              <label>结束年份（公历）</label>
-              <input 
-                type="number" 
-                className="ai-form-input" 
-                value={endYearStr}
-                onChange={e => setEndYearStr(e.target.value)}
-              />
-            </div>
+            {mode === 'sui' ? (
+              <>
+                <div className="ai-form-group">
+                  <label>起始年份（公历）</label>
+                  <input 
+                    type="number" 
+                    className="ai-form-input" 
+                    value={startYearStr}
+                    onChange={e => setStartYearStr(e.target.value)}
+                  />
+                </div>
+                <div className="ai-form-group">
+                  <label>结束年份（公历）</label>
+                  <input 
+                    type="number" 
+                    className="ai-form-input" 
+                    value={endYearStr}
+                    onChange={e => setEndYearStr(e.target.value)}
+                  />
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="ai-form-group">
+                  <label>起始星号</label>
+                  <input 
+                    type="number" 
+                    className="ai-form-input" 
+                    value={startStarStr}
+                    onChange={e => setStartStarStr(e.target.value)}
+                    placeholder="如: 181"
+                  />
+                </div>
+                <div className="ai-form-group">
+                  <label>结束星号</label>
+                  <input 
+                    type="number" 
+                    className="ai-form-input" 
+                    value={endStarStr}
+                    onChange={e => setEndStarStr(e.target.value)}
+                    placeholder="如: 192"
+                  />
+                </div>
+              </>
+            )}
             <button className="ai-action-btn" onClick={handleGenerate}>
               生成 JSON
             </button>
@@ -206,7 +352,9 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
 
           <div className="ai-result-panel">
             <div className="ai-result-header">
-              <span className="ai-result-title">分析数据 ({algorithmName})</span>
+              <span className="ai-result-title">
+                {mode === 'sui' ? `分析数据 (${algorithmName})` : '星级卦象数据'}
+              </span>
               <button 
                 className={`ai-copy-btn ${isCopied ? 'copied' : ''}`} 
                 onClick={handleCopy}
@@ -219,7 +367,10 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
               className="ai-result-textarea" 
               value={resultJson} 
               readOnly 
-              placeholder="点击生成 JSON 将在这里显示..."
+              placeholder={mode === 'sui' 
+                ? '点击生成 JSON 将在这里显示...' 
+                : '输入星编号范围后点击生成，如 181-192...'
+              }
             />
           </div>
         </div>
