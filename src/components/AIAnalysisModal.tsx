@@ -4,7 +4,8 @@ import {
   getSuiHexagram,
   getYunHexagramByGlobal,
   getYunHexagramDetailByGlobal,
-  getHuiHexagram
+  getHuiHexagram,
+  getShiHexagramByGlobal
 } from '../data/hexagrams64'
 import {
   gregorianYearToSui,
@@ -199,6 +200,24 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
         // 元信息
         const yuanIndex = Math.floor((s - 1) / 360)
 
+        // 世卦信息：每运(星)12世(辰)
+        const shiList = []
+        for (let shiIdx = 0; shiIdx < 12; shiIdx++) {
+          const globalShiNum = (s - 1) * 12 + shiIdx + 1
+          const shiHex = getShiHexagramByGlobal(globalShiNum)
+          const shiBranch = EARTHLY_BRANCHES[shiIdx]
+          shiList.push({
+            shiNumber: globalShiNum,
+            branch: shiBranch,
+            name: `辰${shiBranch}`,
+            hexagram: {
+              name: shiHex.name,
+              unicode: shiHex.unicode,
+              binary: shiHex.binary
+            }
+          })
+        }
+
         starsData.push({
           starNumber: s,
           starName: `星${stem}${s}`,
@@ -220,7 +239,8 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
             name: `${huiBranch}会`,
             hexagram: `${huiHex.unicode}${huiHex.name}`
           },
-          yuan: yuanIndex + 1
+          yuan: yuanIndex + 1,
+          shis: shiList
         })
       }
 

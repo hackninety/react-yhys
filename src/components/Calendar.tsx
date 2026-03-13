@@ -83,13 +83,13 @@ export default function Calendar({
     date: Date
     huangjiYear: number
   } | null>(null)
-  
+
   // 主界面律吕播放状态
   const [isPlayingDailyLv, setIsPlayingDailyLv] = useState(false)
-  
+
   // 订阅算法状态变化以触发重渲染
   useSyncExternalStore(subscribeAlgorithm, getAlgorithmSnapshot)
-  
+
   // 组件卸载时释放音频资源
   useEffect(() => {
     return () => stopLvlvAudio()
@@ -100,36 +100,36 @@ export default function Calendar({
     const now = new Date()
     const termInfo = getSolarTerm(now)
     const gregorianYear = now.getFullYear()
-    
+
     // 皇极经世历以冬至换年
     // 获取今年冬至日期（节气索引23=冬至）
     const dongzhiThisYear = getTermStartDate(gregorianYear, 23)
-    
+
     // 判断今天是否在冬至之后
     const todayDate = new Date(gregorianYear, now.getMonth(), now.getDate())
     const isAfterDongzhi = todayDate.getTime() >= dongzhiThisYear.getTime()
-    
+
     // 皇极年份：如果在冬至之后，皇极年对应下一年的干支
     // 例如：2025年12月23日（冬至后）-> 皇极年对应2026年 -> 丙午年
     const huangjiGregorianYear = isAfterDongzhi ? gregorianYear + 1 : gregorianYear
     const huangjiSui = huangjiGregorianYear + 67017 // gregorianYearToSui offset
     const huangjiYearJiazi = getYearJiazi(huangjiSui)
-    
+
     // 皇极四柱：年月日时干支
     const yearGanZhi = getYearGanZhi(now) // 夏历年干支（作为参考）
     const huangjiMonthGanZhi = getHuangjiMonthGanZhi(now) // 皇极月干支
     const huangjiMonthHexagramOld = getHuangjiMonthHexagram(now) // 皇极月卦（十二消息卦/会卦）- 保留用于其他地方
     const dayGanZhi = getGanZhi(now)
     const hourGanZhi = getHourGanZhi(now)
-    
+
     // 计算当前世卦（不剔除四正卦）
     const currentShiHexagram = getShiHexagramByYear(huangjiSui)
-    
+
     // 计算当前世序号（每世30年）
     const currentShiNumber = Math.ceil(huangjiSui / 30)
     // 计算当前运序号（每运12世）
     const currentYunNumber = Math.ceil(currentShiNumber / 12)
-    
+
     return {
       date: now,
       termInfo,
@@ -323,12 +323,12 @@ export default function Calendar({
   // 直接切换缩放级别
   const handleLevelChange = useCallback((newLevel: ZoomLevel) => {
     if (newLevel === zoomLevel) return
-    
+
     // 根据当前年份计算新位置
     const currentYearIndex = zoomLevel === 'nian' ? yearIndex : positionToYearIndex(position)
     const newPosition = yearIndexToPosition(currentYearIndex, newLevel)
     onZoomChange(newLevel, newPosition)
-    
+
     if (newLevel === 'nian') {
       onYearChange(currentYearIndex)
     }
@@ -445,7 +445,7 @@ export default function Calendar({
           <span className="lvlv-pillar hour-lv" title={`时律：${todayInfo.hourLv.type}·${todayInfo.hourLv.pinyin}`}>
             {todayInfo.hourLv.name}
           </span>
-          <button 
+          <button
             className={`daily-lvlv-play-btn ${isPlayingDailyLv ? 'playing' : ''}`}
             onClick={async () => {
               if (isPlayingDailyLv) {
@@ -488,13 +488,13 @@ export default function Calendar({
         <button className="nav-btn" onClick={handlePrev}>
           ← 上一{zoomInfo.alias}
         </button>
-        
+
         {parentLevel && (
           <button className="nav-btn zoom-out-btn" onClick={handleZoomOut}>
             ↑ 缩小到{ZOOM_INFO[parentLevel].alias}级
           </button>
         )}
-        
+
         <button className="nav-btn" onClick={handleNext}>
           下一{zoomInfo.alias} →
         </button>
@@ -508,8 +508,8 @@ export default function Calendar({
             const yunStart = hui.index * 30 + 1
             const yunEnd = (hui.index + 1) * 30
             return (
-              <div 
-                key={hui.index} 
+              <div
+                key={hui.index}
                 className={`month-card hui-card`}
                 onClick={() => handleZoomIn(hui.index)}
               >
@@ -518,7 +518,7 @@ export default function Calendar({
                   <span className="month-pinyin">{hui.branchPinyin}</span>
                   <span className="month-number">第{hui.index + 1}会</span>
                 </h3>
-                
+
                 <div className="days-grid yuns-grid" onClick={(e) => e.stopPropagation()}>
                   {hui.yuns.map((yun) => {
                     // 计算全局运编号
@@ -529,7 +529,7 @@ export default function Calendar({
                     // 查找特殊日期(运) 可能有多个
                     const specialDatesArr = findSpecialDateByYun(globalYunNumber)
                     const mainSpecialDate = specialDatesArr.length > 0 ? specialDatesArr[0] : null
-                    
+
                     // 节气：第1格和第16格有节气
                     const hasTerm = yun.index === 0 || yun.index === 15
                     const termName = yun.index === 0 ? hui.termStart : (yun.index === 15 ? hui.termEnd : null)
@@ -537,10 +537,10 @@ export default function Calendar({
                     // 判断是否是当前运（包含今年）
                     const currentYun = Math.ceil(todayInfo.huangjiSui / (SHIS_PER_YUN * YEARS_PER_SHI))
                     const isCurrentYun = globalYunNumber === currentYun
-                    
+
                     // 生成合并的标题描述
                     const descStr = specialDatesArr.map(d => `【${d.name}: ${d.description}】`).join(' ')
-                    
+
                     return (
                       <div
                         key={yun.index}
@@ -563,10 +563,10 @@ export default function Calendar({
                           <span className={`term-badge ${termClass}`}>{termName}</span>
                         )}
                         {mainSpecialDate?.badge && (
-                           <span className="special-date-badge" style={getSpecialDateBadgeStyle(mainSpecialDate)}>
-                             {mainSpecialDate.badge}{specialDatesArr.length > 1 ? `+${specialDatesArr.length - 1}` : ''}
-                           </span>
-                         )}
+                          <span className="special-date-badge" style={getSpecialDateBadgeStyle(mainSpecialDate)}>
+                            {mainSpecialDate.badge}{specialDatesArr.length > 1 ? `+${specialDatesArr.length - 1}` : ''}
+                          </span>
+                        )}
                         {isCurrentYun && (
                           <span className="current-yun-badge">今·火</span>
                         )}
@@ -574,7 +574,7 @@ export default function Calendar({
                     )
                   })}
                 </div>
-                
+
                 <div className="hui-info">
                   <span className="hui-years">{yunStart}-{yunEnd}运</span>
                   <span className="hui-terms hui-hexagram">
@@ -611,15 +611,15 @@ export default function Calendar({
                 // 查找特殊日期（根据世编号）
                 const specialDatesForShi = findSpecialDateByShi(globalShiNumber)
                 const mainSpecialShi = specialDatesForShi.length > 0 ? specialDatesForShi[0] : null
-                
+
                 // 特殊世卡片的边框样式
                 const shiCardStyle = mainSpecialShi ? {
                   borderColor: mainSpecialShi.color,
                   boxShadow: `0 0 12px ${mainSpecialShi.color}40`,
                 } : undefined
                 return (
-                  <div 
-                    key={shi.index} 
+                  <div
+                    key={shi.index}
                     className={`month-card shi-card ${mainSpecialShi ? 'special-shi' : ''}`}
                     style={shiCardStyle}
                     onClick={() => handleZoomIn(shi.index)}
@@ -653,7 +653,7 @@ export default function Calendar({
                         ))
                       })()}
                     </h3>
-                    
+
                     <div className="days-grid nians-grid" onClick={(e) => e.stopPropagation()}>
                       {shi.nians.map((nian) => {
                         const hasTerm = nian.index === 0 || nian.index === 15
@@ -665,13 +665,13 @@ export default function Calendar({
                         // 根据岁编号查找特殊日期(可能有多个)
                         const specialDatesForNian = findSpecialDateBySui(globalYearNumber)
                         const mainSpecialNian = specialDatesForNian.length > 0 ? specialDatesForNian[0] : null
-                        
+
                         // 动态判断是否是"今年"（皇极经世历以冬至换年）
                         const isCurrentHuangjiYear = globalYearNumber === todayInfo.huangjiSui
-                        
+
                         // 多事件提示文字拼接
                         const descStr = specialDatesForNian.map(d => `【${d.name}】`).join(' ')
-                        
+
                         return (
                           <div
                             key={nian.index}
@@ -711,7 +711,7 @@ export default function Calendar({
                         )
                       })}
                     </div>
-                    
+
                     <div className="hui-info">
                       <span className="hui-years">第{globalShiNumber}世</span>
                       <span className="hui-terms hui-hexagram" title="世卦（运卦爻变）">
@@ -742,9 +742,9 @@ export default function Calendar({
             // 使用皇极年份比较（基于冬至换年）
             const currentSui = yearData.state.yearInCycle + 1
             const currentGregorianYear = suiToGregorianYear(currentSui)
-            const isCurrentMonth = currentSui === todayInfo.huangjiSui && 
-                                 month.index === todayInfo.termInfo.huangji.month
-            
+            const isCurrentMonth = currentSui === todayInfo.huangjiSui &&
+              month.index === todayInfo.termInfo.huangji.month
+
             // 计算皇极月干支
             const huangjiYearJiazi = getYearJiazi(currentSui)
             const yearStemIndex = HEAVENLY_STEMS.indexOf(huangjiYearJiazi[0] as typeof HEAVENLY_STEMS[number])
@@ -755,9 +755,9 @@ export default function Calendar({
             if (monthOffset < 0) monthOffset += 12
             const monthStemIndex = (yinMonthStemStart + monthOffset) % 10
             const monthGanZhi = HEAVENLY_STEMS[monthStemIndex] + EARTHLY_BRANCHES[month.index]
-            
+
             // 皇极月索引 → 公历月份
-            
+
             // 计算流月卦象：根据当前算法决定
             const algo = getCurrentAlgorithm()
             // 黄畿算法：月经卦（岁卦变爻，每60天=2个月共享1卦）
@@ -766,10 +766,10 @@ export default function Calendar({
             const yueHexagram = algo.getYueJingHexagram
               ? algo.getYueJingHexagram(currentGregorianYear, dayOfYearForMonth)
               : getYueHexagramByHuangji(currentSui, month.index + 1)
-            
+
             return (
-              <div 
-                key={month.index} 
+              <div
+                key={month.index}
                 className={`month-card ${isCurrentMonth ? 'current-month' : ''}`}
               >
                 <h3 className="month-title">
@@ -778,12 +778,12 @@ export default function Calendar({
                   <span className="month-number">第{month.index + 1}月</span>
                   {isCurrentMonth && <span className="today-badge-small">今月</span>}
                 </h3>
-                
+
                 <div className="days-grid">
                   {month.days.map((day) => {
                     const termClass = day.termName ? SOLAR_TERM_CLASSES[day.termName] || '' : ''
                     const isToday = isCurrentMonth && day.dayOfMonth === todayInfo.termInfo.huangji.dayOfMonth
-                    
+
                     // 计算该日的干支
                     // 1. 确定年份
                     // month.index 0 (子月) 的前15天属于前一年 (冬至)
@@ -794,8 +794,8 @@ export default function Calendar({
                     // ...
                     // 所以：Month 0, Days 1-15 -> Year - 1
                     // 其他 -> Year
-                    const targetYear = (month.index === 0 && day.dayOfMonth <= 15) 
-                      ? currentGregorianYear - 1 
+                    const targetYear = (month.index === 0 && day.dayOfMonth <= 15)
+                      ? currentGregorianYear - 1
                       : currentGregorianYear
 
                     // 2. 确定节气索引
@@ -805,35 +805,35 @@ export default function Calendar({
                     // 实际节气索引 = (termSequence + 23) % 24
                     const huangjiTermSequence = Math.floor((day.dayOfYear - 1) / 15)
                     const termIndex = (huangjiTermSequence + 23) % 24
-                    
+
                     // 3. 确定节气内天数 (0-based offset)
                     const dayInTermOffset = (day.dayOfYear - 1) % 15
-                    
+
                     // 4. 获取节气开始日期
                     const termStartDate = getTermStartDate(targetYear, termIndex)
-                    
+
                     // 5. 计算目标日期
                     const targetDate = new Date(termStartDate)
                     targetDate.setDate(termStartDate.getDate() + dayInTermOffset)
-                    
+
                     // 6. 获取干支
                     const dayGanZhi = getGanZhi(targetDate)
-                    
+
                     // 7. 构建详细tooltip
                     // 皇极年份需要根据该日期动态计算（冬至换年）
                     const targetDongzhi = getTermStartDate(targetDate.getFullYear(), 23)
                     const isAfterTargetDongzhi = targetDate.getTime() >= targetDongzhi.getTime()
-                    const huangjiGregorianYearForDay = isAfterTargetDongzhi 
-                      ? targetDate.getFullYear() + 1 
+                    const huangjiGregorianYearForDay = isAfterTargetDongzhi
+                      ? targetDate.getFullYear() + 1
                       : targetDate.getFullYear()
                     const huangjiYearForDay = huangjiGregorianYearForDay + 67017
                     const huangjiYearJiaziForDay = getYearJiazi(huangjiYearForDay)
-                    
+
                     const gregorianDateStr = `${targetDate.getFullYear()}年${targetDate.getMonth() + 1}月${targetDate.getDate()}日`
-                    
+
                     // 皇极月干支（冬至换年、冬至起子月）
                     const huangjiMonthGanZhiForDay = getHuangjiMonthGanZhi(targetDate)
-                    
+
                     // 计算该日的律吕
                     const yearLvForDay = getYearLv(huangjiYearJiaziForDay[0])
                     // 计算皇极月支索引：子月=0, 丑月=1, ...
@@ -842,21 +842,41 @@ export default function Calendar({
                     const monthBranchIndexForDay = BRANCHES.indexOf(huangjiMonthBranchForDay)
                     const monthLvForDay = getMonthLv(monthBranchIndexForDay >= 0 ? monthBranchIndexForDay : 0)
                     const dayLvForDay = getDayLv(dayGanZhi[0])
-                    
+
                     // 夏历（八字）年柱和月柱（以立春分年、以节分月）
                     const baziYearGanZhi = getYearGanZhi(targetDate)
                     const baziMonthGanZhi = getMonthGanZhi(targetDate)
-                    
+
                     // 获取农历日期
                     const lunarDateStr = getLunarDateString(targetDate)
-                    
-                    // 计算该日的日卦（利用已知的天干地支索引或直接用 Date 计算）
-                    const riHexagram = getRiHexagramByDate(targetDate)
+
+                    // 计算卦象链：根据当前算法决定
+                    const algoForRi = getCurrentAlgorithm()
+                    const riGregorianYear = isAfterTargetDongzhi
+                      ? targetDate.getFullYear() + 1
+                      : targetDate.getFullYear()
+
+                    // 世卦 & 岁卦（两种算法共有）
+                    const shiHex = getShiHexagramByYear(huangjiYearForDay)
+                    const suiHex = getSuiHexagram(riGregorianYear)
+
+                    let hexChainStr: string
+                    if (algoForRi.getRiHexagram && algoForRi.getYueJingHexagram && algoForRi.getXunWeiHexagram) {
+                      // 黄畿算法完整链：世卦→岁卦→月经→旬纬→日卦
+                      const yueJingHex = algoForRi.getYueJingHexagram(riGregorianYear, day.dayOfYear)
+                      const xunWeiHex = algoForRi.getXunWeiHexagram(riGregorianYear, day.dayOfYear)
+                      const riHex = algoForRi.getRiHexagram(riGregorianYear, day.dayOfYear)
+                      hexChainStr = `卦象：${shiHex.unicode}${shiHex.name}→${suiHex.unicode}${suiHex.name}→${yueJingHex.unicode}${yueJingHex.name}→${xunWeiHex.unicode}${xunWeiHex.name}→${riHex.unicode}${riHex.name}`
+                    } else {
+                      // 祝泌/通用：世卦→岁卦→流日卦
+                      const riHex = getRiHexagramByDate(targetDate)
+                      hexChainStr = `卦象：${shiHex.unicode}${shiHex.name}→${suiHex.unicode}${suiHex.name}→${riHex.unicode}${riHex.name}`
+                    }
 
                     const tooltipParts = [
                       `皇历：${huangjiYearJiaziForDay}年 ${huangjiMonthGanZhiForDay}月 ${dayGanZhi}日`,
                       `律吕：${yearLvForDay.name} ${monthLvForDay.name} ${dayLvForDay.name}`,
-                      `流日卦：${riHexagram.unicode} ${riHexagram.name}`,
+                      hexChainStr,
                       `公历：${gregorianDateStr}`,
                       `农历：${lunarDateStr}`,
                       `夏历：${baziYearGanZhi}年 ${baziMonthGanZhi}月 ${dayGanZhi}日`,
@@ -864,7 +884,7 @@ export default function Calendar({
                     if (day.isTermStart && day.termName) {
                       // 获取该节气对应的闰卦
                       const intercalaryHexagram = getIntercalaryHexagramByName(day.termName)
-                      const intercalaryInfo = intercalaryHexagram 
+                      const intercalaryInfo = intercalaryHexagram
                         ? ` → 闰卦：${intercalaryHexagram.unicode}${intercalaryHexagram.name}`
                         : ''
                       tooltipParts.push(`节气：${day.termName}${intercalaryInfo}`)
@@ -896,7 +916,7 @@ export default function Calendar({
                     )
                   })}
                 </div>
-                
+
                 <div className="hui-info">
                   <span className="hui-years">第{month.index + 1}月</span>
                   <span className="hui-terms hui-hexagram" title={`${algo.getYueJingHexagram ? '月经' : '月'}卦：${yueHexagram.name}${algo.getYueJingHexagram ? `（第${Math.floor(month.index / 2) + 1}经·管60天）` : ''}`}>
@@ -966,8 +986,8 @@ export default function Calendar({
                           <span className="today-badge">今年</span>
                         )}
                         {activeSpecialDate?.badge && (
-                          <span 
-                            className="special-yun-badge" 
+                          <span
+                            className="special-yun-badge"
                             style={getSpecialDateBadgeStyle(activeSpecialDate)}
                           >
                             {activeSpecialDate.badge}
@@ -975,7 +995,7 @@ export default function Calendar({
                         )}
                       </h3>
                     </div>
-                    
+
                     <div className="zoom-card-info">
                       {zoomLevel === 'hui' ? (
                         // 会级视图：显示世（辰）范围
@@ -1009,7 +1029,7 @@ export default function Calendar({
                           {specialDateBySui && (
                             <p className="zoom-card-event" style={{ color: specialDateBySui.color }}>{specialDateBySui.name}</p>
                           )}
-                          
+
                           {/* 岁级(年)卦象显示 */}
                           <div className="zoom-card-hexagram">
                             {(() => {
@@ -1027,7 +1047,7 @@ export default function Calendar({
                         // 其他级别视图
                         <>
                           <p className="zoom-card-years">
-                            {item.yearCount > 1 
+                            {item.yearCount > 1
                               ? `${item.yearCount.toLocaleString()}年`
                               : `${(item.yearStart % TOTAL_YEARS) + 1}年`
                             }
@@ -1064,7 +1084,7 @@ export default function Calendar({
                         ))}
                       </div>
                     )}
-                    
+
                     {/* 卦象显示（仅会级）- 显示变卦来源 */}
                     {zoomLevel === 'hui' && (
                       <div className="zoom-card-hexagram">
@@ -1132,7 +1152,7 @@ export default function Calendar({
           算法依据邵雍《皇极经世书》原文及黄畿《皇极经世书传》注解
         </p>
       </footer>
-      
+
       {/* 日期详情弹出卡片 */}
       {selectedDateInfo && (
         <DateDetailModal
