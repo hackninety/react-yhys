@@ -21,6 +21,7 @@
 }
 
 .date-detail-modal {
+  position: relative;
   background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
@@ -50,23 +51,36 @@
 }
 
 .close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
+  position: sticky;
+  top: 0;
+  float: right;
+  margin: 12px 12px 0 0;
   width: 36px;
   height: 36px;
+  min-width: 44px;
+  min-height: 44px;
   border: none;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.15);
   color: #fff;
   font-size: 24px;
   border-radius: 50%;
   cursor: pointer;
   transition: all 0.2s;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .close-btn:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.25);
   transform: scale(1.1);
+}
+
+.close-btn:active {
+  background: rgba(255, 255, 255, 0.35);
+  transform: scale(0.95);
 }
 
 .modal-header {
@@ -959,6 +973,18 @@
   .date-detail-modal {
     width: 95%;
     max-height: 95vh;
+    border-radius: 12px;
+  }
+
+  .close-btn {
+    position: sticky;
+    top: 0;
+    margin: 8px 8px -36px auto;
+    width: 44px;
+    height: 44px;
+    font-size: 28px;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
   }
   
   .bazi-pillars,
