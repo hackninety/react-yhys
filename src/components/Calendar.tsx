@@ -51,8 +51,6 @@ import {
   getRiHexagramByDate,
   getIntercalaryHexagramByName,
   getHuiHexagram,
-  changeYao,
-  getHexagram64,
   getTenYearHexagram,
 } from '../data/hexagrams64'
 import { getSolarTerm, getTermStartDate } from '../utils/solarTerms'
