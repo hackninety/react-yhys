@@ -5,7 +5,8 @@ import {
   getYunHexagramByGlobal,
   getYunHexagramDetailByGlobal,
   getHuiHexagram,
-  getShiHexagramByGlobal
+  getShiHexagramByGlobal,
+  getTenYearHexagram
 } from '../data/hexagrams64'
 import {
   gregorianYearToSui,
@@ -79,6 +80,9 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
         // 岁卦
         const suiHex = getSuiHexagram(y)
 
+        // 十年卦（律卦）
+        const tenYear = getTenYearHexagram(huangjiSui)
+
         // 世卦
         const shiHex = getShiHexagramByYear(huangjiSui)
         const globalShiNumber = Math.ceil(huangjiSui / 30)
@@ -104,6 +108,7 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
           year: y,
           ganZhi,
           suiHexagram: { name: suiHex.name, unicode: suiHex.unicode, binary: suiHex.binary },
+          tenYearHexagram: { name: tenYear.hex.name, unicode: tenYear.hex.unicode, binary: tenYear.hex.binary, yaoName: tenYear.yaoName },
           shiHexagram: { name: shiHex.name, unicode: shiHex.unicode, binary: shiHex.binary },
           yunHexagram: { name: yunHex.name, unicode: yunHex.unicode, binary: yunHex.binary },
           position: pos
