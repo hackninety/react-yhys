@@ -515,6 +515,52 @@ export function getShiHexagramByYear(huangjiYear: number): Hexagram64 {
 }
 
 /**
+ * 计算十年卦（律卦）
+ * 原文依据（黄畿注·观物篇二十五）：
+ * "以乾一卦六爻，变成六卦，为经。即以六爻所变之六卦，
+ *  各得六变，所直之三十六卦为律。"
+ * "一卦管十年，三十年为一世，三而两之，则六十年为世者二。
+ *  前三者，内三爻直卦之各十年；后三者，外三爻直卦之各十年"
+ *
+ * 算法：世卦变爻 → 十年卦
+ * - 前世（偶数世，0,2,4...）：世卦变初爻/二爻/三爻（内三爻）
+ * - 后世（奇数世，1,3,5...）：世卦变四爻/五爻/上爻（外三爻）
+ * - 每10年共享同一个十年卦
+ *
+ * @param huangjiYear 皇极年份（1-129600）
+ * @returns { hex: 十年卦, shiHex: 世卦, yaoIndex: 变爻位置(1-6), yaoName: 变爻名 }
+ */
+export function getTenYearHexagram(huangjiYear: number): {
+  hex: Hexagram64
+  shiHex: Hexagram64
+  yaoIndex: number
+  yaoName: string
+} {
+  const YAO_NAMES = ['初', '二', '三', '四', '五', '上']
+
+  // 年在世内的位置(0-29)
+  const yearInShi = ((huangjiYear - 1) % 30)
+  // 世在运内的位置(0-11)
+  const shiInYun = Math.floor(((huangjiYear - 1) / 30)) % 12
+  // 前世(偶数)用内三爻(1,2,3)，后世(奇数)用外三爻(4,5,6)
+  const shiParity = shiInYun % 2
+  // 每10年一个十年卦
+  const decadeInShi = Math.floor(yearInShi / 10) // 0,1,2
+  const yaoIndex = shiParity * 3 + decadeInShi + 1 // 1-6
+
+  const shiHex = getShiHexagramByYear(huangjiYear)
+  const decadeBinary = changeYao(shiHex.binary, yaoIndex)
+  const hex = getHexagram64(decadeBinary)
+
+  return {
+    hex,
+    shiHex,
+    yaoIndex,
+    yaoName: YAO_NAMES[yaoIndex - 1],
+  }
+}
+
+/**
  * 先天六十卦次序（剔除四正卦：乾坤坎离）
  * 用于岁卦、月卦、日卦计算
  * 

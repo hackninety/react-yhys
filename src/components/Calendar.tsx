@@ -51,6 +51,9 @@ import {
   getRiHexagramByDate,
   getIntercalaryHexagramByName,
   getHuiHexagram,
+  changeYao,
+  getHexagram64,
+  getTenYearHexagram,
 } from '../data/hexagrams64'
 import { getSolarTerm, getTermStartDate } from '../utils/solarTerms'
 import { getGanZhi, getYearGanZhi, getMonthGanZhi, getHourGanZhi, getHuangjiMonthGanZhi, getHuangjiMonthHexagram } from '../utils/ganzhi'
@@ -856,21 +859,22 @@ export default function Calendar({
                       ? targetDate.getFullYear() + 1
                       : targetDate.getFullYear()
 
-                    // 世卦 & 岁卦（两种算法共有）
+                    // 世卦 & 十年卦(律卦) & 岁卦（两种算法共有）
                     const shiHex = getShiHexagramByYear(huangjiYearForDay)
+                    const tenYearResult = getTenYearHexagram(huangjiYearForDay)
                     const suiHex = getSuiHexagram(riGregorianYear)
 
                     let hexChainStr: string
                     if (algoForRi.getRiHexagram && algoForRi.getYueJingHexagram && algoForRi.getXunWeiHexagram) {
-                      // 黄畿算法完整链：世卦→岁卦→月经→旬纬→日卦
+                      // 黄畿算法完整链：世卦(经)→十年卦(律)→岁卦→月经→旬纬→日卦
                       const yueJingHex = algoForRi.getYueJingHexagram(riGregorianYear, day.dayOfYear)
                       const xunWeiHex = algoForRi.getXunWeiHexagram(riGregorianYear, day.dayOfYear)
                       const riHex = algoForRi.getRiHexagram(riGregorianYear, day.dayOfYear)
-                      hexChainStr = `卦象：${shiHex.unicode}${shiHex.name}→${suiHex.unicode}${suiHex.name}→${yueJingHex.unicode}${yueJingHex.name}→${xunWeiHex.unicode}${xunWeiHex.name}→${riHex.unicode}${riHex.name}`
+                      hexChainStr = `卦象：${shiHex.unicode}${shiHex.name}→${tenYearResult.hex.unicode}${tenYearResult.hex.name}→${suiHex.unicode}${suiHex.name}→${yueJingHex.unicode}${yueJingHex.name}→${xunWeiHex.unicode}${xunWeiHex.name}→${riHex.unicode}${riHex.name}`
                     } else {
-                      // 祝泌/通用：世卦→岁卦→流日卦
+                      // 祝泌/通用：世卦→十年卦→岁卦→流日卦
                       const riHex = getRiHexagramByDate(targetDate)
-                      hexChainStr = `卦象：${shiHex.unicode}${shiHex.name}→${suiHex.unicode}${suiHex.name}→${riHex.unicode}${riHex.name}`
+                      hexChainStr = `卦象：${shiHex.unicode}${shiHex.name}→${tenYearResult.hex.unicode}${tenYearResult.hex.name}→${suiHex.unicode}${suiHex.name}→${riHex.unicode}${riHex.name}`
                     }
 
                     const tooltipParts = [
@@ -1030,15 +1034,25 @@ export default function Calendar({
                             <p className="zoom-card-event" style={{ color: specialDateBySui.color }}>{specialDateBySui.name}</p>
                           )}
 
-                          {/* 岁级(年)卦象显示 */}
+                          {/* 岁级(年)卦象显示：十年卦→年卦 */}
                           <div className="zoom-card-hexagram">
                             {(() => {
                               const suiHex = getSuiHexagram(suiToGregorianYear(globalYear))
+                              // 使用集中函数计算十年卦（律卦）
+                              const tenYear = getTenYearHexagram(globalYear)
+
                               return (
-                                <span title={`年卦（岁卦）：${suiHex.name}`}>
-                                  <span style={{ fontSize: '1.2em', marginRight: '4px' }}>{suiHex.unicode}</span>
-                                  {suiHex.name}
-                                </span>
+                                <>
+                                  <div className="hexagram-source">
+                                    <span className="master-hexagram" title={`十年卦（律）：${tenYear.hex.name}（世卦${tenYear.shiHex.name}·${tenYear.yaoName}爻变）`}>
+                                      {tenYear.hex.unicode}{tenYear.hex.name}
+                                    </span>
+                                    <span className="hexagram-arrow">→</span>
+                                    <span className="yun-hexagram" title={`年卦（岁卦）：${suiHex.name}`}>
+                                      {suiHex.unicode}{suiHex.name}
+                                    </span>
+                                  </div>
+                                </>
                               )
                             })()}
                           </div>

@@ -22,6 +22,7 @@ import {
   getRiHexagramByDate,
   getShiChenHexagramDetail,
   getHexagram64,
+  getTenYearHexagram,
   type Hexagram64,
 } from '../data/hexagrams64'
 import { getCurrentAlgorithm } from '../algorithms/registry'
@@ -236,7 +237,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     return getSolarTerm(date)
   }, [date])
 
-  // 计算卦象链：元 → 会 → 运 → 世 → 岁 → 月 → 日
+  // 计算卦象链：元 → 会 → 运 → 世(经) → 十年(律) → 岁 → 月 → 日
   const hexagramChain = useMemo(() => {
     const gregorianYear = huangjiYear - 67017
 
@@ -252,8 +253,11 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     const globalYunNumber = Math.ceil(globalShiNumber / SHIS_PER_YUN)
     const yunDetail = getYunHexagramDetailByGlobal(globalYunNumber)
 
-    // 世卦
+    // 世卦（经卦）
     const shiHex = getShiHexagramByYear(huangjiYear)
+
+    // 十年卦（律卦）：世卦变爻
+    const tenYear = getTenYearHexagram(huangjiYear)
 
     // 岁卦
     const suiHex = getSuiHexagram(gregorianYear)
@@ -279,7 +283,8 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
       { level: '元（日）', name: '乾', hex: yuanHex, note: '一元统领' },
       { level: '会（月）', name: `第${huiIndex + 1}会`, hex: huiHex, note: '辟卦（消息卦）' },
       { level: '运（星）', name: `第${globalYunNumber}运`, hex: yunDetail.yunHexagram, note: `${yunDetail.masterHexagram.name}→${yunDetail.yaoName}爻变` },
-      { level: '世（辰）', name: `第${globalShiNumber}世`, hex: shiHex, note: '运卦爻变' },
+      { level: '世（辰）', name: `第${globalShiNumber}世`, hex: shiHex, note: '经卦·运卦爻变' },
+      { level: '十年（律）', name: `${tenYear.yaoName}爻`, hex: tenYear.hex, note: `律卦·世卦${tenYear.yaoName}爻变` },
       { level: '岁（年）', name: `第${huangjiYear}年`, hex: suiHex, note: '挨六十卦次' },
     ]
 
@@ -389,7 +394,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
             </div>
           </section>
           
-          {/* 卦象链：元 → 会 → 运 → 世 → 岁 → 月 → 日 → 时 */}
+          {/* 卦象链：元 → 会 → 运 → 世(经) → 十年(律) → 岁 → 月 → 日 → 时 */}
           <section className="section hexagram-chain-section">
             <h3>卦象链</h3>
             <div className="hexagram-chain">
