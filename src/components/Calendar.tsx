@@ -539,8 +539,8 @@ export default function Calendar({
                     const currentYun = Math.ceil(todayInfo.huangjiSui / (SHIS_PER_YUN * YEARS_PER_SHI))
                     const isCurrentYun = globalYunNumber === currentYun
 
-                    // 生成合并的标题描述
-                    const descStr = specialDatesArr.map(d => `【${d.name}: ${d.description}】`).join(' ')
+                    // 生成合并的标题描述（name + 换行 + description）
+                    const descStr = specialDatesArr.map(d => d.description ? `【${d.name}】\n${d.description}` : `【${d.name}】`).join('\n\n')
 
                     return (
                       <div
@@ -642,16 +642,21 @@ export default function Calendar({
                             badgeGroups.set(sd.badge, { sd, count: 1, names: [sd.name] })
                           }
                         }
-                        return Array.from(badgeGroups.entries()).map(([badge, { sd, count, names }]) => (
+                        return Array.from(badgeGroups.entries()).map(([badge, { sd, count, names }]) => {
+                          // Build tooltip: for each name, find its description and append on new line
+                          const tooltipLines = specialDatesForShi
+                            .filter(d => d.badge === badge)
+                            .map(d => d.description ? `${d.name}\n${d.description}` : d.name)
+                          return (
                           <span
                             key={badge}
                             className={`special-shi-badge ${badgeGroups.size > 1 ? 'multi-badge' : ''}`}
                             style={getSpecialDateBadgeStyle(sd)}
-                            title={names.join('、')}
+                            title={tooltipLines.join('\n\n')}
                           >
                             {badge}{count > 1 ? ` ×${count}` : ''}
                           </span>
-                        ))
+                        )})
                       })()}
                     </h3>
 
@@ -670,8 +675,8 @@ export default function Calendar({
                         // 动态判断是否是"今年"（皇极经世历以冬至换年）
                         const isCurrentHuangjiYear = globalYearNumber === todayInfo.huangjiSui
 
-                        // 多事件提示文字拼接
-                        const descStr = specialDatesForNian.map(d => `【${d.name}】`).join(' ')
+                        // 多事件提示文字拼接（name + description）
+                        const descStr = specialDatesForNian.map(d => d.description ? `【${d.name}】\n${d.description}` : `【${d.name}】`).join('\n\n')
 
                         return (
                           <div
