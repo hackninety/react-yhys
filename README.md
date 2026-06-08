@@ -66,7 +66,7 @@
 3. 点击 **Create application** -> **Pages** -> **Connect to Git**。
 4. 选择本项目仓库，配置如下构建设置：
    - **Framework preset**: `Vite` (或选择 `None`)
-   - **Build command**: `pnpm build`
+   - **Build command**: `pnpm run build`
    - **Build output directory**: `dist`
 5. 在 **Environment variables** 中添加：
    - `NODE_VERSION`: `22` (建议与开发环境一致)
@@ -79,7 +79,7 @@
 npm install -g wrangler
 
 # 构建项目
-pnpm build
+pnpm run build
 
 # 上传部署
 wrangler pages deploy dist
