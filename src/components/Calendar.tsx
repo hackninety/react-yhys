@@ -642,7 +642,7 @@ export default function Calendar({
                             badgeGroups.set(sd.badge, { sd, count: 1, names: [sd.name] })
                           }
                         }
-                        return Array.from(badgeGroups.entries()).map(([badge, { sd, count, names }]) => {
+                        return Array.from(badgeGroups.entries()).map(([badge, { sd, count }]) => {
                           // Build tooltip: for each name, find its description and append on new line
                           const tooltipLines = specialDatesForShi
                             .filter(d => d.badge === badge)
