@@ -9,6 +9,11 @@ import { huangjiAlgorithm } from './huangji'
 /**
  * 祝泌《观物篇解》算法实现
  *
+ * ⚠️ 校验状态：**暂未对照祝泌《皇极经世书解》/《观物篇解》原文校验**。
+ *    下述规则与验证数据来自第三方资料交叉比对，仅供参考，默认关闭
+ *    （见 registry.ts 的 ENABLE_ZHUBI）。黄畿算法已对照黄畿注原文
+ *    84 个文献锚点校验，两者不一致处以黄畿为准。
+ *
  * 经考证，祝泌体系与黄畿体系的差异**集中在岁卦层面**：
  *   - 黄畿：每60年世卦块内，从该块世卦在先天60卦序的位置起挨六十卦次
  *   - 祝泌：以1984甲子所在世卦「鼎」为固定锚点，60年周期循环平推
@@ -25,7 +30,7 @@ import { huangjiAlgorithm } from './huangji'
  */
 export const zhubiAlgorithm: HexagramAlgorithm = {
   name: '祝泌',
-  description: '祝泌《观物篇解》算法（先天60卦序列平推岁卦法）',
+  description: '祝泌《观物篇解》算法（先天60卦序列平推岁卦法·暂未对照原文校验）',
 
   getYunHexagram(huiIndex: number, yunInHui: number): Hexagram64 {
     // 运卦：两派一致，与黄畿相同

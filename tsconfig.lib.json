@@ -1,0 +1,19 @@
+{
+  // 库类型声明构建：只产出 .d.ts（JS 由 vite.lib.config.ts 打包）
+  // 独立于根 tsconfig.json（应用配置为 noEmit，且此处无需 JSX/DOM.Iterable）
+  "compilerOptions": {
+    "target": "ES2020",
+    "lib": ["ES2020", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "declaration": true,
+    "declarationMap": true,
+    "emitDeclarationOnly": true,
+    "outDir": "dist-lib/types",
+    "rootDir": "src"
+  },
+  "files": ["src/lib.ts"]
+}

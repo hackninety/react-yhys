@@ -38,7 +38,64 @@
 
 九层卦象链：`元→会→运→世→十年(律卦)→岁→月经→旬纬→日→时经`
 
+> **算法校验状态**：黄畿算法已对照《皇极经世书》黄畿注原文（84 个文献锚点）校验通过；祝泌算法暂未对照原文，仅经第三方数据交叉验证，默认关闭。
+
 详细原理请参阅：[起卦算法原理文档](docs/起卦算法原理.md)
+
+---
+
+## 📦 作为算法库被外部项目引用
+
+本仓库同时是一个可安装的 npm 包（包名 `yhys-core`），核心算法（六十四卦数据、元会运世各层卦计算、节气、干支）零运行时依赖，可被其他项目直接经 GitHub 地址引用——本仓库更新后，引用方重新安装即可同步最新算法，无需发布 npm registry。
+
+### 安装（在引用方项目中）
+
+```bash
+# 跟随 main 分支最新提交
+npm install github:hackninety/react-yhys
+
+# 或锁定到某个分支 / tag / commit
+npm install github:hackninety/react-yhys#main
+```
+
+安装时 npm 会自动克隆仓库并执行 `prepare` 脚本构建出 `dist-lib/`（单文件 ESM + 类型声明），首次安装约需一分钟。
+
+### 使用
+
+```ts
+import {
+  huangjiAlgorithm,        // 黄畿算法（默认，已对照原文校验）
+  zhubiAlgorithm,          // 祝泌算法（暂未对照原文校验）
+  getSuiHexagram,          // 岁卦（当前算法）
+  getHexagram64,           // 二进制值 → 卦象
+  getYunHexagramByGlobal,  // 运卦
+  getShiHexagramByYear,    // 世卦
+  getTenYearHexagram,      // 十年卦（律卦）
+  getSolarTerm,            // 节气与皇极年内天数
+  getGanZhi,               // 日干支
+  gregorianYearToSui,      // 公历年 → 皇极纪年
+} from 'yhys-core'
+
+huangjiAlgorithm.getSuiHexagram(2026).name // '同人'
+getHexagram64(63).name                     // '乾'
+```
+
+### 更新到最新版
+
+```bash
+# 在引用方项目中重新解析 main 分支 HEAD
+npm update yhys-core
+# 或强制重装
+npm install github:hackninety/react-yhys
+```
+
+### 本机联调（可选）
+
+两个项目在同一台机器上时，可用本地路径依赖代替 GitHub 地址，改动无需推送即可生效（改动后在本仓库跑一次 `npm run build:lib`）：
+
+```bash
+npm install file:../react-yhys
+```
 
 ---
 
@@ -109,7 +166,7 @@ yhys.0x7c.cc/
 ├── src/
 │   ├── algorithms/         # 卦象算法
 │   │   ├── huangji.ts     # 黄畿算法（分形同构）
-│   │   ├── zhubi.ts       # 祝泌算法（先天60序平推）
+│   │   ├── zhubi.ts       # 祝泌算法（先天60序平推·暂未对照原文）
 │   │   ├── registry.ts    # 算法注册与切换
 │   │   └── types.ts       # 算法接口定义
 │   ├── components/         # React 组件
@@ -127,6 +184,7 @@ yhys.0x7c.cc/
 │   │   ├── lvlv.ts         # 十二律吕计算
 │   │   ├── lvlvAudio.ts    # 律吕 Web Audio 播放
 │   │   └── changhe.ts      # 天声地音概览数据
+│   ├── lib.ts              # 算法库对外入口（npm 包 yhys-core）
 │   ├── App.tsx
 │   └── main.tsx
 ├── docs/                   # 原理文档

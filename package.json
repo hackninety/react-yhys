@@ -1,23 +1,43 @@
 {
-  "name": "yhys-calendar",
-  "version": "0.1.0",
+  "name": "yhys-core",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
+  "description": "皇极经世（元会运世）历法应用 + 卦算法库。黄畿算法已对照《皇极经世书》黄畿注原文校验；祝泌算法暂未对照原文。可经 git 依赖被外部项目引用。",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hackninety/react-yhys.git"
+  },
+  "main": "./dist-lib/lib.js",
+  "module": "./dist-lib/lib.js",
+  "types": "./dist-lib/types/lib.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist-lib/types/lib.d.ts",
+      "import": "./dist-lib/lib.js",
+      "default": "./dist-lib/lib.js"
+    }
+  },
+  "files": [
+    "dist-lib",
+    "src"
+  ],
+  "sideEffects": false,
   "scripts": {
     "dev": "vite",
     "build": "tsc -b && vite build",
+    "build:lib": "vite build --config vite.lib.config.ts && tsc -p tsconfig.lib.json",
+    "prepare": "npm run build:lib",
     "preview": "vite preview",
     "lint": "eslint ."
-  },
-  "dependencies": {
-    "lunisolar": "^2.6.0",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1"
   },
   "devDependencies": {
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.3",
+    "lunisolar": "^2.6.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
     "typescript": "~5.6.2",
     "vite": "^5.4.10"
   }
