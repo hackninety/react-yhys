@@ -267,14 +267,14 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     const huangjiMonth = termInfo.huangji.month  // 0-11
     const dayOfYear = termInfo.huangji.dayOfYear  // 1-360
 
-    // 时辰信息
-    const shiChenDetail = getShiChenHexagramDetail(date)
-
     // 判断是否是今天
     const now = new Date()
     const isToday = date.getFullYear() === now.getFullYear() &&
       date.getMonth() === now.getMonth() &&
       date.getDate() === now.getDate()
+
+    // 时辰信息（日历格子点进来的 date 是零点，今天应取当前时刻）
+    const shiChenDetail = getShiChenHexagramDetail(isToday ? now : date)
 
     // 根据当前算法决定月/日/时的计算方式
     const algo = getCurrentAlgorithm()
@@ -303,9 +303,11 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
 
       // 时经卦：仅今天显示
       if (isToday && algo.getShiJingHexagram) {
-        const shiJingHex = algo.getShiJingHexagram(gregorianYear, dayOfYear, shiChenDetail.branchIndex)
-        const shiJingPeriod = Math.floor(shiChenDetail.branchIndex / 2) + 1
-        chain.push({ level: '时经', name: `第${shiJingPeriod}经·${shiChenDetail.branchName}时`, hex: shiJingHex, note: '日卦爻变·管2时辰' })
+        // 以"子半"（0点）为界，每4小时一经（原文："每爻次以前后两半并一得二为率"）
+        const hour = now.getHours()
+        const shiJingHex = algo.getShiJingHexagram(gregorianYear, dayOfYear, hour)
+        const shiJingPeriod = Math.floor(hour / 4) + 1
+        chain.push({ level: '时经', name: `第${shiJingPeriod}经·${shiChenDetail.branchName}时`, hex: shiJingHex, note: '日卦爻变·管2时辰（子半起讫）' })
       }
     } else {
       // 祝泌/通用算法：先天60卦序

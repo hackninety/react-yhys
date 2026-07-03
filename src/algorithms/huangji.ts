@@ -3,6 +3,7 @@ import {
   getHexagram64,
   changeYao,
   XIANTIAN_60_SEQUENCE_FOR_YUN,
+  XIANTIAN_64_SEQUENCE_FOR_YUN,
 } from '../data/hexagrams64'
 import type { HexagramAlgorithm } from './types'
 
@@ -10,38 +11,33 @@ import type { HexagramAlgorithm } from './types'
 const FOUR_PRINCIPAL = [63, 0, 18, 45] // 乾坤坎离
 
 /**
- * 先天64卦序（含四正卦），用于四正卦 fallback 定位
- * 从 hexagrams64.ts 的 XIANTIAN_64_SEQUENCE_FOR_YUN 复制核心逻辑
- */
-const XIANTIAN_64_SEQUENCE = [
-  62,30,46,14,54,22,38,6,58,26,42,10,50,18,34,2,
-  60,28,44,12,52,20,36,4,56,24,40,8,48,16,32,0,
-  1,33,17,49,9,41,25,57,5,37,21,53,13,45,29,61,
-  3,35,19,51,11,43,27,59,7,39,23,55,15,47,31
-]
-
-/**
  * 在先天60卦序中查找位置，处理四正卦 fallback
  *
  * 当变爻结果为四正卦（乾坤坎离）时，先天60卦序中找不到（indexOf=-1）。
- * 此时回退到先天64卦序定位，然后映射回60序中的等效位置。
+ * 此时回退到先天64卦序（hexagrams64.ts 的完整圆图序，乾起）定位，
+ * 减去序中排在其前面的四正卦数，即得60序中的等效位置——
+ * 效果上等于取该四正卦在圆图中下一卦的位置：
+ * 乾→姤位(0)、坎→蒙位(13)、坤→复位(30)、离→革位(43)。
+ *
+ * 文献印证（观物篇之三十二）：午会第七运直大过之夬，经卦上变为乾，
+ * "讫晋惠十四年癸亥夬"——乾块第60年年卦为夬(59)，反推乾的等效位置=0=姤位。
  */
 function findPosIn60(binary: number): number {
   const pos = XIANTIAN_60_SEQUENCE_FOR_YUN.indexOf(binary)
   if (pos >= 0) return pos
 
   // 四正卦 fallback：在64序中找位置，然后计算60序中的等效位置
-  const pos64 = XIANTIAN_64_SEQUENCE.indexOf(binary)
+  const pos64 = XIANTIAN_64_SEQUENCE_FOR_YUN.indexOf(binary)
   if (pos64 < 0) return 0 // 安全兜底
 
   // 计算64序位置之前有几个四正卦，减去即为60序位置
   let principalsBefore = 0
   for (let i = 0; i < pos64; i++) {
-    if (FOUR_PRINCIPAL.includes(XIANTIAN_64_SEQUENCE[i])) {
+    if (FOUR_PRINCIPAL.includes(XIANTIAN_64_SEQUENCE_FOR_YUN[i])) {
       principalsBefore++
     }
   }
-  return pos64 - principalsBefore
+  return (pos64 - principalsBefore) % 60
 }
 
 export const huangjiAlgorithm: HexagramAlgorithm = {
@@ -167,13 +163,21 @@ export const huangjiAlgorithm: HexagramAlgorithm = {
    * 1日=12时辰=360分(皇极分)，日卦管360分
    * 日卦变6爻 → 6个时经卦，每卦管60分(=2时辰=4小时)
    *
-   * @param shichenIndex 时辰索引 0-11（子=0, 丑=1, ..., 亥=11）
+   * 分段边界依原文以"子半"（0点）为起讫（L50-52）：
+   * "冬至甲子日子半，起复初，变为坤。自子半至寅半，坤初爻；
+   *  寅半至辰半，坤二爻；……戌半至子半，坤上爻讫。
+   *  ……每爻次以前后两半并一得二为率"
+   * 即六段为 0-4、4-8、8-12、12-16、16-20、20-24 时，
+   * 而非按子丑/寅卯等整时辰配对（那样会比原文错开半个时辰）。
+   *
+   * @param hour 小时（0-23）
    */
-  getShiJingHexagram(gregorianYear: number, dayOfYear: number, shichenIndex: number): Hexagram64 {
+  getShiJingHexagram(gregorianYear: number, dayOfYear: number, hour: number): Hexagram64 {
     const riHexagram = this.getRiHexagram!(gregorianYear, dayOfYear)
 
-    // 每2时辰 = 1个时经卦
-    const jingIndex = Math.floor(shichenIndex / 2) // 0-5
+    // 每4小时（2时辰，自子半起）= 1个时经卦
+    const h = ((hour % 24) + 24) % 24
+    const jingIndex = Math.floor(h / 4) // 0-5
     const jingBinary = changeYao(riHexagram.binary, jingIndex + 1)
 
     return getHexagram64(jingBinary)

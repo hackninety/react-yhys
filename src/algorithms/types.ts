@@ -52,8 +52,10 @@ export interface HexagramAlgorithm {
 
   /**
    * 【黄畿专用】计算时经卦（2时辰卦）
-   * 日卦变爻，每2时辰一变
-   * @param shichenIndex 时辰索引 0-11（子=0...亥=11）
+   * 日卦变爻，每2时辰一变。
+   * 分段以"子半"（0点）为界：原文"自子半至寅半，坤初爻……
+   * 每爻次以前后两半并一得二为率"，即 0-4/4-8/8-12/12-16/16-20/20-24 时六段。
+   * @param hour 小时（0-23）
    */
-  getShiJingHexagram?(gregorianYear: number, dayOfYear: number, shichenIndex: number): Hexagram64
+  getShiJingHexagram?(gregorianYear: number, dayOfYear: number, hour: number): Hexagram64
 }

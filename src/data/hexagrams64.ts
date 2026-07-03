@@ -212,7 +212,7 @@ export function isFourPrincipalHexagram(binary: number): boolean {
  * 49.同人 50.临  51.损  52.节  53.中孚 54.归妹 55.睽  56.兑
  * 57.履  58.泰  59.大畜 60.需  61.小畜 62.大壮 63.大有 64.夬
  */
-const XIANTIAN_64_SEQUENCE_FOR_YUN = [
+export const XIANTIAN_64_SEQUENCE_FOR_YUN = [
   63, //  1.乾(1,1)*
   62, //  2.姤(1,5)
   30, //  3.大过(2,5)
