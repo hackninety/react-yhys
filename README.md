@@ -76,9 +76,12 @@ import {
   gregorianYearToSui,      // 公历年 → 皇极纪年
 } from 'yhys-core'
 
-huangjiAlgorithm.getSuiHexagram(2026).name // '同人'
-getHexagram64(63).name                     // '乾'
+huangjiAlgorithm.getSuiHexagram(2026).name     // '同人'
+getHexagram64(63).name                         // '乾'
+getHexagram64(60).nameTrad                     // '遯'（卦名繁体字段，繁体界面免转换）
 ```
+
+节气采用零依赖天文算法（Meeus 太阳视黄经 + ΔT，东八区取日），任意年份（含公元前）有效；日期处理正确支持 0-99 年及公元前年份（规避 JS `Date` 构造函数的两位数年份陷阱）。
 
 ### 更新到最新版
 

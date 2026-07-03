@@ -1,4 +1,4 @@
-import { getTermStartDate, getSolarTerm } from './solarTerms';
+import { getTermStartDate, getSolarTerm, makeLocalDate } from './solarTerms';
 
 // 不依赖外部导入，避免潜在的循环依赖问题
 const HEAVENLY_STEMS = ['甲', '乙', '丙', '丁', '戊', '己', '庚', '辛', '壬', '癸'];
@@ -41,8 +41,8 @@ export function getGanZhi(date: Date): string {
 
   // 计算与基准日期的天数差
   // 使用 UTC 时间避免时区问题，或者统一设置为中午12点
-  // 这里简单处理：忽略时分秒，重置为当日0点
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  // 这里简单处理：忽略时分秒，重置为当日0点（makeLocalDate 正确处理 0-99 年）
+  const d = makeLocalDate(date.getFullYear(), date.getMonth(), date.getDate());
   const base = new Date(BASE_DATE.getFullYear(), BASE_DATE.getMonth(), BASE_DATE.getDate());
   
   const diffTime = d.getTime() - base.getTime();
@@ -75,7 +75,7 @@ export function getYearGanZhi(date: Date): string {
   const lichun = getTermStartDate(year, 2);
   
   // 判断是否在立春之前
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const d = makeLocalDate(date.getFullYear(), date.getMonth(), date.getDate());
   const ganzhiYear = d.getTime() < lichun.getTime() ? year - 1 : year;
   
   // 计算年干支
@@ -102,7 +102,7 @@ export function getMonthGanZhi(date: Date): string {
 
   const year = date.getFullYear();
   const month = date.getMonth(); // 0-11
-  const d = new Date(year, month, date.getDate());
+  const d = makeLocalDate(year, month, date.getDate());
   
   // 12个"节"（偶数索引节气）对应12个月
   // 节气索引：0小寒 2立春 4惊蛰 6清明 8立夏 10芒种 12小暑 14立秋 16白露 18寒露 20立冬 22大雪
@@ -231,7 +231,7 @@ export function getHourGanZhi(date: Date): string {
 
   // 确定用于计算时干的日期
   // 23:00后属于次日的子时，使用次日的日干
-  let dayForGanzhi = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  let dayForGanzhi = makeLocalDate(date.getFullYear(), date.getMonth(), date.getDate());
   if (hour >= 23) {
     dayForGanzhi = new Date(dayForGanzhi.getTime() + 24 * 60 * 60 * 1000);
   }
@@ -318,7 +318,7 @@ export function getHuangjiMonthGanZhi(date: Date): string {
   // 确定皇极年份（以冬至换年）
   const gregorianYear = date.getFullYear();
   const dongzhiThisYear = getTermStartDate(gregorianYear, 23); // 冬至
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate());
+  const d = makeLocalDate(date.getFullYear(), date.getMonth(), date.getDate());
   
   // 如果在冬至之后，皇极年对应公历下一年
   const isAfterDongzhi = d.getTime() >= dongzhiThisYear.getTime();

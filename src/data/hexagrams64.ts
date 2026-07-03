@@ -8,12 +8,13 @@
  *
  * 例如：乾卦 = 111111 = 63, 坤卦 = 000000 = 0
  */
-import { getTermStartDate } from '../utils/solarTerms'
+import { getTermStartDate, makeLocalDate } from '../utils/solarTerms'
 import { getCurrentAlgorithm } from '../algorithms/registry'
 
 export interface Hexagram64 {
   binary: number      // 6位二进制值 (0-63)
-  name: string        // 卦名
+  name: string        // 卦名（简体）
+  nameTrad: string    // 卦名（繁体，如 復/歸妹/遯）
   unicode: string     // Unicode符号
   upper: string       // 上卦名
   lower: string       // 下卦名
@@ -44,6 +45,22 @@ const HEXAGRAM_NAMES: Record<number, string> = {
   56: '否',   57: '无妄', 58: '讼',   59: '履',   60: '遁',   61: '同人', 62: '姤',   63: '乾',
 }
 
+/**
+ * 卦名繁体对照表（按二进制顺序0-63）
+ * 供繁体界面直接使用（如 react-taiyi），免去显示层转换
+ * 传统写法遵从通行本《周易》：遁作遯、兑作兌、离作離等
+ */
+export const HEXAGRAM_NAMES_TRAD: Record<number, string> = {
+  0:  '坤',   1:  '復',   2:  '師',   3:  '臨',   4:  '謙',   5:  '明夷', 6:  '升',   7:  '泰',
+  8:  '豫',   9:  '震',   10: '解',   11: '歸妹', 12: '小過', 13: '豐',   14: '恆',   15: '大壯',
+  16: '比',   17: '屯',   18: '坎',   19: '節',   20: '蹇',   21: '既濟', 22: '井',   23: '需',
+  24: '萃',   25: '隨',   26: '困',   27: '兌',   28: '咸',   29: '革',   30: '大過', 31: '夬',
+  32: '剝',   33: '頤',   34: '蒙',   35: '損',   36: '艮',   37: '賁',   38: '蠱',   39: '大畜',
+  40: '晉',   41: '噬嗑', 42: '未濟', 43: '睽',   44: '旅',   45: '離',   46: '鼎',   47: '大有',
+  48: '觀',   49: '益',   50: '渙',   51: '中孚', 52: '漸',   53: '家人', 54: '巽',   55: '小畜',
+  56: '否',   57: '無妄', 58: '訟',   59: '履',   60: '遯',   61: '同人', 62: '姤',   63: '乾',
+}
+
 // Unicode卦象符号（U+4DC0 - U+4DFF）
 // 按照周易序排列的卦象需要映射到二进制顺序
 const BINARY_TO_UNICODE: Record<number, string> = {
@@ -68,6 +85,7 @@ export function getHexagram64(binary: number): Hexagram64 {
   return {
     binary: b,
     name: HEXAGRAM_NAMES[b] || '未知',
+    nameTrad: HEXAGRAM_NAMES_TRAD[b] || HEXAGRAM_NAMES[b] || '未知',
     unicode: BINARY_TO_UNICODE[b] || '?',
     upper: TRIGRAMS[upper].name,
     lower: TRIGRAMS[lower].name,
@@ -667,7 +685,7 @@ export function getYueHexagramByDate(date: Date): Hexagram64 {
   // 动态 import 会产生循环依赖，这里直接内联计算月建干支索引
   // 与 ganzhi.ts 中 getMonthGanZhi 相同的逻辑
   const year = date.getFullYear()
-  const d = new Date(year, date.getMonth(), date.getDate())
+  const d = makeLocalDate(year, date.getMonth(), date.getDate())
   
   // 12个"节"的索引
   const jieIndices = [0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22]
@@ -734,7 +752,7 @@ export function getYueHexagramByHuangji(huangjiYear: number, huangjiMonth: numbe
   const adjustedGregorianYear = huangjiMonth === 1 ? gregorianYear - 1 : gregorianYear
   
   // 用该月中间日期(第15日)来确保节气判断正确
-  const date = new Date(adjustedGregorianYear, gregorianMonth - 1, 15)
+  const date = makeLocalDate(adjustedGregorianYear, gregorianMonth - 1, 15)
   return getYueHexagramByDate(date)
 }
 
@@ -797,15 +815,15 @@ export function getRiHexagramByDate(date: Date): Hexagram64 {
   const BASE_INDEX = 54 // 戊午 = 天干戊(4) + 地支午(6)
   
   // 计算与基准日的天数差
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+  const d = makeLocalDate(date.getFullYear(), date.getMonth(), date.getDate())
   const base = new Date(BASE_DATE.getFullYear(), BASE_DATE.getMonth(), BASE_DATE.getDate())
   const diffTime = d.getTime() - base.getTime()
   const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))
-  
+
   // 日干支索引（0-59）
   let dayGanZhiIndex = (BASE_INDEX + diffDays) % 60
   if (dayGanZhiIndex < 0) dayGanZhiIndex += 60
-  
+
   return getRiHexagram(dayGanZhiIndex)
 }
 
@@ -822,8 +840,8 @@ export function getRiHexagramDetail(date: Date): {
   const BASE_DATE = new Date(2000, 0, 1)
   const BASE_INDEX = 54 // 戊午日
   const JIAZI_INDEX = 30 // 复卦在60卦序中的索引（第31位）
-  
-  const d = new Date(date.getFullYear(), date.getMonth(), date.getDate())
+
+  const d = makeLocalDate(date.getFullYear(), date.getMonth(), date.getDate())
   const base = new Date(BASE_DATE.getFullYear(), BASE_DATE.getMonth(), BASE_DATE.getDate())
   const diffTime = d.getTime() - base.getTime()
   const diffDays = Math.round(diffTime / (1000 * 60 * 60 * 24))

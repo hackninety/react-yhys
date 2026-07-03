@@ -1,6 +1,6 @@
 {
   "name": "yhys-core",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "private": true,
   "type": "module",
   "description": "皇极经世（元会运世）历法应用 + 卦算法库。黄畿算法已对照《皇极经世书》黄畿注原文校验；祝泌算法暂未对照原文。可经 git 依赖被外部项目引用。",
