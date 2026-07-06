@@ -1,5 +1,6 @@
 import { useState, useCallback, useMemo } from 'react'
 import Calendar from './components/Calendar'
+import { GuoyunKline } from './components/GuoyunKline'
 import { type ZoomLevel, type ZoomPosition, yearIndexToPosition } from './utils/calendar'
 import { getTermStartDate } from './utils/solarTerms'
 import './App.css'
@@ -31,6 +32,7 @@ function App() {
   const [yearIndex, setYearIndex] = useState(initialYearIndex)
   const [zoomLevel, setZoomLevel] = useState<ZoomLevel>('nian')
   const [position, setPosition] = useState<ZoomPosition>(initialPosition)
+  const [view, setView] = useState<'calendar' | 'kline'>('calendar')
 
   const handleZoomChange = useCallback((level: ZoomLevel, newPosition: ZoomPosition) => {
     setZoomLevel(level)
@@ -39,13 +41,21 @@ function App() {
 
   return (
     <div className="app">
-      <Calendar
-        yearIndex={yearIndex}
-        onYearChange={setYearIndex}
-        zoomLevel={zoomLevel}
-        onZoomChange={handleZoomChange}
-        position={position}
-      />
+      <nav className="app-view-switch">
+        <button className={view === 'calendar' ? 'on' : ''} onClick={() => setView('calendar')}>历法</button>
+        <button className={view === 'kline' ? 'on' : ''} onClick={() => setView('kline')}>国运K线</button>
+      </nav>
+      {view === 'calendar' ? (
+        <Calendar
+          yearIndex={yearIndex}
+          onYearChange={setYearIndex}
+          zoomLevel={zoomLevel}
+          onZoomChange={handleZoomChange}
+          position={position}
+        />
+      ) : (
+        <GuoyunKline />
+      )}
     </div>
   )
 }

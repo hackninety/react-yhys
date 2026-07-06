@@ -25,6 +25,9 @@ export * from './utils/solarTerms'
 export * from './utils/calendar'
 export * from './utils/ganzhi'
 
+// 国运运势标量与 K 线聚合（三种可切换标量：阳爻数/辟卦位置/卦德吉凶）
+export * from './utils/fortune'
+
 // 算法注册表（切换/订阅）与两派算法实现
 export * from './algorithms/registry'
 export { huangjiAlgorithm } from './algorithms/huangji'

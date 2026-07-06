@@ -12,3 +12,32 @@
   }
 }
 
+.app-view-switch {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.app-view-switch button {
+  background: var(--color-bg-card);
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 7px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: var(--font-serif);
+  font-size: 14px;
+  transition: 0.15s;
+}
+
+.app-view-switch button:hover {
+  border-color: var(--color-primary-dim);
+}
+
+.app-view-switch button.on {
+  background: var(--color-primary);
+  color: #1a1200;
+  border-color: var(--color-primary);
+  font-weight: 600;
+}
+
