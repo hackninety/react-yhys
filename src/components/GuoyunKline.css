@@ -1,57 +1,75 @@
-.kline {
+.gy {
+  width: 100%;
   max-width: 1000px;
   margin: 0 auto;
-  padding: 18px 16px 40px;
 }
 
-.kline-header {
-  margin-bottom: 14px;
+.gy-card {
+  background: var(--color-bg-card);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  border-radius: 14px;
+  padding: 16px 18px 18px;
+  box-shadow: 0 0 24px rgba(212, 175, 55, 0.06), 0 8px 30px rgba(0, 0, 0, 0.35);
 }
 
-.kline-title {
+/* ── 头部 ── */
+.gy-head {
+  margin-bottom: 12px;
+}
+
+.gy-head-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.gy-title {
   font-family: var(--font-display, serif);
-  font-size: 22px;
+  font-size: 19px;
+  font-weight: 600;
   color: var(--color-primary);
-  margin: 0 0 6px;
-  letter-spacing: 1px;
-}
-
-.kline-sub {
-  color: var(--color-text-dim);
-  font-size: 12.5px;
-  line-height: 1.7;
   margin: 0;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
-.kline-controls {
+.gy-title-mark {
+  font-size: 17px;
+  opacity: 0.85;
+}
+
+.gy-legend {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px 18px;
-  align-items: center;
-  margin-bottom: 12px;
-  padding: 12px 14px;
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
+  gap: 4px 14px;
+  font-size: 11.5px;
+  margin: 8px 0 0;
+  line-height: 1.6;
 }
 
-.ctrl-group {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.ctrl-label {
+.gy-legend .gy-dim {
   color: var(--color-text-dim);
-  font-size: 12px;
-  margin-right: 2px;
 }
 
-.kline-controls button {
-  background: transparent;
-  color: var(--color-text);
+/* ── 分段开关（pill group）── */
+.gy-seg {
+  display: inline-flex;
+  gap: 2px;
+  padding: 3px;
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--color-border);
-  padding: 5px 11px;
+  border-radius: 9px;
+}
+
+.gy-seg button {
+  background: transparent;
+  color: var(--color-text-dim);
+  border: none;
+  padding: 5px 12px;
   border-radius: 6px;
   cursor: pointer;
   font-family: inherit;
@@ -59,33 +77,83 @@
   transition: 0.15s;
 }
 
-.kline-controls button:hover {
-  border-color: var(--color-primary-dim);
+.gy-seg.sm button {
+  padding: 4px 10px;
+  font-size: 12px;
 }
 
-.kline-controls button.on {
+.gy-seg button:hover {
+  color: var(--color-text);
+}
+
+.gy-seg button.on {
   background: var(--color-primary);
   color: #1a1200;
-  border-color: var(--color-primary);
   font-weight: 600;
 }
 
-.kline-controls input[type='number'] {
-  width: 66px;
+/* ── 控制条 ── */
+.gy-ctrls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 20px;
+  align-items: center;
+  margin-bottom: 12px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.18);
+  border: 1px solid var(--color-border);
+  border-radius: 10px;
+}
+
+.gy-grp {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.gy-grp-label {
+  color: var(--color-text-dim);
+  font-size: 11.5px;
+}
+
+.gy-chip {
+  background: transparent;
+  color: var(--color-text);
+  border: 1px solid var(--color-border);
+  padding: 5px 11px;
+  border-radius: 7px;
+  cursor: pointer;
+  font-family: inherit;
+  font-size: 12.5px;
+  transition: 0.15s;
+}
+
+.gy-chip:hover {
+  border-color: var(--color-primary-dim);
+  color: var(--color-primary);
+}
+
+.gy-ctrls input[type='number'] {
+  width: 68px;
   background: var(--color-bg);
   color: var(--color-text);
   border: 1px solid var(--color-border);
-  border-radius: 6px;
+  border-radius: 7px;
   padding: 5px 7px;
   font-family: inherit;
   font-size: 12.5px;
 }
 
-.ctrl-dash {
+.gy-ctrls input[type='number']:focus {
+  outline: none;
+  border-color: var(--color-primary-dim);
+}
+
+.gy-dash {
   color: var(--color-text-dim);
 }
 
-.ctrl-check {
+.gy-check {
   display: inline-flex;
   align-items: center;
   gap: 5px;
@@ -94,71 +162,115 @@
   cursor: pointer;
 }
 
-.kline-canvas-wrap {
-  background: var(--color-bg-card);
-  border: 1px solid var(--color-border);
-  border-radius: 10px;
-  padding: 8px 6px 4px;
+.gy-check input {
+  accent-color: var(--color-primary);
 }
 
-.kline-canvas-wrap canvas {
-  display: block;
-  width: 100%;
-}
-
-.kline-tooltip {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  background: var(--color-bg);
-  border: 1px solid var(--color-border);
+/* ── 图表 ── */
+.gy-chart-scroll {
+  overflow-x: auto;
+  overflow-y: hidden;
   border-radius: 8px;
-  padding: 9px 12px;
-  font-size: 12px;
+}
+
+.gy-chart-scroll::-webkit-scrollbar {
+  height: 7px;
+}
+
+.gy-chart-scroll::-webkit-scrollbar-thumb {
+  background: rgba(212, 175, 55, 0.3);
+  border-radius: 4px;
+}
+
+.gy-svg {
+  display: block;
   color: var(--color-text);
-  pointer-events: none;
-  min-width: 190px;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.4);
 }
 
-.tt-title {
-  color: var(--color-primary);
-  font-weight: 600;
-  margin-bottom: 6px;
+.gy-svg text {
+  font-family: var(--font-serif, serif);
 }
 
-.tt-row {
+/* ── 详情面板 ── */
+.gy-detail {
+  margin-top: 12px;
+  padding: 11px 13px;
+  background: rgba(212, 175, 55, 0.05);
+  border: 1px solid rgba(212, 175, 55, 0.16);
+  border-radius: 10px;
+}
+
+.gy-detail-head {
   display: flex;
+  align-items: baseline;
   justify-content: space-between;
-  gap: 12px;
-  line-height: 1.7;
+  gap: 10px;
+  flex-wrap: wrap;
 }
 
-.tt-row span:first-child {
+.gy-detail-title {
+  font-size: 14.5px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.gy-detail-gz {
+  font-size: 12px;
+  font-weight: 400;
   color: var(--color-text-dim);
+  margin-left: 6px;
 }
 
-.tt-hex {
-  margin-top: 6px;
-  padding-top: 6px;
+.gy-detail-score {
+  font-size: 22px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.gy-detail-delta {
+  font-size: 12px;
+  margin-left: 2px;
+}
+
+.gy-detail-ohlc {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--color-text-dim);
+  font-variant-numeric: tabular-nums;
+}
+
+.gy-detail-ohlc b {
+  color: var(--color-text);
+  font-weight: 600;
+  margin-left: 3px;
+}
+
+.gy-detail-factors {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 3px 14px;
+  margin-top: 9px;
+  padding-top: 9px;
   border-top: 1px solid var(--color-border);
+  font-size: 11.5px;
+  line-height: 1.65;
   color: var(--color-secondary);
-  font-size: 11.5px;
 }
 
-.tt-jie {
-  margin-top: 4px;
+.gy-detail-factors .gy-f-jie {
   color: #e8a13a;
-  font-size: 11.5px;
 }
 
-.kline-note {
+.gy-note {
   color: var(--color-text-dim);
-  font-size: 11.5px;
+  font-size: 11px;
   line-height: 1.7;
   margin: 12px 2px 0;
 }
 
-.kline-note b {
+.gy-note b {
   color: var(--color-text);
 }

@@ -12,6 +12,7 @@
  * - auspice 卦德吉凶：据卦辞/彖象基调与皇极治乱读法给每卦一个吉凶指数
  *           (−4…+5)。最忠于邵雍用法，但属可调的解读表（见 AUSPICE）。
  *
+ * 运势另归一到 0–100 分（normalizeScore），便于阅读与跨视图比较。
  * 数据来源为已对照《皇极经世书》黄畿注原文校验的算法，非占位。
  */
 import {
@@ -21,6 +22,7 @@ import {
 } from '../data/hexagrams64'
 import { getCurrentAlgorithm } from '../algorithms/registry'
 import { SUI_TO_GREGORIAN_OFFSET } from './calendar'
+import { HEXAGRAM_INTERPRETATIONS } from '../data/hexagramInterpretations'
 
 export type FortuneMetric = 'yang' | 'bigua' | 'auspice'
 
@@ -50,13 +52,15 @@ const AUSPICE: Record<string, number> = {
   巽: 1, 兑: 2, 涣: 1, 节: 1, 中孚: 3, 小过: -1, 既济: 1, 未济: 0,
 }
 
+const clamp = (v: number, lo: number, hi: number) => Math.min(hi, Math.max(lo, v))
+
 function popcount(binary: number): number {
   let c = 0
   for (let i = 0; i < 6; i++) if (binary & (1 << i)) c++
   return c
 }
 
-/** 单卦的运势标量 */
+/** 单卦的运势标量（原始值，各标量量纲不同） */
 export function hexScore(hex: Hexagram64, metric: FortuneMetric): number {
   const b = hex.binary
   switch (metric) {
@@ -92,16 +96,27 @@ const W_YUN = 0.5
 const W_SHI = 0.3
 const W_SUI = 0.2
 
-/** 逐年加权运势：运级为基线，世级次之，岁卦作细纹 */
+/** 逐年加权运势（原始量纲）：运级为基线，世级次之，岁卦作细纹 */
 export function yearFortune(gregorianYear: number, metric: FortuneMetric): number {
   const { yun, shi, sui } = yearHexagrams(gregorianYear)
   return W_YUN * hexScore(yun, metric) + W_SHI * hexScore(shi, metric) + W_SUI * hexScore(sui, metric)
 }
 
-/** 加权后运势的理论上下界（用于绘图 y 轴域） */
+/** 加权后运势的理论上下界（用于归一） */
 export function fortuneDomain(metric: FortuneMetric): { min: number; max: number } {
   const m = FORTUNE_METRICS.find(x => x.key === metric)!
   return { min: m.min, max: m.max }
+}
+
+/** 归一到 0–100 分（按标量理论域，跨视图可比） */
+export function normalizeScore(weighted: number, metric: FortuneMetric): number {
+  const { min, max } = fortuneDomain(metric)
+  return Math.round(clamp(((weighted - min) / (max - min)) * 100, 3, 97))
+}
+
+/** 某年的 0–100 运势分 */
+export function yearScore(gregorianYear: number, metric: FortuneMetric): number {
+  return normalizeScore(yearFortune(gregorianYear, metric), metric)
 }
 
 // 天干地支（赤马红羊判定；甲子＝公元4年）
@@ -120,18 +135,50 @@ export function isChimaHongyang(gregorianYear: number): boolean {
   return gz === '丙午' || gz === '丁未'
 }
 
+const HUI_NAMES = ['子', '丑', '寅', '卯', '辰', '巳', '午', '未', '申', '酉', '戌', '亥']
+const YEARS_PER_HUI = 10800 // 30运 × 12世 × 30年
+
+/** 某公历年所在的会索引（0=子…11=亥）与阴阳消长相 */
+export function yearHui(gregorianYear: number): { index: number; name: string; phase: '阳长' | '阴消' } {
+  const hj = gregorianYear + SUI_TO_GREGORIAN_OFFSET
+  const index = Math.floor((hj - 1) / YEARS_PER_HUI) % 12
+  return { index, name: HUI_NAMES[index], phase: index <= 5 ? '阳长' : '阴消' }
+}
+
+/**
+ * 某段时期的解读因素（依《皇极经世书》黄畿注文本），用代表年（区间末）的卦。
+ * 供 K 线详情面板展示，使曲线可解释而非仅数值。
+ */
+export function periodFactors(gregorianYear: number, metric: FortuneMetric): string[] {
+  const { yun, shi, sui } = yearHexagrams(gregorianYear)
+  const hui = yearHui(gregorianYear)
+  const f: string[] = []
+
+  const yunNote = HEXAGRAM_INTERPRETATIONS[yun.name]?.huangJiNote
+  f.push(`运卦 ${yun.name}(${hexScore(yun, metric)})${yunNote ? ` · ${yunNote}` : ''}`)
+  f.push(`世卦 ${shi.name}(${hexScore(shi, metric)}) · 管30年`)
+  f.push(`岁卦 ${sui.name}(${hexScore(sui, metric)}) · 挨六十卦次`)
+  f.push(`${hui.name}会 · ${hui.phase === '阳长' ? '前六会·阳长而升' : '后六会·阴消而降'}`)
+  // 开物用数：寅会中至戌会中；信史所在的巳/午会均在其内
+  if (hui.index >= 2 && hui.index <= 10) f.push('开物用数期 · 万物生养')
+  if (isChimaHongyang(gregorianYear)) f.push(`${yearGanZhi(gregorianYear)} · 赤马红羊·丙丁火劫`)
+  return f
+}
+
 export interface Candle {
   startYear: number
   endYear: number // 含
   label: string
-  open: number
-  close: number
-  high: number
-  low: number
-  mean: number
-  median: number
-  values: number[] // 逐年运势
+  open: number // 0–100
+  close: number // 0–100
+  high: number // 0–100
+  low: number // 0–100
+  mean: number // 0–100
+  median: number // 0–100
+  delta: number // close − open
+  scores: number[] // 逐年 0–100 分
   chimaYears: number[] // 区间内的赤马红羊年
+  factors: string[] // 解读因素（代表年）
 }
 
 function median(arr: number[]): number {
@@ -140,8 +187,13 @@ function median(arr: number[]): number {
   return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2
 }
 
+const fmtYear = (y: number) => (y < 0 ? `前${1 - y}` : `${y}`)
+
 /**
- * 聚合成蜡烛序列。
+ * 聚合成蜡烛序列（0–100 分）。
+ * 蜡烛体＝周期间趋势（开＝上一周期收＝上一周期均分，收＝本周期均分），
+ * 影线＝本周期内逐年极值。年级(unitYears=1)时每烛即一年，供折线用。
+ *
  * @param startYear 起始公历年（含）
  * @param endYear   结束公历年（含）
  * @param unitYears 每根蜡烛跨年数：1＝年(线)，30＝世，360＝运
@@ -153,32 +205,64 @@ export function buildCandles(
   unitYears: number,
   metric: FortuneMetric,
 ): Candle[] {
-  const candles: Candle[] = []
-  for (let a = startYear; a <= endYear; a += unitYears) {
-    const b = Math.min(a + unitYears - 1, endYear)
-    const values: number[] = []
-    const chimaYears: number[] = []
+  const a0 = Math.min(startYear, endYear)
+  const b0 = Math.max(startYear, endYear)
+
+  // 先算每根蜡烛的周期均分与逐年分
+  interface Raw { a: number; b: number; scores: number[]; mean: number; chima: number[] }
+  const raws: Raw[] = []
+  for (let a = a0; a <= b0; a += unitYears) {
+    const b = Math.min(a + unitYears - 1, b0)
+    const scores: number[] = []
+    const chima: number[] = []
     for (let y = a; y <= b; y++) {
-      values.push(yearFortune(y, metric))
-      if (isChimaHongyang(y)) chimaYears.push(y)
+      scores.push(yearScore(y, metric))
+      if (isChimaHongyang(y)) chima.push(y)
     }
-    const fmt = (y: number) => (y < 0 ? `前${1 - y}` : `${y}`)
-    const label = unitYears === 1 ? fmt(a) : `${fmt(a)}–${fmt(b)}`
-    candles.push({
-      startYear: a,
-      endYear: b,
-      label,
-      open: values[0],
-      close: values[values.length - 1],
-      high: Math.max(...values),
-      low: Math.min(...values),
-      mean: values.reduce((s, v) => s + v, 0) / values.length,
-      median: median(values),
-      values,
-      chimaYears,
-    })
+    raws.push({ a, b, scores, mean: scores.reduce((s, v) => s + v, 0) / scores.length, chima })
   }
-  return candles
+
+  return raws.map((r, i) => {
+    const open = i > 0 ? raws[i - 1].mean : r.scores[0]
+    const close = r.mean
+    const high = Math.max(open, ...r.scores)
+    const low = Math.min(open, ...r.scores)
+    const label = unitYears === 1 ? fmtYear(r.a) : `${fmtYear(r.a)}–${fmtYear(r.b)}`
+    return {
+      startYear: r.a,
+      endYear: r.b,
+      label,
+      open: Math.round(open),
+      close: Math.round(close),
+      high: Math.round(high),
+      low: Math.round(low),
+      mean: Math.round(close),
+      median: Math.round(median(r.scores)),
+      delta: Math.round(close - open),
+      scores: r.scores,
+      chimaYears: r.chima,
+      factors: periodFactors(r.b, metric),
+    }
+  })
+}
+
+export interface YunBand {
+  startYear: number
+  endYear: number
+  yunName: string
+}
+
+/** 区间内的运级分段（每 360 年一运），附运卦名，用于 K 线背景分段 */
+export function yunBands(startYear: number, endYear: number): YunBand[] {
+  const bands: YunBand[] = []
+  let y = yunStartYear(startYear)
+  while (y <= endYear) {
+    const s = Math.max(y, startYear)
+    const e = Math.min(y + 359, endYear)
+    bands.push({ startYear: s, endYear: e, yunName: yearHexagrams(y).yun.name })
+    y += 360
+  }
+  return bands
 }
 
 /** 便于按"运/世"整段对齐：给定公历年，返回其所在运的首年（公历） */
@@ -195,9 +279,4 @@ export function shiStartYear(gregorianYear: number): number {
   const globalShi = Math.ceil(hj / 30)
   const startHj = (globalShi - 1) * 30 + 1
   return startHj - SUI_TO_GREGORIAN_OFFSET
-}
-
-/** 便捷标签：该卦名 + 标量值 */
-export function describeHex(hex: Hexagram64, metric: FortuneMetric): string {
-  return `${hex.name}(${hexScore(hex, metric)})`
 }
