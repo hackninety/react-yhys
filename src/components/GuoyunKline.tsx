@@ -5,12 +5,14 @@ import {
   yunBands,
   yunStartYear,
   yearGanZhi,
+  periodFactors,
   type FortuneMetric,
 } from '../utils/fortune'
 import { subscribeAlgorithm, getAlgorithmSnapshot } from '../algorithms/registry'
 import './GuoyunKline.css'
 
 type Gran = 'nian' | 'shi' | 'yun'
+type View = FortuneMetric | 'combo'
 const GRAN_UNIT: Record<Gran, number> = { nian: 1, shi: 30, yun: 360 }
 const GRAN_LABEL: Record<Gran, string> = { nian: '年', shi: '世·30年', yun: '运·360年' }
 
@@ -18,6 +20,8 @@ const UP = '#dc2626'   // 红涨（阳长·治）
 const DOWN = '#16a34a' // 绿跌（阴消·衰）
 const GOLD = '#D4AF37'
 const JIE = '#e8a13a'  // 赤马红羊
+// 三线对比配色（各标量一色）
+const LINE_COLOR: Record<FortuneMetric, string> = { yang: '#D4AF37', bigua: '#4ea1ff', auspice: '#e0607a' }
 
 const PAD_L = 36, PAD_R = 14, PAD_T = 24, PAD_B = 30, CHART_H = 210
 const fmtY = (y: number) => (y < 0 ? `前${1 - y}` : `${y}`)
@@ -25,7 +29,9 @@ const fmtY = (y: number) => (y < 0 ? `前${1 - y}` : `${y}`)
 export function GuoyunKline() {
   const algoName = useSyncExternalStore(subscribeAlgorithm, getAlgorithmSnapshot)
 
-  const [metric, setMetric] = useState<FortuneMetric>('yang')
+  const [view, setView] = useState<View>('yang')
+  const isCombo = view === 'combo'
+  const metric: FortuneMetric = isCombo ? 'yang' : view
   const [gran, setGran] = useState<Gran>('shi')
   const [start, setStart] = useState(() => yunStartYear(new Date().getFullYear()))
   const [end, setEnd] = useState(() => yunStartYear(new Date().getFullYear()) + 359)
@@ -40,14 +46,25 @@ export function GuoyunKline() {
   const unit = GRAN_UNIT[gran]
   const curYear = useMemo(() => new Date().getFullYear(), [])
 
-  const candles = useMemo(() => {
-    void algoName
+  const range = useMemo(() => {
     const a = Math.min(start, end)
     let b = Math.max(start, end)
     const maxN = 4600
     if ((b - a) / unit > maxN) b = a + maxN * unit
-    return buildCandles(a, b, unit, metric)
-  }, [start, end, unit, metric, algoName])
+    return { a, b }
+  }, [start, end, unit])
+
+  const candles = useMemo(() => {
+    void algoName
+    return buildCandles(range.a, range.b, unit, metric)
+  }, [range, unit, metric, algoName])
+
+  // 三线对比：三标量各一条归一序列（0–100），共用同一结构
+  const comboSeries = useMemo(() => {
+    void algoName
+    if (!isCombo) return null
+    return FORTUNE_METRICS.map(m => ({ meta: m, candles: buildCandles(range.a, range.b, unit, m.key) }))
+  }, [isCombo, range, unit, algoName])
 
   const bands = useMemo(() => {
     if (candles.length === 0) return []
@@ -109,17 +126,28 @@ export function GuoyunKline() {
             <h1 className="gy-title"><span className="gy-title-mark">☯</span> 国运 K 线</h1>
             <div className="gy-seg">
               {FORTUNE_METRICS.map(m => (
-                <button key={m.key} className={metric === m.key ? 'on' : ''} onClick={() => setMetric(m.key)} title={m.desc}>{m.label}</button>
+                <button key={m.key} className={view === m.key ? 'on' : ''} onClick={() => setView(m.key)} title={m.desc}>{m.label}</button>
               ))}
+              <button className={isCombo ? 'on' : ''} onClick={() => setView('combo')} title="三标量归一后同图叠加对比">三线对比</button>
             </div>
           </div>
-          <p className="gy-legend">
-            <span style={{ color: UP }}>红涨（阳长·治）</span>
-            <span style={{ color: DOWN }}>绿跌（阴消·衰）</span>
-            <span style={{ color: GOLD }}>— 金线5段均</span>
-            <span style={{ color: JIE }}>▲ 赤马红羊</span>
-            <span className="gy-dim">运卦分段标注于顶 · 算法：{algoName}</span>
-          </p>
+          {isCombo ? (
+            <p className="gy-legend">
+              {FORTUNE_METRICS.map(m => (
+                <span key={m.key} style={{ color: LINE_COLOR[m.key] }}>— {m.label}</span>
+              ))}
+              <span style={{ color: JIE }}>▲ 赤马红羊</span>
+              <span className="gy-dim">三标量归一 0–100 同图 · 算法：{algoName}</span>
+            </p>
+          ) : (
+            <p className="gy-legend">
+              <span style={{ color: UP }}>红涨（阳长·治）</span>
+              <span style={{ color: DOWN }}>绿跌（阴消·衰）</span>
+              <span style={{ color: GOLD }}>— 金线5段均</span>
+              <span style={{ color: JIE }}>▲ 赤马红羊</span>
+              <span className="gy-dim">运卦分段标注于顶 · 算法：{algoName}</span>
+            </p>
+          )}
         </header>
 
         <div className="gy-ctrls">
@@ -171,8 +199,18 @@ export function GuoyunKline() {
               </g>
             ))}
 
-            {/* K 线 / 折线 */}
-            {isLine ? (
+            {/* 三线对比：三标量各一色折线 */}
+            {isCombo && comboSeries && comboSeries.map(s => (
+              <polyline key={s.meta.key}
+                points={s.candles.map((c, i) => `${xOf(i)},${yOf(c.close).toFixed(1)}`).join(' ')}
+                fill="none" stroke={LINE_COLOR[s.meta.key]} strokeWidth={1.6} strokeOpacity={0.92} />
+            ))}
+            {isCombo && showJie && candles.map((c, i) => c.chimaYears.length > 0 && (
+              <path key={`cj${i}`} d={`M${xOf(i)},${PAD_T + 2} l-3.4,-6 h6.8 z`} fill={JIE} />
+            ))}
+
+            {/* K 线 / 折线（单标量） */}
+            {isCombo ? null : isLine ? (
               <polyline points={linePts} fill="none" stroke={GOLD} strokeWidth={1.4} strokeOpacity={0.9} />
             ) : (
               candles.map((c, i) => {
@@ -196,12 +234,12 @@ export function GuoyunKline() {
                 )
               })
             )}
-            {isLine && showJie && candles.map((c, i) => c.chimaYears.length > 0 && (
+            {!isCombo && isLine && showJie && candles.map((c, i) => c.chimaYears.length > 0 && (
               <circle key={`j${i}`} cx={xOf(i)} cy={yOf(c.close)} r={2.6} fill={JIE} />
             ))}
 
-            {/* 均线 */}
-            {showMA && !isLine && <polyline points={maPts} fill="none" stroke={GOLD} strokeWidth={1.4} strokeOpacity={0.85} />}
+            {/* 均线（单标量非折线） */}
+            {!isCombo && showMA && !isLine && <polyline points={maPts} fill="none" stroke={GOLD} strokeWidth={1.4} strokeOpacity={0.85} />}
 
             {/* 选中 / 今 竖线 */}
             {active && (
@@ -232,24 +270,46 @@ export function GuoyunKline() {
                   {hover === null && curIdx === activeIdx ? ' · 今' : ''}
                 </span>
               </span>
-              <span className="gy-detail-score" style={{ color: active.delta >= 0 ? UP : DOWN }}>
-                {active.close}<span className="gy-detail-delta">{active.delta >= 0 ? ' ▲' : ' ▼'}{Math.abs(active.delta)}</span>
-              </span>
+              {!isCombo && (
+                <span className="gy-detail-score" style={{ color: active.delta >= 0 ? UP : DOWN }}>
+                  {active.close}<span className="gy-detail-delta">{active.delta >= 0 ? ' ▲' : ' ▼'}{Math.abs(active.delta)}</span>
+                </span>
+              )}
             </div>
-            <div className="gy-detail-ohlc">
-              <span>开<b>{active.open}</b></span><span>收<b>{active.close}</b></span>
-              <span>高<b>{active.high}</b></span><span>低<b>{active.low}</b></span>
-              <span>均<b>{active.mean}</b></span><span>中<b>{active.median}</b></span>
-            </div>
+            {isCombo && comboSeries ? (
+              <div className="gy-detail-combo">
+                {comboSeries.map(s => {
+                  const c = s.candles[activeIdx]
+                  if (!c) return null
+                  return (
+                    <span key={s.meta.key} className="gy-combo-item" style={{ borderColor: LINE_COLOR[s.meta.key] }}>
+                      <i style={{ background: LINE_COLOR[s.meta.key] }} />{s.meta.label}
+                      <b style={{ color: LINE_COLOR[s.meta.key] }}>{c.close}</b>
+                      <em style={{ color: c.delta >= 0 ? UP : DOWN }}>{c.delta >= 0 ? '▲' : '▼'}{Math.abs(c.delta)}</em>
+                    </span>
+                  )
+                })}
+              </div>
+            ) : (
+              <div className="gy-detail-ohlc">
+                <span>开<b>{active.open}</b></span><span>收<b>{active.close}</b></span>
+                <span>高<b>{active.high}</b></span><span>低<b>{active.low}</b></span>
+                <span>均<b>{active.mean}</b></span><span>中<b>{active.median}</b></span>
+              </div>
+            )}
             <div className="gy-detail-factors">
-              {active.factors.map((f, i) => <span key={i} className={f.includes('赤马红羊') ? 'gy-f-jie' : ''}>· {f}</span>)}
+              {(isCombo ? periodFactors(active.endYear, metric, false) : active.factors).map((f, i) => (
+                <span key={i} className={f.includes('赤马红羊') ? 'gy-f-jie' : ''}>· {f}</span>
+              ))}
             </div>
           </div>
         )}
 
         <p className="gy-note">
-          <b>{metricMeta.label}：</b>{metricMeta.desc} 数据由已对照《皇极经世书》黄畿注原文校验的算法实时推演（运卦0.5＋世卦0.3＋岁卦0.2，归一0–100分）。
-          会级是单向大弧，但信史全程处午会内，故起伏来自运/世/年三层循环，非单调下滑；仅供参考。
+          {isCombo
+            ? <><b>三线对比：</b>阳爻数/辟卦位置/卦德吉凶三标量各自归一 0–100 后同图叠加，可直观看出何时三者共识（同涨同跌）、何时分歧（如姤：阳爻数偏高而辟卦位置偏低）。</>
+            : <><b>{metricMeta.label}：</b>{metricMeta.desc}</>}
+          {' '}数据由已对照《皇极经世书》黄畿注原文校验的算法实时推演（运卦0.5＋世卦0.3＋岁卦0.2，归一0–100分）。会级是单向大弧，但信史全程处午会内，故起伏来自运/世/年三层循环，非单调下滑；仅供参考。
         </p>
       </div>
     </div>

@@ -149,15 +149,16 @@ export function yearHui(gregorianYear: number): { index: number; name: string; p
  * 某段时期的解读因素（依《皇极经世书》黄畿注文本），用代表年（区间末）的卦。
  * 供 K 线详情面板展示，使曲线可解释而非仅数值。
  */
-export function periodFactors(gregorianYear: number, metric: FortuneMetric): string[] {
+export function periodFactors(gregorianYear: number, metric: FortuneMetric, showScore = true): string[] {
   const { yun, shi, sui } = yearHexagrams(gregorianYear)
   const hui = yearHui(gregorianYear)
   const f: string[] = []
 
+  const sc = (h: Hexagram64) => (showScore ? `(${hexScore(h, metric)})` : '')
   const yunNote = HEXAGRAM_INTERPRETATIONS[yun.name]?.huangJiNote
-  f.push(`运卦 ${yun.name}(${hexScore(yun, metric)})${yunNote ? ` · ${yunNote}` : ''}`)
-  f.push(`世卦 ${shi.name}(${hexScore(shi, metric)}) · 管30年`)
-  f.push(`岁卦 ${sui.name}(${hexScore(sui, metric)}) · 挨六十卦次`)
+  f.push(`运卦 ${yun.name}${sc(yun)}${yunNote ? ` · ${yunNote}` : ''}`)
+  f.push(`世卦 ${shi.name}${sc(shi)} · 管30年`)
+  f.push(`岁卦 ${sui.name}${sc(sui)} · 挨六十卦次`)
   f.push(`${hui.name}会 · ${hui.phase === '阳长' ? '前六会·阳长而升' : '后六会·阴消而降'}`)
   // 开物用数：寅会中至戌会中；信史所在的巳/午会均在其内
   if (hui.index >= 2 && hui.index <= 10) f.push('开物用数期 · 万物生养')
