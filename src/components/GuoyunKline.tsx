@@ -9,6 +9,7 @@ import {
   type FortuneMetric,
 } from '../utils/fortune'
 import { subscribeAlgorithm, getAlgorithmSnapshot } from '../algorithms/registry'
+import { specialDates, type SpecialDate } from '../data/specialDates'
 import './GuoyunKline.css'
 
 type Gran = 'nian' | 'shi' | 'yun'
@@ -20,11 +21,26 @@ const UP = '#dc2626'   // 红涨（阳长·治）
 const DOWN = '#16a34a' // 绿跌（阴消·衰）
 const GOLD = '#D4AF37'
 const JIE = '#e8a13a'  // 赤马红羊
+const EVT = '#a78bfa'  // 大事标记
 // 三线对比配色（各标量一色）
 const LINE_COLOR: Record<FortuneMetric, string> = { yang: '#D4AF37', bigua: '#4ea1ff', auspice: '#e0607a' }
 
-const PAD_L = 36, PAD_R = 14, PAD_T = 24, PAD_B = 30, CHART_H = 210
+const PAD_L = 36, PAD_R = 14, PAD_T = 24, PAD_B = 34, CHART_H = 210
 const fmtY = (y: number) => (y < 0 ? `前${1 - y}` : `${y}`)
+
+// 公历年 → 大事件（special-dates.json，按 sui−67017 映射；无 sui 则用 year）
+const SUI_OFFSET = 67017
+interface EvtHit { gy: number; e: SpecialDate }
+const EVENTS_BY_YEAR: Map<number, SpecialDate[]> = (() => {
+  const m = new Map<number, SpecialDate[]>()
+  for (const e of specialDates) {
+    const gy = e.year ?? (e.sui != null ? e.sui - SUI_OFFSET : null)
+    if (gy == null) continue
+    const list = m.get(gy)
+    if (list) list.push(e); else m.set(gy, [e])
+  }
+  return m
+})()
 
 export function GuoyunKline() {
   const algoName = useSyncExternalStore(subscribeAlgorithm, getAlgorithmSnapshot)
@@ -37,6 +53,7 @@ export function GuoyunKline() {
   const [end, setEnd] = useState(() => yunStartYear(new Date().getFullYear()) + 359)
   const [showMA, setShowMA] = useState(true)
   const [showJie, setShowJie] = useState(true)
+  const [showEvt, setShowEvt] = useState(true)
   const [hover, setHover] = useState<number | null>(null)
 
   const wrapRef = useRef<HTMLDivElement>(null)
@@ -65,6 +82,16 @@ export function GuoyunKline() {
     if (!isCombo) return null
     return FORTUNE_METRICS.map(m => ({ meta: m, candles: buildCandles(range.a, range.b, unit, m.key) }))
   }, [isCombo, range, unit, algoName])
+
+  // 每根蜡烛落在其时段内的大事件
+  const candleEvents = useMemo<EvtHit[][]>(() => candles.map(c => {
+    const hits: EvtHit[] = []
+    for (let y = c.startYear; y <= c.endYear; y++) {
+      const list = EVENTS_BY_YEAR.get(y)
+      if (list) for (const e of list) hits.push({ gy: y, e })
+    }
+    return hits
+  }), [candles])
 
   const bands = useMemo(() => {
     if (candles.length === 0) return []
@@ -145,7 +172,8 @@ export function GuoyunKline() {
               <span style={{ color: DOWN }}>绿跌（阴消·衰）</span>
               <span style={{ color: GOLD }}>— 金线5段均</span>
               <span style={{ color: JIE }}>▲ 赤马红羊</span>
-              <span className="gy-dim">运卦分段标注于顶 · 算法：{algoName}</span>
+              <span style={{ color: EVT }}>● 大事</span>
+              <span className="gy-dim">悬停查看该段大事 · 算法：{algoName}</span>
             </p>
           )}
         </header>
@@ -174,6 +202,7 @@ export function GuoyunKline() {
           <div className="gy-grp">
             <label className="gy-check"><input type="checkbox" checked={showMA} onChange={e => setShowMA(e.target.checked)} />均线</label>
             <label className="gy-check"><input type="checkbox" checked={showJie} onChange={e => setShowJie(e.target.checked)} />赤马红羊</label>
+            <label className="gy-check"><input type="checkbox" checked={showEvt} onChange={e => setShowEvt(e.target.checked)} />大事</label>
           </div>
         </div>
 
@@ -247,14 +276,23 @@ export function GuoyunKline() {
             )}
             {curIdx >= 0 && <text x={xOf(curIdx)} y={PAD_T + 10} fontSize={10} textAnchor="middle" fill={GOLD} fontWeight="bold">今</text>}
 
-            {/* x 轴年标 */}
-            {candles.map((c, i) => (i % labelEvery === 0 || n <= 16) && (
-              <text key={`x${i}`} x={xOf(i)} y={svgH - 10} fontSize={9} textAnchor="middle" fill="currentColor" opacity={0.5}>{fmtY(c.startYear)}</text>
+            {/* 大事件标记（时段内含大事的蜡烛下方点标；悬停详情面板列出） */}
+            {showEvt && candleEvents.map((evs, i) => evs.length > 0 && (
+              <circle key={`e${i}`} cx={xOf(i)} cy={PAD_T + CHART_H + 6}
+                r={activeIdx === i ? 3.6 : 2.5} fill={EVT}
+                opacity={hover !== null && hover !== i ? 0.45 : 0.95}>
+                <title>{evs.slice(0, 6).map(h => `${fmtY(h.gy)} ${h.e.name}`).join('\n')}{evs.length > 6 ? `\n…等${evs.length}项` : ''}</title>
+              </circle>
             ))}
 
-            {/* 悬停感应 */}
+            {/* x 轴年标 */}
+            {candles.map((c, i) => (i % labelEvery === 0 || n <= 16) && (
+              <text key={`x${i}`} x={xOf(i)} y={svgH - 9} fontSize={9} textAnchor="middle" fill="currentColor" opacity={0.5}>{fmtY(c.startYear)}</text>
+            ))}
+
+            {/* 悬停感应（含大事标记行） */}
             {candles.map((_c, i) => (
-              <rect key={`h${i}`} x={PAD_L + i * slotW} y={PAD_T} width={slotW} height={CHART_H} fill="transparent" onMouseEnter={() => setHover(i)} />
+              <rect key={`h${i}`} x={PAD_L + i * slotW} y={PAD_T} width={slotW} height={CHART_H + 14} fill="transparent" onMouseEnter={() => setHover(i)} />
             ))}
           </svg>
         </div>
@@ -302,6 +340,18 @@ export function GuoyunKline() {
                 <span key={i} className={f.includes('赤马红羊') ? 'gy-f-jie' : ''}>· {f}</span>
               ))}
             </div>
+            {candleEvents[activeIdx] && candleEvents[activeIdx].length > 0 && (
+              <div className="gy-detail-events">
+                <span className="gy-evt-label">大事 {candleEvents[activeIdx].length}</span>
+                {candleEvents[activeIdx].slice(0, 12).map((h, i) => (
+                  <span key={i} className="gy-evt" title={h.e.description || h.e.name}>
+                    <em>{fmtY(h.gy)}</em>{h.e.name}
+                    {h.e.badge && <b style={{ color: h.e.color }}>{h.e.badge}</b>}
+                  </span>
+                ))}
+                {candleEvents[activeIdx].length > 12 && <span className="gy-evt-more">…等{candleEvents[activeIdx].length}项</span>}
+              </div>
+            )}
           </div>
         )}
 
