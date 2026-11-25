@@ -2,23 +2,13 @@ import { useState, useCallback, useMemo } from 'react'
 import Calendar from './components/Calendar'
 import { GuoyunKline } from './components/GuoyunKline'
 import { type ZoomLevel, type ZoomPosition, yearIndexToPosition } from './utils/calendar'
-import { getTermStartDate } from './utils/solarTerms'
+import { findLatestSolarTerm } from './utils/solarTerms'
 import './App.css'
 
 // 动态计算当前皇极年的索引（基于冬至换年）
 function findCurrentYearIndex(): number {
   const now = new Date()
-  const gregorianYear = now.getFullYear()
-
-  // 获取今年冬至日期（节气索引23=冬至）
-  const dongzhiThisYear = getTermStartDate(gregorianYear, 23)
-
-  // 判断今天是否在冬至之后
-  const todayDate = new Date(gregorianYear, now.getMonth(), now.getDate())
-  const isAfterDongzhi = todayDate.getTime() >= dongzhiThisYear.getTime()
-
-  // 皇极年份：如果在冬至之后，皇极年对应下一年
-  const huangjiGregorianYear = isAfterDongzhi ? gregorianYear + 1 : gregorianYear
+  const huangjiGregorianYear = findLatestSolarTerm(now, [23]).nominalYear + 1
   const huangjiSui = huangjiGregorianYear + 67017 // gregorianYearToSui offset
 
   return huangjiSui - 1 // sui 是 1-based，yearIndex 是 0-based

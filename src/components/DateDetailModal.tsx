@@ -139,7 +139,18 @@ function BaziPillarDisplay({ pillar, label }: { pillar: BaziPillar; label: strin
   )
 }
 
-export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalProps) {
+export function DateDetailModal({ date: selectedDay, huangjiYear, onClose }: DateDetailModalProps) {
+  const [clock, setClock] = useState(() => {
+    const current = new Date()
+    const initial = current.toDateString() === selectedDay.toDateString() ? current : selectedDay
+    return [initial.getHours(), initial.getMinutes()].map(v => String(v).padStart(2, '0')).join(':')
+  })
+  const date = useMemo(() => {
+    const d = new Date(selectedDay.getTime())
+    const [hour, minute] = clock.split(':').map(Number)
+    d.setHours(hour, minute, 0, 0)
+    return d
+  }, [selectedDay, clock])
   // 律吕弹窗状态
   const [selectedLvlv, setSelectedLvlv] = useState<LvLv | null>(null)
   const [selectedLvlvPillar, setSelectedLvlvPillar] = useState<string | null>(null)
@@ -214,7 +225,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     const yearLv = getYearLv(yearGanZhi[0])  // 年律按年干
     const monthLv = getMonthLv(monthBranchIndex >= 0 ? monthBranchIndex : 0)  // 月律按月支
     const dayLv = getDayLv(dayGanZhi[0])  // 日律按日干
-    const hourLv = getHourLvByDate(new Date())  // 时律按当前实时时辰（与顶部栏一致）
+    const hourLv = getHourLvByDate(date)
     return { yearLv, monthLv, dayLv, hourLv }
   }, [date])
 
@@ -267,14 +278,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
     const huangjiMonth = termInfo.huangji.month  // 0-11
     const dayOfYear = termInfo.huangji.dayOfYear  // 1-360
 
-    // 判断是否是今天
-    const now = new Date()
-    const isToday = date.getFullYear() === now.getFullYear() &&
-      date.getMonth() === now.getMonth() &&
-      date.getDate() === now.getDate()
-
-    // 时辰信息（日历格子点进来的 date 是零点，今天应取当前时刻）
-    const shiChenDetail = getShiChenHexagramDetail(isToday ? now : date)
+    const shiChenDetail = getShiChenHexagramDetail(date)
 
     // 根据当前算法决定月/日/时的计算方式
     const algo = getCurrentAlgorithm()
@@ -301,10 +305,10 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
       const riHex = algo.getRiHexagram(gregorianYear, dayOfYear)
       chain.push({ level: '日', name: `第${dayOfYear}天`, hex: riHex, note: '挨六十卦次' })
 
-      // 时经卦：仅今天显示
-      if (isToday && algo.getShiJingHexagram) {
+      // 采用选中日期的观测钟表
+      if (algo.getShiJingHexagram) {
         // 以"子半"（0点）为界，每4小时一经（原文："每爻次以前后两半并一得二为率"）
-        const hour = now.getHours()
+        const hour = date.getHours()
         const shiJingHex = algo.getShiJingHexagram(gregorianYear, dayOfYear, hour)
         const shiJingPeriod = Math.floor(hour / 4) + 1
         chain.push({ level: '时经', name: `第${shiJingPeriod}经·${shiChenDetail.branchName}时`, hex: shiJingHex, note: '日卦爻变·管2时辰（子半起讫）' })
@@ -317,7 +321,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
       const riHex = getRiHexagramByDate(date)
       chain.push({ level: '日', name: '', hex: riHex, note: '先天60卦序' })
 
-      if (isToday) {
+      {
         chain.push({ level: '时', name: `${shiChenDetail.branchName}时`, hex: shiChenDetail.shiChenHexagram, note: '十二消息卦' })
       }
     }
@@ -334,6 +338,7 @@ export function DateDetailModal({ date, huangjiYear, onClose }: DateDetailModalP
         
         <div className="modal-header">
           <h2>日期详情</h2>
+          <label>本日观测时刻 <input type="time" value={clock} onChange={e => { if (e.target.value) setClock(e.target.value) }} /></label>
           <div className="date-summary">
             <span className="gregorian">{detail.gregorian.dateStr} 星期{detail.gregorian.weekday}</span>
             {detail.lunar && <span className="lunar">{detail.lunar.dateStr}</span>}

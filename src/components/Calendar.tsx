@@ -53,7 +53,7 @@ import {
   getHuiHexagram,
   getTenYearHexagram,
 } from '../data/hexagrams64'
-import { getSolarTerm, getTermStartDate } from '../utils/solarTerms'
+import { findLatestSolarTerm, getSolarTerm, getTermStartDate } from '../utils/solarTerms'
 import { getGanZhi, getYearGanZhi, getMonthGanZhi, getHourGanZhi, getHuangjiMonthGanZhi, getHuangjiMonthHexagram } from '../utils/ganzhi'
 import { getLunarDateString } from '../utils/lunar'
 import { getDayLv, getHourLvByDate, getMonthLv, getYearLv } from '../utils/lvlv'
@@ -103,16 +103,7 @@ export default function Calendar({
     const gregorianYear = now.getFullYear()
 
     // 皇极经世历以冬至换年
-    // 获取今年冬至日期（节气索引23=冬至）
-    const dongzhiThisYear = getTermStartDate(gregorianYear, 23)
-
-    // 判断今天是否在冬至之后
-    const todayDate = new Date(gregorianYear, now.getMonth(), now.getDate())
-    const isAfterDongzhi = todayDate.getTime() >= dongzhiThisYear.getTime()
-
-    // 皇极年份：如果在冬至之后，皇极年对应下一年的干支
-    // 例如：2025年12月23日（冬至后）-> 皇极年对应2026年 -> 丙午年
-    const huangjiGregorianYear = isAfterDongzhi ? gregorianYear + 1 : gregorianYear
+    const huangjiGregorianYear = findLatestSolarTerm(now, [23]).nominalYear + 1
     const huangjiSui = huangjiGregorianYear + 67017 // gregorianYearToSui offset
     const huangjiYearJiazi = getYearJiazi(huangjiSui)
 
@@ -827,11 +818,7 @@ export default function Calendar({
 
                     // 7. 构建详细tooltip
                     // 皇极年份需要根据该日期动态计算（冬至换年）
-                    const targetDongzhi = getTermStartDate(targetDate.getFullYear(), 23)
-                    const isAfterTargetDongzhi = targetDate.getTime() >= targetDongzhi.getTime()
-                    const huangjiGregorianYearForDay = isAfterTargetDongzhi
-                      ? targetDate.getFullYear() + 1
-                      : targetDate.getFullYear()
+                    const huangjiGregorianYearForDay = findLatestSolarTerm(targetDate, [23]).nominalYear + 1
                     const huangjiYearForDay = huangjiGregorianYearForDay + 67017
                     const huangjiYearJiaziForDay = getYearJiazi(huangjiYearForDay)
 
@@ -858,9 +845,7 @@ export default function Calendar({
 
                     // 计算卦象链：根据当前算法决定
                     const algoForRi = getCurrentAlgorithm()
-                    const riGregorianYear = isAfterTargetDongzhi
-                      ? targetDate.getFullYear() + 1
-                      : targetDate.getFullYear()
+                    const riGregorianYear = huangjiGregorianYearForDay
 
                     // 世卦 & 十年卦(律卦) & 岁卦（两种算法共有）
                     const shiHex = getShiHexagramByYear(huangjiYearForDay)

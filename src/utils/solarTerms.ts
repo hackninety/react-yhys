@@ -114,6 +114,9 @@ function deltaT(y: number): number {
 
 const DEG = Math.PI / 180;
 const J2000_MS = 946728000000; // JD 2451545.0 = 2000-01-01 12:00 UTC
+const TROPICAL_YEAR_DAYS = 365.2422;
+const TERM_ITERATIONS = 6;
+const INITIAL_TERM_STEP_DAYS = 15.218;
 
 /** 太阳视黄经（度，0-360）。ttMs 为 TT 时标毫秒（相对 Unix 纪元） */
 function solarLongitude(ttMs: number): number {
@@ -136,7 +139,8 @@ const termInstantCache = new Map<string, number>();
 
 /**
  * 求节气时刻（UTC 毫秒）。
- * 节气索引 0=小寒 … 23=冬至，均落在公历 year 年内；
+ * 节气索引 0=小寒 … 23=冬至；year 是迭代初值的名义年。
+ * 外推时节气实际民用日期可能跨到相邻年份，不能据名义年筛选所属节气。
  * 目标太阳黄经 = (285 + n×15) mod 360（小寒 285°、春分 0°、夏至 90°、冬至 270°）。
  */
 function getTermInstantUtcMs(year: number, n: number): number {
@@ -146,11 +150,11 @@ function getTermInstantUtcMs(year: number, n: number): number {
 
   const target = (285 + n * 15) % 360;
   // 初值：小寒约在 1 月 5 日，节气平均间隔 365.2422/24 ≈ 15.22 天
-  let tt = utcMsFromGregorian(year, 1, 4) + n * 15.218 * MS_PER_DAY;
-  for (let i = 0; i < 6; i++) {
+  let tt = utcMsFromGregorian(year, 1, 4) + n * INITIAL_TERM_STEP_DAYS * MS_PER_DAY;
+  for (let i = 0; i < TERM_ITERATIONS; i++) {
     let diff = target - solarLongitude(tt);
     diff = ((diff % 360) + 540) % 360 - 180; // 归一到 [-180, 180)
-    tt += (diff / (360 / 365.2422)) * MS_PER_DAY;
+    tt += (diff / (360 / TROPICAL_YEAR_DAYS)) * MS_PER_DAY;
   }
   const ut = tt - deltaT(year) * 1000;
   termInstantCache.set(key, ut);
@@ -177,30 +181,79 @@ export function getTermDay(year: number, n: number): number {
   return getTermStartDate(year, n).getDate();
 }
 
+export interface SolarTermOccurrence {
+  nominalYear: number;
+  termIndex: number;
+  startDate: Date;
+}
+
+/**
+ * 按实际民用日期寻找最近的指定节气，供皇极日序、太乙节气/月建/立春共用。
+ *
+ * 六次迭代每次修正不超过半个回归年；再减去该名义年的 ΔT，可得到所有
+ * 24 节气日期的保守包络。向前后扩展名义年份，直到整个包络不可能改善
+ * 当前命中才停止。极端年份也不假设节气落在名义年或仅相邻一年。
+ */
+export function findLatestSolarTerm(date: Date, termIndices: readonly number[] = SOLAR_TERM_NAMES.map((_, i) => i)): SolarTermOccurrence {
+  const year = date.getFullYear();
+  if (!Number.isFinite(date.getTime()) || !termIndices.length || termIndices.some(n => !Number.isInteger(n) || n < 0 || n > 23)) {
+    throw new Error('节气查询须提供有效日期及 0..23 的节气索引');
+  }
+  const target = utcMsFromGregorian(year, date.getMonth() + 1, date.getDate());
+  const maxIterationShift = TERM_ITERATIONS * (TROPICAL_YEAR_DAYS / 2) * MS_PER_DAY;
+  const bounds = (nominalYear: number) => {
+    const base = utcMsFromGregorian(nominalYear, 1, 4) - deltaT(nominalYear) * 1000 + 8 * 3600000;
+    return {
+      first: Math.floor((base - maxIterationShift) / MS_PER_DAY) * MS_PER_DAY,
+      last: Math.floor((base + 23 * INITIAL_TERM_STEP_DAYS * MS_PER_DAY + maxIterationShift) / MS_PER_DAY) * MS_PER_DAY,
+    };
+  };
+  let best: SolarTermOccurrence | undefined;
+  let bestDay = -Infinity;
+  const considerYear = (nominalYear: number) => {
+    for (const termIndex of termIndices) {
+      const startDate = getTermStartDate(nominalYear, termIndex);
+      const day = utcMsFromGregorian(startDate.getFullYear(), startDate.getMonth() + 1, startDate.getDate());
+      if (day <= target && day > bestDay) {
+        bestDay = day;
+        best = { nominalYear, termIndex, startDate };
+      }
+    }
+  };
+  considerYear(year);
+  let pastDone = false, futureDone = false;
+  // In the supported -67016..62583 range the envelopes are strictly increasing
+  // with nominal year. The cap also prevents invalid extrapolations from looping.
+  for (let distance = 1; distance <= 64; distance++) {
+    if (!pastDone) {
+      const candidate = year - distance;
+      pastDone = bounds(candidate).last < bestDay;
+      if (!pastDone) considerYear(candidate);
+    }
+    if (!futureDone) {
+      const candidate = year + distance;
+      futureDone = bounds(candidate).first > target;
+      if (!futureDone) considerYear(candidate);
+    }
+    if (pastDone && futureDone && best) return best;
+  }
+  throw new Error('节气名义年份搜索未能收敛');
+}
+
 /**
  * 获取日期的节气信息
  * @param date Date对象
  */
 export function getSolarTerm(date: Date) {
   const year = date.getFullYear();
-  const dateTs = makeLocalDate(year, date.getMonth(), date.getDate()).getTime();
+  const dateTs = utcMsFromGregorian(year, date.getMonth() + 1, date.getDate());
 
-  // 候选区间：上一年大雪/冬至 + 当年全部 24 节气（时间升序），
-  // 取最后一个起始日 ≤ 当前日期的节气即为所属节气
-  let currentTermIndex = 23;
-  let currentTermStartDate = getTermStartDate(year - 1, 23);
-  const consider = (idx: number, start: Date) => {
-    if (start.getTime() <= dateTs) {
-      currentTermIndex = idx;
-      currentTermStartDate = start;
-    }
-  };
-  consider(22, getTermStartDate(year - 1, 22));
-  consider(23, getTermStartDate(year - 1, 23));
-  for (let n = 0; n < 24; n++) consider(n, getTermStartDate(year, n));
+  const { termIndex: currentTermIndex, startDate: currentTermStartDate } = findLatestSolarTerm(date);
 
-  // 计算在该节气中的第几天（1-based；历史时区偏移差异用四舍五入吸收）
-  const diffDays = Math.round((dateTs - currentTermStartDate.getTime()) / MS_PER_DAY) + 1;
+  // 比较民用日期序号，不比较宿主时区的实际时长；历史改时区跳过整天
+  // （如 Samoa 2011-12-30）也不能减少这份固定节气日表中的日序。
+  const termDayTs = utcMsFromGregorian(currentTermStartDate.getFullYear(), currentTermStartDate.getMonth() + 1, currentTermStartDate.getDate());
+  const diffDays = (dateTs - termDayTs) / MS_PER_DAY + 1;
 
   // 皇极经世映射：
   // 1. 节气 -> 皇极节气 (0-23)

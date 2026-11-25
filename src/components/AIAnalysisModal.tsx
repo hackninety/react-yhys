@@ -71,7 +71,7 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
       const yearsData = []
       const shiSet = new Map()
       const currentYunSet = new Map()
-      let currentHuiData = null
+      const huiByIndex = new Map<number, {index: number; name:string; hexagram:string}>()
 
       for (let y = startYear; y <= endYear; y++) {
         const huangjiSui = gregorianYearToSui(y)
@@ -134,12 +134,8 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
           })
         }
 
-        if (!currentHuiData) {
-          currentHuiData = {
-            index: huiIndex,
-            name: `${pos.hui}会`,
-            hexagram: `${huiHex.unicode}${huiHex.name}`
-          }
+        if (!huiByIndex.has(huiIndex)) {
+          huiByIndex.set(huiIndex, { index:huiIndex, name:`${pos.hui}会`, hexagram:`${huiHex.unicode}${huiHex.name}` })
         }
       }
 
@@ -154,7 +150,8 @@ export function AIAnalysisModal({ isOpen, onClose, algorithmName }: AIAnalysisMo
         range: `${startYear}-${endYear}`,
         context: {
           yuan: { index: yuanIndex, name: `第${yuanIndex + 1}元` },
-          hui: currentHuiData,
+          hui: huiByIndex.size === 1 ? Array.from(huiByIndex.values())[0] : null,
+          huis: Array.from(huiByIndex.values()),
           yuns: Array.from(currentYunSet.values()),
           shi_list: Array.from(shiSet.values())
         },
